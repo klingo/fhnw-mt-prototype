@@ -10,26 +10,35 @@ ModelImporter:
     100004: Head
     100006: Mouth
     100008: //RootNode
+    100010: Person
+    100012: Exes
     400000: Eye-Left
     400002: Eye-Right
     400004: Head
     400006: Mouth
     400008: //RootNode
+    400010: Person
+    400012: Exes
     2300000: Eye-Left
     2300002: Eye-Right
     2300004: Head
     2300006: Mouth
     2300008: //RootNode
+    2300010: Person
+    2300012: Exes
     3300000: Eye-Left
     3300002: Eye-Right
     3300004: Head
     3300006: Mouth
     3300008: //RootNode
+    3300010: Person
+    3300012: Exes
     4300000: Person
     4300002: Mouth
     4300004: Eye-Right
     4300006: Eye-Left
     4300008: Head
+    4300010: Exes
     7400000: Default Take
     9500000: //RootNode
   materials:
