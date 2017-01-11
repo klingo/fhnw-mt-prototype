@@ -29,6 +29,9 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+# Blender
+*.blend1
+
 # =========================
 # Operating System Files
 # =========================
