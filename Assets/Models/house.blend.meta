@@ -6,10 +6,49 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Door
+    100004: Window-Bottom-Left
+    100006: Window-Top-Right
+    100008: Windows-Top-Left
+    100010: House
+    100012: Window-Bottom-Left_001
+    100014: Cube
+    100016: Window-Top-Left
     400000: //RootNode
+    400002: Door
+    400004: Window-Bottom-Left
+    400006: Window-Top-Right
+    400008: Windows-Top-Left
+    400010: House
+    400012: Window-Bottom-Left_001
+    400014: Cube
+    400016: Window-Top-Left
     2300000: //RootNode
+    2300002: Door
+    2300004: Window-Bottom-Left
+    2300006: Window-Top-Right
+    2300008: Windows-Top-Left
+    2300010: House
+    2300012: Window-Bottom-Left_001
+    2300014: Cube
+    2300016: Window-Top-Left
     3300000: //RootNode
+    3300002: Door
+    3300004: Window-Bottom-Left
+    3300006: Window-Top-Right
+    3300008: Windows-Top-Left
+    3300010: House
+    3300012: Window-Bottom-Left_001
+    3300014: Cube
+    3300016: Window-Top-Left
     4300000: Cube
+    4300002: House
+    4300004: Door
+    4300006: Window-Bottom-Left
+    4300008: Window-Top-Right
+    4300010: Windows-Top-Left
+    4300012: Window-Bottom-Left_001
+    4300014: Window-Top-Left
     7400000: Default Take
     9500000: //RootNode
   materials:
