@@ -42,7 +42,7 @@ public class SceneManager : Singleton<SceneManager> {
         gameObjectCategoryMap.Add("Movie", "Communication & media");
         gameObjectCategoryMap.Add("MedicalBox", "Health");
         gameObjectCategoryMap.Add("ShoppingCart", "Household");
-        gameObjectCategoryMap.Add("tbd", "Income & credits");       // TODO: Add to Unity!!!
+        //gameObjectCategoryMap.Add("tbd", "Income & credits");
         gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
         gameObjectCategoryMap.Add("House", "Living & energy");
         gameObjectCategoryMap.Add("Others", "Other expenses");
@@ -51,7 +51,7 @@ public class SceneManager : Singleton<SceneManager> {
         gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
         gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
         gameObjectCategoryMap.Add("tbd3", "Withdrawals");            // TODO: Add to Unity!!!
-        gameObjectCategoryMap.Add("PiggyBank", "tbd");               // TODO: Add to CSV!!!
+        //gameObjectCategoryMap.Add("PiggyBank", "tbd");
 
         // Prepare CSV path
         string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
