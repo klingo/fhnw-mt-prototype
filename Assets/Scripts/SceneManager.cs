@@ -7,14 +7,19 @@ using System.Text.RegularExpressions;
 
 public class SceneManager : Singleton<SceneManager> {
 
-    private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
-    private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
-
     // Singleton
     protected SceneManager() { }
 
+    // Constants for CSV File location
+    private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
+    private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
+
+    private Dictionary<string, string> gameObjectCategoryMap;
+
     // A hashset that contains all active categories
-    public HashSet<string> activeCategories = new HashSet<string>();
+    public HashSet<string> activeCategories { get; private set; }
+    public DataTable dataTable { get; private set; }
+    public DataView dataView { get; private set; }
 
     // Awake is always called before any Start functions
     void Awake() {
@@ -23,33 +28,90 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
     void Start() {
-        // Load CSV dataset
+        // init HashSet
+        activeCategories = new HashSet<string>();
+
+        // init mapping between gameObject name (in Unity) and category name (in CSV)
+        gameObjectCategoryMap = new Dictionary<string, string>();
+        gameObjectCategoryMap.Add("Movie", "Communication & media");
+        gameObjectCategoryMap.Add("MedicalBox", "Health");
+        gameObjectCategoryMap.Add("ShoppingCart", "Household");
+        gameObjectCategoryMap.Add("tbd", "Income & credits");       // TODO: Add to Unity!!!
+        gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
+        gameObjectCategoryMap.Add("House", "Living & energy");
+        gameObjectCategoryMap.Add("Others", "Other expenses");
+        gameObjectCategoryMap.Add("Person", "Personal expenditure");
+        gameObjectCategoryMap.Add("tbd2", "Taxes & duties");         // TODO: Add to Unity!!!
+        gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
+        gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
+        gameObjectCategoryMap.Add("tbd3", "Withdrawals");            // TODO: Add to Unity!!!
+        gameObjectCategoryMap.Add("PiggyBank", "tbd");               // TODO: Add to CSV!!!
+
+        // Prepare CSV path
         string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
         string csvFilePath = csvFolderPath + CSV_FILE_NAME;
 
+        // If CSV exist, load it into a DataTable/DataView
         if (File.Exists(csvFilePath)) {
-            Debug.Log("FILE FOUND! :-)");
-
-            DataTable dataTable = ConvertCSVtoDataTable(csvFilePath);
-            DataView dataView = new DataView(dataTable);
-
-            Debug.Log("count 1: " + dataView.Count);
-
-            Debug.Log("test = " + dataTable.Rows[0].Table.Columns[6]);
-
-            dataView.RowFilter = "[Booking text] = 'INTERNET/PHONE'";
-            Debug.Log("count 2: " + dataView.Count);
+            dataTable = ConvertCSVtoDataTable(csvFilePath);
+            dataView = new DataView(dataTable);
+            Debug.Log(dataView.Count + " entries loaded to DataView!");
         }
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
         }
-
-
-
-        //DataView dv = new DataView(yourDatatable);
-        //dv.RowFilter = "query"; // query example = "id = 10"
     }
+
+
+    public void addGameObjectToCategoryFilter(string gameObjectName) {
+        string categoryName = gameObjectCategoryMap[gameObjectName];
+
+        if (categoryName.Trim() != string.Empty) {
+            activeCategories.Add(categoryName);
+            Debug.Log("Category [" + categoryName + "] added to Filter!");
+            Debug.Log(activeCategories.Count + " entries");
+            // since there was an update, refresh the DataView
+            updateDataView();
+        }
+
+    }
+
+    public void removeGameObjectFromCategoryFilter(string gameObjectName) {
+        string categoryName = gameObjectCategoryMap[gameObjectName];
+
+        if (categoryName.Trim() != string.Empty) {
+            activeCategories.Remove(categoryName);
+            Debug.Log("Category [" + categoryName + "] removed from Filter!");
+            Debug.Log(activeCategories.Count + " entries");
+            // since there was an update, refresh the DataView
+            updateDataView();
+
+        }
+    }
+
+    private void updateDataView() {
+        string query = "";
+
+        foreach (string hashVal in activeCategories) {
+            query += "'" + hashVal + "',";
+        }
+
+        // if there is at least one entry (incl. a comma), remove the last character (i.e. the comma) again
+        if (query.Length > 0) { 
+            query = query.Remove(query.Length - 1);
+            dataView.RowFilter = "[Main category] IN(" + query + ")";
+        } else {
+            // TODO: when nothing is selected, all entries are shown - change to display nothing?
+            dataView.RowFilter = "[Main category] = ''";
+            //dataView.RowFilter = "";
+        }
+        Debug.Log("Filtered entries: " + dataView.Count);
+    }
+
 
     // Update is called once per frame
     void Update() {
