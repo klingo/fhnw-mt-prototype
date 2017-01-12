@@ -19,7 +19,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 19.12.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;38.4;;Communication & media;Multimedia (music, video & apps)
 19.12.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;2.3;;Communication & media;Multimedia (music, video & apps)
 19.12.2016;AMAZING DE Marketplace - 800-800-8000;;;CHF;53.59;;Leisure time, sport & hobby;Toys and hobby articles
-19.12.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 16.12.2016;Erste Bank Someplace - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;454.24;WITHDRAWAL ATM;Withdrawals;Bancomat
 14.12.2016;SUBWAY - RANDOMCITY;;;CHF;8.95;;Personal expenditure;Food (snacks, restaurants and bars)
 14.12.2016;ANY KEBAB - RANDOMCITY;;;CHF;2.91;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -39,7 +38,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 09.12.2016;Stability CarSharing - Cloudcern 7;;;CHF;24.9;;Vacation & travel;Travel and flight costs
 09.12.2016;Groop-1234 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;5;PAYMENT MAESTRO;Household;Food and beverage
 08.12.2016;Canteen Restaurant Office - MyCity;;;CHF;12.9;;Personal expenditure;Food (snacks, restaurants and bars)
-08.12.2016;Marmor AG - eCommerce - NeighbourCity;;;CHF;35.4;;Income & credits;Refunds
 08.12.2016;TORGUARD - 8002008002;;;CHF;9.1;;Communication & media;Film, photo, electronic devices and accessories
 08.12.2016;GEEKHUB.COM  8PRK4 - 4144414441;;;CHF;9.79;;Communication & media;Film, photo, electronic devices and accessories
 08.12.2016;8001 MYCITY SHOPVILLE - CARD 14873883-0 1908;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;148.2;WITHDRAWAL ATM;Withdrawals;Bancomat
@@ -81,10 +79,8 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 21.11.2016;SCHWEIZERISCHE 3000 CAPITALCITY 65;SAVINGS ACCOUNT;CH55 4444 6666 3333 7777 P;CHF;2020.1;SBB SWISSPASS;Traffic, car & transport;Public transport (tickets & subscriptions)
 21.11.2016;LANDLORD AG 8021 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1800;RENT (STANDING ORDER);Living & energy;Rent and mortgage interest
 21.11.2016;SWEATCOM SCHWEIZ AG 3050 CAPITALCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;167.4;INTERNET/PHONE;Communication & media;Telephone,  Internet and TV
-21.11.2016;STADT GHEDOCITY FREIESTR. 6 8952 GHEDOCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;30;DIENSTLEISTUNGEN 2016 - ZSO SWIMMATTAL-EAST;Income & credits;Sold
 21.11.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;28.95;PAYMENT MAESTRO;Household;Food and beverage
 18.11.2016;Randomplace Take Away - MyCity;;;CHF;10.6;;Personal expenditure;Food (snacks, restaurants and bars)
-18.11.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 17.11.2016;Microns MM Anyvillage - Anyvillage;;;CHF;13.75;;Household;Food and beverage
 17.11.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;8.2;;Household;Food and beverage
 16.11.2016;Canteen Restaurant Office - MyCity;;;CHF;10.8;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -121,9 +117,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 31.10.2016;SALDO TRANSACTION EXPENSES;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;0.2;;Other expenses;Banking services and charges
 31.10.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;43.4;PAYMENT MAESTRO;Household;Food and beverage
 27.10.2016;GREENPEACE SCHWEIZ MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;81;GREEPNPEACE DONATION;Personal expenditure;Donations
-27.10.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;91.53;PAYBACK FRIEND XYZ;Income & credits;Refunds
-27.10.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;13.8;PAYBACK FRIEND XYZ;Income & credits;Refunds
-27.10.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;56.2;PAYBACK FRIEND XYZ;Income & credits;Refunds
 27.10.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;18.55;PAYMENT MAESTRO;Household;Food and beverage
 27.10.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;85.45;PAYMENT MAESTRO;Household;Food and beverage
 25.10.2016;WORLD DUTY FREE WHISKINGTONWHISKINGTON;;;CHF;44.72;;Personal expenditure;Miscellaneous
@@ -150,7 +143,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 19.10.2016;Groop-2238 Wint. St - MusterCity;;;CHF;15.55;;Household;Food and beverage
 19.10.2016;minitec Milkyway (Online) MyCity;;;CHF;91.44;;Communication & media;Film, photo, electronic devices and accessories
 19.10.2016;PUNCHSTARTER I10 REINVE - 9292929292;;;CHF;71.26;;Leisure time, sport & hobby;Toys and hobby articles
-19.10.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 19.10.2016;RANDOM FRIENDS ADRESS XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;278.9;FLIGHT TICKET;Vacation & travel;Miscellaneous
 19.10.2016;ONE CLUB PROWGE - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;16.02;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 19.10.2016;ONE CLUB PROWGE - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;50.45;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
@@ -168,7 +160,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 13.10.2016;Canteen Restaurant Office - MyCity;;;CHF;8.6;;Personal expenditure;Food (snacks, restaurants and bars)
 12.10.2016;Canteen Restaurant Office - MyCity;;;CHF;14.5;;Personal expenditure;Food (snacks, restaurants and bars)
 11.10.2016;Canteen Restaurant Office - MyCity;;;CHF;14.9;;Personal expenditure;Food (snacks, restaurants and bars)
-11.10.2016;CBA*ACRONIS - CLEVERBRIDGE.;;;CHF;34.75;;Income & credits;Refunds
 11.10.2016;RANDOM FRIENDS ADRESS XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;93.1;PAYBACK FRIEND XYZ;Other expenses;Repayments
 10.10.2016;Microns M Hauptbahnhof - MyCity;;;CHF;3.8;;Household;Food and beverage
 10.10.2016;Microns MM Downton Sälipa - Downton;;;CHF;4.7;;Household;Food and beverage
@@ -179,7 +170,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 10.10.2016;CBA*ACRONIS - CLEVERBRIDGE.;;;CHF;36.68;;Communication & media;Software
 10.10.2016;PUNCHSTARTERCOM - 9292929292;;;CHF;42.15;;Leisure time, sport & hobby;Toys and hobby articles
 10.10.2016;SEEBAY.CH/CC - 888-777-6666;;;CHF;5.58;;Taxes & duties;Fees
-10.10.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;37.6;PAYBACK FRIEND XYZ;Income & credits;Refunds
 10.10.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;30.95;PAYMENT MAESTRO;Household;Food and beverage
 10.10.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;63.7;PAYMENT MAESTRO;Household;Food and beverage
 07.10.2016;Randomplace Take Away - MyCity;;;CHF;10;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -203,7 +193,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 30.09.2016;Twint - MyCity;;;CHF;15.5;;Withdrawals;Bancomat
 30.09.2016;SALDO TRANSACTION EXPENSES;SAVINGS ACCOUNT;CH55 4444 6666 3333 7777 P;CHF;0.3;;Other expenses;Banking services and charges
 29.09.2016;Canteen Restaurant Office - MyCity;;;CHF;8.35;;Personal expenditure;Food (snacks, restaurants and bars)
-29.09.2016;REPAYMENT AG DIFFERENTSTREET 12 1234 NOPLACE;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;556.6;PAYBACK EXPENSES;Income & credits;Refunds
 29.09.2016;Marmor AG - 228 - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;75;PAYMENT MAESTRO;Personal expenditure;Clothing, shoes and accessories
 28.09.2016;Canteen Restaurant Office - MyCity;;;CHF;7.95;;Personal expenditure;Food (snacks, restaurants and bars)
 28.09.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;24.8;;Household;Food and beverage
@@ -232,14 +221,12 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 19.09.2016;Microns M Hauptbahnhof - MyCity;;;CHF;5.75;;Household;Food and beverage
 19.09.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;32.95;;Household;Food and beverage
 19.09.2016;PUNCHSTARTER THE WORLDS - 9292929292;;;CHF;49.89;;Leisure time, sport & hobby;Toys and hobby articles
-19.09.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 19.09.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;45.8;PAYMENT MAESTRO;Household;Food and beverage
 19.09.2016;Restaurant Freihof - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;24.7;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 16.09.2016;Canteen Restaurant Office - MyCity;;;CHF;13.1;;Personal expenditure;Food (snacks, restaurants and bars)
 16.09.2016;Microns M Otherplace - MyCity;;;CHF;11;;Household;Food and beverage
 15.09.2016;Canteen Restaurant Office - MyCity;;;CHF;11.6;;Personal expenditure;Food (snacks, restaurants and bars)
 14.09.2016;Canteen Restaurant Office - MyCity;;;CHF;13.05;;Personal expenditure;Food (snacks, restaurants and bars)
-14.09.2016;RANDOM FRIENDS ADRESS XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;253.66;SEEBAY;Income & credits;Sale of property
 13.09.2016;Canteen Restaurant Office - MyCity;;;CHF;17;;Personal expenditure;Food (snacks, restaurants and bars)
 12.09.2016;Microns M Hauptbahnhof - MyCity;;;CHF;4.9;;Household;Food and beverage
 12.09.2016;Groop-1177 BS Bahnh - NeighbourCity;;;CHF;19.05;;Household;Food and beverage
@@ -297,7 +284,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 22.08.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;70.95;PAYMENT MAESTRO;Household;Food and beverage
 22.08.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;32.4;PAYMENT MAESTRO;Household;Food and beverage
 19.08.2016;Canteen Restaurant Office - MyCity;;;CHF;11.4;;Personal expenditure;Food (snacks, restaurants and bars)
-19.08.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 18.08.2016;Canteen Restaurant Office - MyCity;;;CHF;5.95;;Personal expenditure;Food (snacks, restaurants and bars)
 17.08.2016;Canteen Restaurant Office - MyCity;;;CHF;10.1;;Personal expenditure;Food (snacks, restaurants and bars)
 17.08.2016;D-Whino Weinbars AG - MyCity;;;CHF;36.2;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -316,17 +302,14 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 08.08.2016;Stability CarSharing - Cloudcern 7;;;CHF;25.1;;Vacation & travel;Travel and flight costs
 08.08.2016;GEEKHUB.COM  8PRK4 - 4141414141;;;CHF;6.1;;Communication & media;Film, photo, electronic devices and accessories
 08.08.2016;AE COM WEB PURCH - HOOFDOORP;;;CHF;297.52;;Personal expenditure;Clothing, shoes and accessories
-08.08.2016;RANDOM PERSON ANYSTREET 15 0000 NOPLACE;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;126;SEEBAY;Income & credits;Sale of property
 08.08.2016;BANK AG (CREDIT CARDS) SOMESTREET 11 9000 ACITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;638.5;CREDIT CARD;Other expenses;Credit card invoice and fees
 08.08.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;35.8;PAYMENT MAESTRO;Household;Food and beverage
 08.08.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;118.75;PAYMENT MAESTRO;Household;Food and beverage
 08.08.2016;Restaurant Freihof - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;21.6;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 05.08.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;10;;Household;Food and beverage
 05.08.2016;Randomplace Take Away - MyCity;;;CHF;12.6;;Personal expenditure;Food (snacks, restaurants and bars)
-05.08.2016;CANTON TAX OFFICE DIRECT STATE TAXES MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;271.8;PAYBACK STATE TAXES;Income & credits;Refunds
 05.08.2016;Winterlab Letsgopark - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;379.7;PAYMENT MAESTRO;Health;Medical services 
 04.08.2016;Randomplace Take Away - MyCity;;;CHF;12.6;;Personal expenditure;Food (snacks, restaurants and bars)
-04.08.2016;AMAZING.DE PAYMENTS - AMAZING.DE;;;CHF;0.03;;Income & credits;Refunds
 04.08.2016;MUNICIPAL ADMINISTRATION 0123 ANYPLACE;SAVINGS ACCOUNT;CH55 4444 6666 3333 7777 P;CHF;529.75;STATE TAXES;Taxes & duties;Community and cantonal tax
 03.08.2016;Randomplace Take Away - MyCity;;;CHF;9.2;;Personal expenditure;Food (snacks, restaurants and bars)
 03.08.2016;minitec Milkyway (Online) MyCity;;;CHF;25.38;;Communication & media;Film, photo, electronic devices and accessories
@@ -356,7 +339,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 20.07.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;37.8;PAYMENT MAESTRO;Household;Food and beverage
 19.07.2016;Canteen Restaurant Office - MyCity;;;CHF;23.1;;Personal expenditure;Food (snacks, restaurants and bars)
 19.07.2016;DREAMGAMES.COM - 404-012-1985;;;CHF;4.2;;Leisure time, sport & hobby;Going out, culture and cinema
-19.07.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 18.07.2016;Canteen Restaurant Office - MyCity;;;CHF;6.7;;Personal expenditure;Food (snacks, restaurants and bars)
 18.07.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;41.05;PAYMENT MAESTRO;Household;Food and beverage
 15.07.2016;8004 ZH-ALISPLACE - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;194.4;WITHDRAWAL ATM;Withdrawals;Bancomat
@@ -368,7 +350,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 11.07.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;83.7;PAYMENT MAESTRO;Household;Food and beverage
 08.07.2016;Canteen Restaurant Office - MyCity;;;CHF;11.5;;Personal expenditure;Food (snacks, restaurants and bars)
 08.07.2016;GEEKHUB.COM  8PRK4 - 4141414141;;;CHF;8.27;;Communication & media;Film, photo, electronic devices and accessories
-07.07.2016;PC COMPUTERS AG RAMSTREET 001 404 NO PLACE;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;619.9;PAYBACK STORE XYZ;Income & credits;Refunds
 07.07.2016;BANK AG (CREDIT CARDS) SOMESTREET 11 9000 ACITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1718.5;CREDIT CARD;Other expenses;Credit card invoice and fees
 06.07.2016;Groop-4073 Downton Säliho - Downton;;;CHF;3.85;;Household;Food and beverage
 05.07.2016;Canteen Restaurant Office - MyCity;;;CHF;17.1;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -410,9 +391,7 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 17.06.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;9;;Communication & media;Multimedia (music, video & apps)
 17.06.2016;minitec Milkyway (Online) MyCity;;;CHF;27.99;;Communication & media;Film, photo, electronic devices and accessories
 17.06.2016;DRI*HTC CORPORA - SHANNON, CO.;;;CHF;940.38;;Communication & media;Film, photo, electronic devices and accessories
-17.06.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 16.06.2016;Microns M Hauptbahnhof - MyCity;;;CHF;7.6;;Household;Food and beverage
-16.06.2016;minitec Milkyway (Online) MyCity;;;CHF;748.97;;Income & credits;Refunds
 16.06.2016;UPPER BV - HELP.UPPER.COM;;;CHF;31.7;;Traffic, car & transport;Public transport (tickets & subscriptions)
 15.06.2016;Microns M Hauptbahnhof - MyCity;;;CHF;3.9;;Household;Food and beverage
 15.06.2016;Groop-4073 Downton Säliho - Downton;;;CHF;11;;Household;Food and beverage
@@ -426,7 +405,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 09.06.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;18.35;PAYMENT MAESTRO;Household;Food and beverage
 08.06.2016;Canteen Restaurant Office - MyCity;;;CHF;13;;Personal expenditure;Food (snacks, restaurants and bars)
 08.06.2016;Groop Uncommonstr. 55 - MyCity;;;CHF;3.55;;Household;Food and beverage
-08.06.2016;PC COMPUTERS AG RAMSTREET 001 404 NO PLACE;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;19;PAYBACK STORE XYZ;Income & credits;Refunds
 07.06.2016;Randomplace Take Away - MyCity;;;CHF;10.2;;Personal expenditure;Food (snacks, restaurants and bars)
 07.06.2016;Groop Uncommonstr. 55 - MyCity;;;CHF;4.6;;Household;Food and beverage
 07.06.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;8.8;;Communication & media;Multimedia (music, video & apps)
@@ -434,7 +412,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 06.06.2016;AMAZING.DE PAYMENTS - AMAZING.DE;;;CHF;20.63;;Leisure time, sport & hobby;Miscellaneous
 06.06.2016;Uber BV - help.upper.com;;;CHF;41.82;;Traffic, car & transport;Public transport (tickets & subscriptions)
 06.06.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;182.1;WEDDING GIFT;Personal expenditure;Gifts
-06.06.2016;HEALTH INSURANCE AG NUMVERSTREET 101 0101 PLACINGTON;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;49.6;PAYBACK HEALTH INSURANCE;Income & credits;Refunds
 06.06.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;54.85;PAYMENT MAESTRO;Household;Food and beverage
 03.06.2016;Canteen Restaurant Office - MyCity;;;CHF;11.1;;Personal expenditure;Food (snacks, restaurants and bars)
 02.06.2016;Microns M Hauptbahnhof - MyCity;;;CHF;2.8;;Household;Food and beverage
@@ -453,7 +430,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 27.05.2016;SWEATCOM SCHWEIZ AG 3050 CAPITALCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;220.3;INTERNET/PHONE;Communication & media;Telephone,  Internet and TV
 26.05.2016;Microns M Hauptbahnhof - MyCity;;;CHF;1.9;;Household;Food and beverage
 25.05.2016;Canteen Restaurant Office - MyCity;;;CHF;7.2;;Personal expenditure;Food (snacks, restaurants and bars)
-25.05.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;45.32;PAYBACK FRIEND XYZ;Income & credits;Refunds
 24.05.2016;Canteen Restaurant Office - MyCity;;;CHF;11.95;;Personal expenditure;Food (snacks, restaurants and bars)
 24.05.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;1.2;;Communication & media;Multimedia (music, video & apps)
 24.05.2016;AMAZING *Mktplce EU-DE - AMAZING.DE;;;CHF;15.29;;Communication & media;Film, photo, electronic devices and accessories
@@ -465,7 +441,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 23.05.2016;WWW.ENDTICKET.CH - MYCITY;;;CHF;252.5;;Leisure time, sport & hobby;Going out, culture and cinema
 23.05.2016;LANDLORD AG 8021 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1800;RENT (STANDING ORDER);Living & energy;Rent and mortgage interest
 23.05.2016;SWISS INSURANCE SOMEPATH 13 8021 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;324.1;PROPERTY INSUANCE;Living & energy;Building and property insurance
-23.05.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;151.9;PAYBACK FRIEND XYZ;Income & credits;Refunds
 23.05.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;42.65;PAYMENT MAESTRO;Household;Food and beverage
 23.05.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;48.6;PAYMENT MAESTRO;Household;Food and beverage
 20.05.2016;Canteen Restaurant Office - MyCity;;;CHF;13.6;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -474,15 +449,11 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 20.05.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;7.4;;Communication & media;Multimedia (music, video & apps)
 19.05.2016;Microns M Hauptbahnhof - MyCity;;;CHF;2;;Household;Food and beverage
 19.05.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;18.6;;Household;Food and beverage
-19.05.2016;Uber BV - help.upper.com;;;CHF;2.12;;Income & credits;Refunds
-19.05.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 19.05.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;39.95;PAYMENT MAESTRO;Household;Food and beverage
 18.05.2016;Canteen Restaurant Office - MyCity;;;CHF;7.85;;Personal expenditure;Food (snacks, restaurants and bars)
 17.05.2016;Uber BV - help.upper.com;;;CHF;22.54;;Traffic, car & transport;Public transport (tickets & subscriptions)
 17.05.2016;Uber BV - help.upper.com;;;CHF;21.99;;Traffic, car & transport;Public transport (tickets & subscriptions)
-17.05.2016;VN 12345678 - 123456S1 STOCKHOLDER AG;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;65;DIVIDENDS FROM STOCK;Income & credits;Capital revenues (interest, dividends & earnings)
 17.05.2016;ENHU0140 - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;267.48;WITHDRAWAL ATM;Withdrawals;Bancomat
-17.05.2016;EQUATEX AG 8048 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;84.7;DIVIDENDS FROM STOCK;Income & credits;Capital revenues (interest, dividends & earnings)
 16.05.2016;BE'CSISZELET VENDE'GLO - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;82.26;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 16.05.2016;ENHU0096 - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;188.21;WITHDRAWAL ATM;Withdrawals;Bancomat
 16.05.2016;Walkthrough Level 2 ZR - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;78;PAYMENT MAESTRO;Personal expenditure;Miscellaneous
@@ -518,7 +489,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 28.04.2016;Microns M Hauptbahnhof - MyCity;;;CHF;2.5;;Household;Food and beverage
 27.04.2016;Canteen Restaurant Office - MyCity;;;CHF;12.4;;Personal expenditure;Food (snacks, restaurants and bars)
 27.04.2016;12345 avec.Anyvillage - Anyvillage;;;CHF;4.8;;Household;Food and beverage
-27.04.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;49.7;PAYBACK FRIEND XYZ;Income & credits;Refunds
 26.04.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;25.2;;Household;Food and beverage
 26.04.2016;Randomplace Take Away - MyCity;;;CHF;15.5;;Personal expenditure;Food (snacks, restaurants and bars)
 25.04.2016;Canteen Restaurant Office - Opfikon;;;CHF;12.6;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -526,7 +496,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 25.04.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;0.5;;Communication & media;Multimedia (music, video & apps)
 25.04.2016;Drugstore Someplace - Cloudcern;;;CHF;126.8;;Personal expenditure;Personal hygiene and wellness
 25.04.2016;POWERPWAY C/O MF FINANCE GMBH NOT FOUND;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;39.25;COMPUTER HARDWARE;Other expenses;Loan and debt interest
-25.04.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;108.9;PAYBACK FRIEND XYZ;Income & credits;Refunds
 25.04.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;13.65;PAYMENT MAESTRO;Household;Food and beverage
 25.04.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;52;PAYMENT MAESTRO;Household;Food and beverage
 22.04.2016;Randomplace Take Away - MyCity;;;CHF;11.3;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -539,7 +508,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 21.04.2016;ELECTRICITY COMPANY OF ZH, 8000 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;127.4;ELECTRICITY;Living & energy;Electricity and gas
 20.04.2016;Randomplace Take Away - MyCity;;;CHF;18.4;;Personal expenditure;Food (snacks, restaurants and bars)
 19.04.2016;Twint - MyCity;;;CHF;154.7;;Withdrawals;Bancomat
-19.04.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 19.04.2016;Zeus Gastro GmbH - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;42.5;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 18.04.2016;Randomplace Take Away - MyCity;;;CHF;9.2;;Personal expenditure;Food (snacks, restaurants and bars)
 18.04.2016;UPPER BV - HELP.UPPER.COM;;;CHF;9.5;;Traffic, car & transport;Public transport (tickets & subscriptions)
@@ -581,7 +549,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 28.03.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;96.1;PAYMENT MAESTRO;Household;Food and beverage
 28.03.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;12.75;PAYMENT MAESTRO;Household;Food and beverage
 24.03.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;0.9;;Communication & media;Multimedia (music, video & apps)
-24.03.2016;RANDOM FRIENDS ADRESS XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;123.2;BIRTHDAY GIFT;Income & credits;Gifts and inheritance
 23.03.2016;Canteen Restaurant Office - MyCity;;;CHF;8.3;;Personal expenditure;Food (snacks, restaurants and bars)
 23.03.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;12.2;;Communication & media;Multimedia (music, video & apps)
 22.03.2016;Canteen Restaurant Office - MyCity;;;CHF;11.4;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -598,7 +565,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 21.03.2016;BILLAG SA 1701 FRIBOURG;SAVINGS ACCOUNT;CH55 4444 6666 3333 7777 P;CHF;557.4;BILLAG;Communication & media;Radio and television fees
 21.03.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;109.45;PAYMENT MAESTRO;Household;Food and beverage
 18.03.2016;Canteen Restaurant Office - MyCity;;;CHF;10.7;;Personal expenditure;Food (snacks, restaurants and bars)
-18.03.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 17.03.2016;minitec Milkyway (Online) MyCity;;;CHF;14.91;;Communication & media;Film, photo, electronic devices and accessories
 17.03.2016;9484 - Restaurant CS Pia - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;13.8;PAYMENT MAESTRO;Personal expenditure;Food (snacks, restaurants and bars)
 16.03.2016;Microns M Hauptbahnhof - MyCity;;;CHF;4.6;;Household;Food and beverage
@@ -619,7 +585,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 07.03.2016;Groop-4455 Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;12.45;PAYMENT MAESTRO;Household;Food and beverage
 07.03.2016;BANK ATM 1 - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;330.6;WITHDRAWAL ATM;Withdrawals;Bancomat
 04.03.2016;Randomplace Take Away - MyCity;;;CHF;10.7;;Personal expenditure;Food (snacks, restaurants and bars)
-03.03.2016;REPAYMENT AG DIFFERENTSTREET 12 1234 NOPLACE;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;645.2;PAYBACK EXPENSES;Income & credits;Refunds
 02.03.2016;Canteen Restaurant Office - MyCity;;;CHF;6.1;;Personal expenditure;Food (snacks, restaurants and bars)
 02.03.2016;Xsolla *Glich - 800-800800;;;CHF;5.25;;Leisure time, sport & hobby;Going out, culture and cinema
 01.03.2016;Canteen Restaurant Office - MyCity;;;CHF;11.6;;Personal expenditure;Food (snacks, restaurants and bars)
@@ -644,7 +609,6 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 22.02.2016;LANDLORD AG 8021 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1800;RENT (STANDING ORDER);Living & energy;Rent and mortgage interest
 22.02.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;52.25;PAYMENT MAESTRO;Household;Food and beverage
 19.02.2016;Canteen Restaurant Office - MyCity;;;CHF;8;;Personal expenditure;Food (snacks, restaurants and bars)
-19.02.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 19.02.2016;WEHRPFLICHTERSATZVERW. DES KT. ZH, 8090 MYCITY;SAVINGS ACCOUNT;CH55 4444 6666 3333 7777 P;CHF;419.8;MILITARY EXPENSES;Taxes & duties;Military exemption tax
 17.02.2016;Canteen Restaurant Office - MyCity;;;CHF;10.9;;Personal expenditure;Food (snacks, restaurants and bars)
 17.02.2016;CANSTREAM ONLINE SHOP - Nodikon;;;CHF;99.8;;Personal expenditure;Clothing, shoes and accessories
@@ -693,10 +657,8 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 21.01.2016;BANK AG (CREDIT CARDS) SOMESTREET 11 9000 ACITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1268.85;CREDIT CARD;Other expenses;Credit card invoice and fees
 21.01.2016;SWEATCOM SCHWEIZ AG 3050 CAPITALCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;164.1;INTERNET/PHONE;Communication & media;Telephone,  Internet and TV
 21.01.2016;ELECTRICITY COMPANY OF ZH, 8000 MYCITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;95.2;ELECTRICITY;Living & energy;Electricity and gas
-21.01.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;9.1;PAYBACK FRIEND XYZ;Income & credits;Refunds
 21.01.2016;FRIENDS NAME XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;588.9;FLIGHT TICKET;Vacation & travel;Travel and flight costs
 19.01.2016;Canteen Restaurant Office - MyCity;;;CHF;14.6;;Personal expenditure;Food (snacks, restaurants and bars)
-19.01.2016;SALARY PAYMENT;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;4500;;Income & credits;Salary and sideline
 18.01.2016;Canteen Restaurant Office - MyCity;;;CHF;10.45;;Personal expenditure;Food (snacks, restaurants and bars)
 18.01.2016;VOG.COM - NICOSIA;;;CHF;1.67;;Communication & media;Multimedia (music, video & apps)
 18.01.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;6.1;;Communication & media;Multimedia (music, video & apps)
