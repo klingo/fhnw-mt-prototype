@@ -21,7 +21,9 @@ public class SceneManager : Singleton<SceneManager> {
     public DataTable dataTable { get; private set; }
     public DataView dataView { get; private set; }
 
-    // Awake is always called before any Start functions
+    /// <summary>
+    /// Awake is always called before any Start functions
+    /// </summary>
     void Awake() {
         // Debug to inform that Singleton was created!
         Debug.Log("Awoke Singleton Instance: " + gameObject.GetInstanceID());
@@ -67,6 +69,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="gameObjectName"></param>
     public void addGameObjectToCategoryFilter(string gameObjectName) {
         string categoryName = gameObjectCategoryMap[gameObjectName];
 
@@ -77,9 +83,13 @@ public class SceneManager : Singleton<SceneManager> {
             // since there was an update, refresh the DataView
             updateDataView();
         }
-
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="gameObjectName"></param>
     public void removeGameObjectFromCategoryFilter(string gameObjectName) {
         string categoryName = gameObjectCategoryMap[gameObjectName];
 
@@ -93,6 +103,10 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
     private void updateDataView() {
         string query = "";
 
@@ -105,21 +119,25 @@ public class SceneManager : Singleton<SceneManager> {
             query = query.Remove(query.Length - 1);
             dataView.RowFilter = "[Main category] IN(" + query + ")";
         } else {
-            // TODO: when nothing is selected, all entries are shown - change to display nothing?
+            // when nothing is selected, nothing is shown
             dataView.RowFilter = "[Main category] = ''";
-            //dataView.RowFilter = "";
         }
         Debug.Log("Filtered entries: " + dataView.Count);
     }
 
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame
+    /// </summary>
     void Update() {
     }
 
 
-    // Source: https://immortalcoder.blogspot.ch/2013/12/convert-csv-file-to-datatable-in-c.html
-    // 
+    /// <summary>
+    /// Source: https://immortalcoder.blogspot.ch/2013/12/convert-csv-file-to-datatable-in-c.html
+    /// </summary>
+    /// <param name="strFilePath"></param>
+    /// <returns></returns>
     private static DataTable ConvertCSVtoDataTable(string strFilePath) {
         StreamReader sr = new StreamReader(strFilePath);
         string[] headers = sr.ReadLine().Split(';');
