@@ -14,11 +14,9 @@ public class CategoryIcon : VRTK_InteractableObject {
         isActivated = !isActivated;
 
         if (isActivated) {
-            SceneManager.Instance.activeCategories.Add(gameObject.name);
-            Debug.Log(gameObject.name + " added!");
+            SceneManager.Instance.addGameObjectToCategoryFilter(gameObject.name);
         } else {
-            SceneManager.Instance.activeCategories.Remove(gameObject.name);
-            Debug.Log(gameObject.name + " removed!");
+            SceneManager.Instance.removeGameObjectFromCategoryFilter(gameObject.name);
         }
     }
 
