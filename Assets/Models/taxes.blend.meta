@@ -14,6 +14,7 @@ ModelImporter:
     100012: ScissorBlade_Back
     100014: ScissorBlade_Front
     100016: ScissorBlade_Front_001
+    100018: ScissorBlade_
     400000: BillBorder
     400002: BillPlane
     400004: Dollar
@@ -23,6 +24,7 @@ ModelImporter:
     400012: ScissorBlade_Back
     400014: ScissorBlade_Front
     400016: ScissorBlade_Front_001
+    400018: ScissorBlade_
     2300000: BillBorder
     2300002: BillPlane
     2300004: Dollar
@@ -32,6 +34,7 @@ ModelImporter:
     2300012: ScissorBlade_Back
     2300014: ScissorBlade_Front
     2300016: ScissorBlade_Front_001
+    2300018: ScissorBlade_
     3300000: BillBorder
     3300002: BillPlane
     3300004: Dollar
@@ -41,6 +44,7 @@ ModelImporter:
     3300012: ScissorBlade_Back
     3300014: ScissorBlade_Front
     3300016: ScissorBlade_Front_001
+    3300018: ScissorBlade_
     4300000: ScissorBlade
     4300002: BillBorder
     4300004: BillPlane
@@ -49,6 +53,7 @@ ModelImporter:
     4300010: ScissorBlade_Front
     4300012: ScissorBlade_Back
     4300014: ScissorBlade_Front_001
+    4300016: ScissorBlade_
     7400000: Default Take
     9500000: //RootNode
   materials:

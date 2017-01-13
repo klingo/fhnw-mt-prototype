@@ -89,6 +89,7 @@ ModelImporter:
     4300026: Index_Nail
     4300028: Finger_Thumb
     4300030: Thumb_Nail
+    4300032: HandBill
     7400000: Default Take
     9500000: //RootNode
   materials:
