@@ -42,15 +42,15 @@ public class SceneManager : Singleton<SceneManager> {
         gameObjectCategoryMap.Add("Movie", "Communication & media");
         gameObjectCategoryMap.Add("MedicalBox", "Health");
         gameObjectCategoryMap.Add("ShoppingCart", "Household");
-        //gameObjectCategoryMap.Add("tbd", "Income & credits");
+        //gameObjectCategoryMap.Add("tbd", "Income & credits"); // out of scope since it is not an expense, but an income
         gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
         gameObjectCategoryMap.Add("House", "Living & energy");
         gameObjectCategoryMap.Add("Others", "Other expenses");
         gameObjectCategoryMap.Add("Person", "Personal expenditure");
-        gameObjectCategoryMap.Add("tbd2", "Taxes & duties");         // TODO: Add to Unity!!!
+        gameObjectCategoryMap.Add("Taxes", "Taxes & duties");
         gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
         gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
-        gameObjectCategoryMap.Add("tbd3", "Withdrawals");            // TODO: Add to Unity!!!
+        gameObjectCategoryMap.Add("Cash", "Withdrawals");
         //gameObjectCategoryMap.Add("PiggyBank", "tbd");
 
         // Prepare CSV path
