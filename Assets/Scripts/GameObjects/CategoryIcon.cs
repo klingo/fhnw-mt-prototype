@@ -33,6 +33,9 @@ public class CategoryIcon : VRTK_InteractableObject {
 
         if (hasChanged) {
             hasChanged = false;
+
+            Debug.Log("gameObject = " + gameObject);
+
             if (isActivated) {
                 gameObject.GetComponent<Renderer>().material.color = Color.green;
             }
