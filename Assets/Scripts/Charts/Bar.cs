@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class Bar : MonoBehaviour {
 
-    public Image bar;
+    public Image topBar;
+    public Image bottomBar;
     public Text label;
-    public Text barValue;
+    public Text topBarValue;
+    public Text bottomBarValue;
 }
