@@ -60,6 +60,8 @@ public class BarChart : MonoBehaviour {
                 newBarHolder.transform.localScale = Vector3.one;
                 // due to parent transformation, also set the z-axis back to 0
                 newBarHolder.transform.localPosition = new Vector3(newBarHolder.transform.localPosition.x, newBarHolder.transform.localPosition.y);
+                // due to parent transformation, also set the rotation back to 0
+                newBarHolder.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             }
 
             // Set the size of the bars
