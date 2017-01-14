@@ -13,10 +13,13 @@ public class BarChart : MonoBehaviour {
     public float threshold;
     public Color bottomBarColor;
     public Color topBarColor;
+    public Image thresholdLine;
+    public Text thresholdValueLabel;
 
     List<Bar> barHolders = new List<Bar>();
 
     float chartHeight;
+    float thresholdLineOffsetY = 0f;
 
     const float AXES_GRAPH_OFFSET = 6;  // the offset of a bar compared to the axes-graph
     const float BAR_SCALE_FACTOR = 0.95f; // the scaling of the max bar height
@@ -83,7 +86,6 @@ public class BarChart : MonoBehaviour {
                 // all bars except the last one
                 vlg.padding.right = 5;
             }
-            
 
             // Set the color of the bars
             newBarHolder.bottomBar.color = bottomBarColor;
@@ -128,6 +130,27 @@ public class BarChart : MonoBehaviour {
             // Finally, add the bar to the list
             barHolders.Add(newBarHolder);
         }
+
+        // set the threshold line
+        RectTransform rtThresholdLine = thresholdLine.GetComponent<RectTransform>();
+
+        if (thresholdLineOffsetY == 0f) {
+            thresholdLineOffsetY = rtThresholdLine.transform.localPosition.y;
+        }
+
+        if (normalizedThresholdValue > 1) {
+            thresholdLine.enabled = false;
+            thresholdValueLabel.enabled = false;
+        } else {
+            thresholdLine.enabled = true;
+            rtThresholdLine.transform.localPosition = new Vector3(0f, thresholdLineOffsetY + (AXES_GRAPH_OFFSET / 2) + (chartHeight * normalizedThresholdValue));
+
+            // set the threshold value
+            thresholdValueLabel.enabled = true; ;
+            thresholdValueLabel.text = threshold.ToString();
+        }
+
+
     }
 
 

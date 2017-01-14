@@ -164,8 +164,6 @@ public class SceneManager : Singleton<SceneManager> {
         string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
         float[] list = { 1111f, 2222f, 3333f, 4444f, 5555f, 6666f, 5555f, 4444f, 3333f, 2222f, 1111f, 7000f };
 
-        float[] yearAmounts = { };
-
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
