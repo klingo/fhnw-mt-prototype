@@ -11,8 +11,6 @@ public class BarChart : MonoBehaviour {
 
     public Bar barHolderPrefab;
     public float threshold;
-    public float[] inputValues;
-    public string[] labels;
     public Color bottomBarColor;
     public Color topBarColor;
 
@@ -32,33 +30,39 @@ public class BarChart : MonoBehaviour {
         Transform tCanvas = this.GetComponent<RectTransform>().parent;
         RectTransform rtCanvas = tCanvas.GetComponent<RectTransform>();
         chartHeight = (rtCanvas.sizeDelta.y - AXES_GRAPH_OFFSET) * BAR_SCALE_FACTOR;
-
-        DisplayGraph(inputValues);
     }
 
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="vals"></param>
-    void DisplayGraph(float[] vals) {
-        float maxValue = vals.Max();
+    public void DisplayGraph(string[] labels, float[] inputValues) {
+
+        float maxValue = inputValues.Max();
         float normalizedThresholdValue = threshold / maxValue;
 
-        for (int currBarIndex = 0; currBarIndex < vals.Length; currBarIndex++) {
-            // Instantiate new Bar
-            Bar newBarHolder = Instantiate(barHolderPrefab) as Bar;
+        for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
-            newBarHolder.transform.SetParent(transform);
-            // due to the parent transformation, the localScale hs to be reset to 1/1/1, because of Canvas.scale = 0.00234375
-            newBarHolder.transform.localScale = Vector3.one;
-            // due to parent transformation, also set the z-axis back to 0
-            newBarHolder.transform.localPosition = new Vector3(newBarHolder.transform.localPosition.x, newBarHolder.transform.localPosition.y);
+            Bar newBarHolder;
+
+            // first check if we already ahve instances of barHolders
+            if (barHolders.Count > currBarIndex) {
+                newBarHolder = barHolders.ElementAt<Bar>(currBarIndex);
+            } else {
+                // Instantiate new Bar
+                newBarHolder = Instantiate(barHolderPrefab) as Bar;
+
+                newBarHolder.transform.SetParent(transform);
+                // due to the parent transformation, the localScale hs to be reset to 1/1/1, because of Canvas.scale = 0.00234375
+                newBarHolder.transform.localScale = Vector3.one;
+                // due to parent transformation, also set the z-axis back to 0
+                newBarHolder.transform.localPosition = new Vector3(newBarHolder.transform.localPosition.x, newBarHolder.transform.localPosition.y);
+            }
 
             // Set the size of the bars
             RectTransform rtBottomBar = newBarHolder.bottomBar.GetComponent<RectTransform>();
             RectTransform rtTopBar = newBarHolder.topBar.GetComponent<RectTransform>();
-            float bottomVal = vals[currBarIndex];
+            float bottomVal = inputValues[currBarIndex];
             float topVal = 0f;
             if (bottomVal > threshold) {
                 topVal = bottomVal - threshold;
@@ -75,7 +79,7 @@ public class BarChart : MonoBehaviour {
             if (currBarIndex > 0) {
                 // all bars except the first one
                 vlg.padding.left = 5;
-            } else if (currBarIndex < (vals.Length - 1)) {
+            } else if (currBarIndex < (inputValues.Length - 1)) {
                 // all bars except the last one
                 vlg.padding.right = 5;
             }
@@ -103,7 +107,7 @@ public class BarChart : MonoBehaviour {
             // Set the value label at the top of the bar
             if (topVal > 0f) {
                 // put the label at the top bar
-                newBarHolder.topBarValue.text = vals[currBarIndex].ToString();
+                newBarHolder.topBarValue.text = inputValues[currBarIndex].ToString();
                 newBarHolder.bottomBarValue.text = string.Empty;
                 // if height is too small, move label to top of bar
                 if (rtTopBar.sizeDelta.y < 30f) {
@@ -113,7 +117,7 @@ public class BarChart : MonoBehaviour {
             } else {
                 // put the label at the bottom bar
                 newBarHolder.topBarValue.text = string.Empty;
-                newBarHolder.bottomBarValue.text = vals[currBarIndex].ToString();
+                newBarHolder.bottomBarValue.text = inputValues[currBarIndex].ToString();
                 // if height is too small, move label to top of bar
                 if (rtBottomBar.sizeDelta.y < 30f) {
                     newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
