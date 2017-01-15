@@ -28,17 +28,19 @@ public class SceneManager : Singleton<SceneManager> {
     private DataTable dataTable;
     private DataView dataView;
     private DataView monthlyDataView;
+    private DataViewManager dvManager;
 
     // array values for charts
     float[] yearOverviewValues = new float[12];
-    float[] monthOverviewValues = { };
+    float[] monthOverviewValues = new float[31];
 
     // array labels for charts
-    string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
-    // to be updated!
-    private const int CURRENT_YEAR = 2016;
+    // selected values
+    int selectedYear = 2016;
+    int selectedMonth = 9;
 
 
     /// <summary>
@@ -58,20 +60,12 @@ public class SceneManager : Singleton<SceneManager> {
         activeCategories = new HashSet<string>();
 
         // init mapping between gameObject name (in Unity) and category name (in CSV)
-        gameObjectCategoryMap = new Dictionary<string, string>();
-        gameObjectCategoryMap.Add("Movie", "Communication & media");
-        gameObjectCategoryMap.Add("MedicalBox", "Health");
-        gameObjectCategoryMap.Add("ShoppingCart", "Household");
-        //gameObjectCategoryMap.Add("tbd", "Income & credits"); // out of scope since it is not an expense, but an income
-        gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
-        gameObjectCategoryMap.Add("House", "Living & energy");
-        gameObjectCategoryMap.Add("Others", "Other expenses");
-        gameObjectCategoryMap.Add("Person", "Personal expenditure");
-        gameObjectCategoryMap.Add("Taxes", "Taxes & duties");
-        gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
-        gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
-        gameObjectCategoryMap.Add("Cash", "Withdrawals");
-        //gameObjectCategoryMap.Add("PiggyBank", "tbd");
+        InitGameObjectCategoryMap();
+
+        // prepare labels for array
+        for (int i = 0; i < monthOverviewLabels.Length; i++) {
+            monthOverviewLabels[i] = (i + 1).ToString();
+        }
 
         // Prepare CSV path
         string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
@@ -79,124 +73,100 @@ public class SceneManager : Singleton<SceneManager> {
 
         // If CSV exist, load it into a DataTable/DataView
         if (File.Exists(csvFilePath)) {
+            dvManager = new DataViewManager();
+
             dataTable = ConvertCSVtoDataTable(csvFilePath);
             dataView = new DataView(dataTable);
-            Debug.Log(dataView.Count + " entries loaded to DataView!");
+            // sort the DataView by Date
+            dataView.Sort = "[Date] ASC";
+            // save it back to the DataTable
+            dataTable = dataView.ToTable();
+            Debug.Log(dataView.Count + " entries loaded and sorted to DataView!");
+
+            // Get the first and last Date from the (sorted) DataTable.
+            DateTime firstDate = (DateTime)dataTable.Rows[0]["Date"];
+            DateTime lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
+            // Create all DataViews in the DataViewManager
+            for (int currYear = firstDate.Year; currYear <= lastDate.Year; currYear++) {
+                int endMonth = 12;
+                if (currYear == lastDate.Year) {
+                    // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
+                    endMonth = lastDate.Month;
+                }
+                for (int currMonth = firstDate.Month; currMonth <= endMonth; currMonth++) {
+                    dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
+                }
+                // Also store a table for the year
+                dvManager.StoreFilteredDataTable(dataTable, currYear);
+            }
         }
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
         }
-
-        // prepare labels for array
-        for (int i = 0; i < monthOverviewLabels.Length; i++) {
-            monthOverviewLabels[i] = (i + 1).ToString();
-        }
     }
 
 
     /// <summary>
-    /// 
+    /// Adds a category to the categories filter for the graphs
     /// </summary>
     /// <param name="gameObjectName"></param>
     public void addGameObjectToCategoryFilter(string gameObjectName) {
-        string categoryName = gameObjectCategoryMap[gameObjectName];
+        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
 
         if (categoryName.Trim() != string.Empty) {
             activeCategories.Add(categoryName);
-            Debug.Log("Category [" + categoryName + "] added to Filter!");
+            Debug.Log("Category [" + categoryName + "] added to filter!");
             Debug.Log(activeCategories.Count + " entries");
+
             // since there was an update, refresh the DataView
-            updateDataView(9);
-            // and update the graphs
-            updateBarCharts(9);
+            updateArrayLists();
+            updateBarCharts();
         }
     }
 
 
     /// <summary>
-    /// 
+    /// Removes a category from the categories filter for the graphs
     /// </summary>
     /// <param name="gameObjectName"></param>
     public void removeGameObjectFromCategoryFilter(string gameObjectName) {
-        string categoryName = gameObjectCategoryMap[gameObjectName];
+        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
 
         if (categoryName.Trim() != string.Empty) {
             activeCategories.Remove(categoryName);
-            Debug.Log("Category [" + categoryName + "] removed from Filter!");
+            Debug.Log("Category [" + categoryName + "] removed from filter!");
             Debug.Log(activeCategories.Count + " entries");
+
             // since there was an update, refresh the DataView
-            updateDataView(9);
-            // and update the graphs
-            updateBarCharts(9);
+            updateArrayLists();
+            updateBarCharts();
         }
     }
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    private void updateDataView(int selectedMonth = 0) {
-        string query = "";
-        string filter = "";
-
-        // prepare the category filter
-        foreach (string hashVal in activeCategories) {
-            query += "'" + hashVal + "',";
-        }
-
-        // if there is at least one entry (incl. a comma), remove the last character (i.e. the comma) again
-        if (query.Length > 0) { 
-            query = query.Remove(query.Length - 1);
-            filter = "[Main category] IN(" + query + ")";
-        } else {
-            // when nothing is selected, nothing is shown
-            filter = "[Main category] = ''";
-        }
-
-        dataView.RowFilter = filter;
-
-        Debug.Log("Filtered entries: " + dataView.Count);
-
-        if (selectedMonth > 0) {
-            monthOverviewValues = new float[DateTime.DaysInMonth(CURRENT_YEAR, selectedMonth)];
-        }
-
-        // now create the data-list for the chart
-        for (int currMonth = 1; currMonth < 13; currMonth++) {
-            int daysInMonth = DateTime.DaysInMonth(CURRENT_YEAR, currMonth);
-
-            // used for the month total
-            float totalMonthAmount = 0f;
-
-            for (int currDay = 1; currDay < (daysInMonth + 1); currDay++) {
-                // prepare query for single day
-                //query = "[Date] >= #" + new DateTime(CURRENT_YEAR, currMonth, 1).ToString("MM/dd/yyyy") + "# AND [Date] <= #" + new DateTime(CURRENT_YEAR, currMonth, DateTime.DaysInMonth(CURRENT_YEAR, currMonth)).ToString("MM/dd/yyyy") + "#";
-                query = "[Date] = #" + new DateTime(CURRENT_YEAR, currMonth, currDay).ToString("MM/dd/yyyy") + "#";
-                // apply it together with the categories filter
-                dataView.RowFilter = filter + " AND " + query;
-
-                if (dataView.Count > 0) {
-                    // go through every single transaction of a day
-                    foreach (DataRowView rowView in dataView) {
-                        DataRow row = rowView.Row;
-                        totalMonthAmount += Single.Parse(row["Amount"].ToString());
-
-                        if (selectedMonth > 0 && selectedMonth == currMonth) {
-                            // set current total to the day value
-                            monthOverviewValues[currDay - 1] = totalMonthAmount;
-                        }
-                    }
-                } else if (selectedMonth > 0 && selectedMonth == currMonth) {
-                    // no entries for that date, set the total month amount for current day (if a month is provided)
-                    monthOverviewValues[currDay - 1] = totalMonthAmount;
-                }
-            }
-
-            yearOverviewValues[currMonth - 1] = totalMonthAmount;
-        }
+    private string GetCategoryNameFromGameObjectName(string gameObjectName) {
+        return gameObjectCategoryMap[gameObjectName];
     }
 
-    private void updateBarCharts(int selectedMonth = 0) {
+
+    private void updateArrayLists() {
+        KeyValuePair<string[], float[]> kvp;
+        
+        // First get the YEAR
+        kvp = dvManager.GetBarChartValuesAndLabels(selectedYear);
+        yearOverviewLabels = kvp.Key;
+        yearOverviewValues = kvp.Value;
+
+        // Then get the MONTH
+        kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
+        monthOverviewLabels = kvp.Key;
+        monthOverviewValues = kvp.Value;
+    }
+
+
+
+
+    private void updateBarCharts() {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
@@ -206,7 +176,7 @@ public class SceneManager : Singleton<SceneManager> {
                 Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 // update this chart with its corresponding data
-                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, CURRENT_YEAR.ToString());
+                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, selectedYear.ToString());
 
                 // continue with next chart
                 continue;
@@ -228,10 +198,34 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
-    /// <summary>
-    /// Update is called once per frame
-    /// </summary>
-    void Update() {
+    public string GetActiveCategoriesBinaryString() {
+        string binaryState = String.Empty;
+        foreach (string gameObjectName in gameObjectCategoryMap.Values) {
+            if (activeCategories.Contains(gameObjectName)) {
+                binaryState += "1";
+            } else {
+                binaryState += "0";
+            }
+        }
+        return binaryState;
+    }
+
+
+    private void InitGameObjectCategoryMap() {
+        gameObjectCategoryMap = new Dictionary<string, string>();
+        gameObjectCategoryMap.Add("Movie", "Communication & media");
+        gameObjectCategoryMap.Add("MedicalBox", "Health");
+        gameObjectCategoryMap.Add("ShoppingCart", "Household");
+        //gameObjectCategoryMap.Add("tbd", "Income & credits"); // out of scope since it is not an expense, but an income
+        gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
+        gameObjectCategoryMap.Add("House", "Living & energy");
+        gameObjectCategoryMap.Add("Others", "Other expenses");
+        gameObjectCategoryMap.Add("Person", "Personal expenditure");
+        gameObjectCategoryMap.Add("Taxes", "Taxes & duties");
+        gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
+        gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
+        gameObjectCategoryMap.Add("Cash", "Withdrawals");
+        //gameObjectCategoryMap.Add("PiggyBank", "tbd");
     }
 
 
