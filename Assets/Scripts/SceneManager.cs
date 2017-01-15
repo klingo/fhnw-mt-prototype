@@ -5,6 +5,7 @@ using System.Data;
 using UnityEngine;
 using System.Text.RegularExpressions;
 using System;
+using System.Threading;
 
 public class SceneManager : Singleton<SceneManager> {
 
@@ -42,6 +43,13 @@ public class SceneManager : Singleton<SceneManager> {
     int selectedYear = 2016;
     int selectedMonth = 9;
 
+    // Get the first and last Date from the (sorted) DataTable.
+    private DateTime firstDate;
+    private DateTime lastDate;
+
+    // Multithreading
+    bool _threadRunning;
+    Thread _thread;
 
     /// <summary>
     /// Awake is always called before any Start functions
@@ -73,7 +81,7 @@ public class SceneManager : Singleton<SceneManager> {
 
         // If CSV exist, load it into a DataTable/DataView
         if (File.Exists(csvFilePath)) {
-            dvManager = new DataViewManager();
+            dvManager = DataViewManager.CreateInstance<DataViewManager>();
 
             dataTable = ConvertCSVtoDataTable(csvFilePath);
             dataView = new DataView(dataTable);
@@ -84,8 +92,8 @@ public class SceneManager : Singleton<SceneManager> {
             Debug.Log(dataView.Count + " entries loaded and sorted to DataView!");
 
             // Get the first and last Date from the (sorted) DataTable.
-            DateTime firstDate = (DateTime)dataTable.Rows[0]["Date"];
-            DateTime lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
+            firstDate = (DateTime)dataTable.Rows[0]["Date"];
+            lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
             // Create all DataViews in the DataViewManager
             for (int currYear = firstDate.Year; currYear <= lastDate.Year; currYear++) {
                 int endMonth = 12;
@@ -118,9 +126,8 @@ public class SceneManager : Singleton<SceneManager> {
             Debug.Log("Category [" + categoryName + "] added to filter!");
             Debug.Log(activeCategories.Count + " entries");
 
-            // since there was an update, refresh the DataView
-            updateArrayLists();
-            updateBarCharts();
+            // Begin our heavy work in a coroutine.
+            StartCoroutine(YieldingWork());
         }
     }
 
@@ -137,10 +144,65 @@ public class SceneManager : Singleton<SceneManager> {
             Debug.Log("Category [" + categoryName + "] removed from filter!");
             Debug.Log(activeCategories.Count + " entries");
 
+            // Begin our heavy work in a coroutine.
+            StartCoroutine(YieldingWork());
+        }
+    }
+
+    IEnumerator YieldingWork() {
+        bool workDone = false;
+
+        // Begin our heavy work on a new thread.
+        _thread = new Thread(ThreadedWork);
+        _thread.Start();
+
+        while (!workDone) {
+            // Let the engine run for a frame.
+            yield return null;
+
+            if (_threadRunning == false) {
+                updateBarCharts();
+                workDone = true;
+            }
+            // Do Work...
+        }
+    }
+
+    void ThreadedWork() {
+        _threadRunning = true;
+        bool workDone = false;
+
+        Debug.Log("START THREAD");
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        // This pattern lets us interrupt the work at a safe point if neeeded.
+        while (_threadRunning && !workDone) {
             // since there was an update, refresh the DataView
             updateArrayLists();
-            updateBarCharts();
+            //updateBarCharts();
+
+            _threadRunning = false;
         }
+
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
+        Debug.Log("END THREAD after " + (elapsedMs / 1000) + " s");
+    }
+
+
+    void OnDisable() {
+        // If the thread is still running, we should shut it down,
+        // otherwise it can prevent the game from exiting correctly.
+        if (_threadRunning) {
+            // This forces the while loop in the ThreadedWork function to abort.
+            _threadRunning = false;
+
+            // This waits until the thread exits,
+            // ensuring any cleanup we do after this is safe. 
+            _thread.Join();
+        }
+
+        // Thread is guaranteed no longer running. Do other cleanup tasks.
     }
 
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
-public class DataViewManager : MonoBehaviour {
+public class DataViewManager : ScriptableObject {
 
     public Dictionary<string, DataTable> dataTableDict { get; private set; }
     private Dictionary<string, float[]> chartValues = new Dictionary<string, float[]>();
@@ -73,8 +73,12 @@ public class DataViewManager : MonoBehaviour {
 
 
     public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(int year, int month = 0) {
+        return GetBarChartValuesAndLabels(SceneManager.Instance.activeCategories, SceneManager.Instance.GetActiveCategoriesBinaryString(), year, month);
+    }
+
+    public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(HashSet<string> activeCategories, string activeCategoriesBinaryString, int year, int month = 0) {
         // creates a unique key for year, month and selected categories
-        string key = year.ToString() + "-" + month.ToString() + "-" + SceneManager.Instance.GetActiveCategoriesBinaryString();
+        string key = year.ToString() + "-" + month.ToString() + "-" + activeCategoriesBinaryString;
 
         float[] values = { };
         string[] labels = { };
@@ -87,7 +91,7 @@ public class DataViewManager : MonoBehaviour {
             string filter = String.Empty;
 
             // prepare the category filter
-            foreach (string hashVal in SceneManager.Instance.activeCategories) {
+            foreach (string hashVal in activeCategories) {
                 query += "'" + hashVal + "',";
             }
 
