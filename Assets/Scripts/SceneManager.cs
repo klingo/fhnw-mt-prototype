@@ -108,7 +108,7 @@ public class SceneManager : Singleton<SceneManager> {
             // since there was an update, refresh the DataView
             updateDataView(9);
             // and update the graphs
-            updateBarCharts();
+            updateBarCharts(9);
         }
     }
 
@@ -127,7 +127,7 @@ public class SceneManager : Singleton<SceneManager> {
             // since there was an update, refresh the DataView
             updateDataView(9);
             // and update the graphs
-            updateBarCharts();
+            updateBarCharts(9);
         }
     }
 
@@ -196,11 +196,7 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
-    private void updateBarCharts() {
-
-        
-        float[] list = { 1111f, 2222f, 3333f, 4444f, 5555f, 6666f, 5555f, 4444f, 3333f, 2222f, 1111f, 7000f };
-
+    private void updateBarCharts(int selectedMonth = 0) {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
@@ -210,7 +206,7 @@ public class SceneManager : Singleton<SceneManager> {
                 Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 // update this chart with its corresponding data
-                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues);
+                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, CURRENT_YEAR.ToString());
 
                 // continue with next chart
                 continue;
@@ -220,7 +216,7 @@ public class SceneManager : Singleton<SceneManager> {
                     Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues);
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
 
                     // continue with next chart
                     continue;

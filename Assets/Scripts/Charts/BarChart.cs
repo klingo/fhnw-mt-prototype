@@ -15,6 +15,7 @@ public class BarChart : MonoBehaviour {
     public Color topBarColor;
     public Image thresholdLine;
     public Text thresholdValueLabel;
+    public Text chartTitle;
 
     List<Bar> barHolders = new List<Bar>();
 
@@ -39,12 +40,15 @@ public class BarChart : MonoBehaviour {
     /// <summary>
     /// 
     /// </summary>
-    public void DisplayGraph(string[] labels, float[] inputValues) {
+    public void DisplayGraph(string[] labels, float[] inputValues, string title) {
 
         float maxValue = inputValues.Max();
         float normalizedThresholdValue = threshold / maxValue;
 
         string previousBarValueLabel = string.Empty;
+
+        // set chart title
+        chartTitle.text = title;
 
         for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
