@@ -29,7 +29,16 @@ public class SceneManager : Singleton<SceneManager> {
     private DataView dataView;
     private DataView monthlyDataView;
 
+    // array values for charts
     float[] yearOverviewValues = new float[12];
+    float[] monthOverviewValues = { };
+
+    // array labels for charts
+    string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    string[] monthOverviewLabels = new string[31];
+
+    // to be updated!
+    private const int CURRENT_YEAR = 2016;
 
 
     /// <summary>
@@ -77,6 +86,11 @@ public class SceneManager : Singleton<SceneManager> {
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
         }
+
+        // prepare labels for array
+        for (int i = 0; i < monthOverviewLabels.Length; i++) {
+            monthOverviewLabels[i] = (i + 1).ToString();
+        }
     }
 
 
@@ -92,7 +106,7 @@ public class SceneManager : Singleton<SceneManager> {
             Debug.Log("Category [" + categoryName + "] added to Filter!");
             Debug.Log(activeCategories.Count + " entries");
             // since there was an update, refresh the DataView
-            updateDataView();
+            updateDataView(9);
             // and update the graphs
             updateBarCharts();
         }
@@ -111,7 +125,7 @@ public class SceneManager : Singleton<SceneManager> {
             Debug.Log("Category [" + categoryName + "] removed from Filter!");
             Debug.Log(activeCategories.Count + " entries");
             // since there was an update, refresh the DataView
-            updateDataView();
+            updateDataView(9);
             // and update the graphs
             updateBarCharts();
         }
@@ -121,7 +135,7 @@ public class SceneManager : Singleton<SceneManager> {
     /// <summary>
     /// 
     /// </summary>
-    private void updateDataView() {
+    private void updateDataView(int selectedMonth = 0) {
         string query = "";
         string filter = "";
 
@@ -143,16 +157,39 @@ public class SceneManager : Singleton<SceneManager> {
 
         Debug.Log("Filtered entries: " + dataView.Count);
 
+        if (selectedMonth > 0) {
+            monthOverviewValues = new float[DateTime.DaysInMonth(CURRENT_YEAR, selectedMonth)];
+        }
+
         // now create the data-list for the chart
         for (int currMonth = 1; currMonth < 13; currMonth++) {
-            query = "[Date] >= #" + new DateTime(2016, currMonth, 1).ToString("MM/dd/yyyy") + "# AND [Date] <= #" + new DateTime(2016, currMonth, DateTime.DaysInMonth(2016, currMonth)).ToString("MM/dd/yyyy") + "#";
-            dataView.RowFilter = filter + " AND " + query;
+            int daysInMonth = DateTime.DaysInMonth(CURRENT_YEAR, currMonth);
 
+            // used for the month total
             float totalMonthAmount = 0f;
 
-            foreach (DataRowView rowView in dataView) {
-                DataRow row = rowView.Row;
-                totalMonthAmount += Single.Parse(row["Amount"].ToString());
+            for (int currDay = 1; currDay < (daysInMonth + 1); currDay++) {
+                // prepare query for single day
+                //query = "[Date] >= #" + new DateTime(CURRENT_YEAR, currMonth, 1).ToString("MM/dd/yyyy") + "# AND [Date] <= #" + new DateTime(CURRENT_YEAR, currMonth, DateTime.DaysInMonth(CURRENT_YEAR, currMonth)).ToString("MM/dd/yyyy") + "#";
+                query = "[Date] = #" + new DateTime(CURRENT_YEAR, currMonth, currDay).ToString("MM/dd/yyyy") + "#";
+                // apply it together with the categories filter
+                dataView.RowFilter = filter + " AND " + query;
+
+                if (dataView.Count > 0) {
+                    // go through every single transaction of a day
+                    foreach (DataRowView rowView in dataView) {
+                        DataRow row = rowView.Row;
+                        totalMonthAmount += Single.Parse(row["Amount"].ToString());
+
+                        if (selectedMonth > 0 && selectedMonth == currMonth) {
+                            // set current total to the day value
+                            monthOverviewValues[currDay - 1] = totalMonthAmount;
+                        }
+                    }
+                } else if (selectedMonth > 0 && selectedMonth == currMonth) {
+                    // no entries for that date, set the total month amount for current day (if a month is provided)
+                    monthOverviewValues[currDay - 1] = totalMonthAmount;
+                }
             }
 
             yearOverviewValues[currMonth - 1] = totalMonthAmount;
@@ -161,7 +198,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     private void updateBarCharts() {
 
-        string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        
         float[] list = { 1111f, 2222f, 3333f, 4444f, 5555f, 6666f, 5555f, 4444f, 3333f, 2222f, 1111f, 7000f };
 
         // Get all Bar Charts
@@ -169,7 +206,7 @@ public class SceneManager : Singleton<SceneManager> {
 
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
-            if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW) {
+            if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
                 Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 // update this chart with its corresponding data
@@ -177,13 +214,13 @@ public class SceneManager : Singleton<SceneManager> {
 
                 // continue with next chart
                 continue;
-            } else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
+            } else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW && monthOverviewValues.Length > 0) {
                 // Look for the Year Overview Chart
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
                     Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(yearOverviewLabels, list);
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues);
 
                     // continue with next chart
                     continue;

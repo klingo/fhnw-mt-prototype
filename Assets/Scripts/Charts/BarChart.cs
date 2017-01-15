@@ -44,6 +44,8 @@ public class BarChart : MonoBehaviour {
         float maxValue = inputValues.Max();
         float normalizedThresholdValue = threshold / maxValue;
 
+        string previousBarValueLabel = string.Empty;
+
         for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
             Bar newBarHolder;
@@ -51,7 +53,8 @@ public class BarChart : MonoBehaviour {
             // first check if we already ahve instances of barHolders
             if (barHolders.Count > currBarIndex) {
                 newBarHolder = barHolders.ElementAt<Bar>(currBarIndex);
-            } else {
+            }
+            else {
                 // Instantiate new Bar
                 newBarHolder = Instantiate(barHolderPrefab) as Bar;
 
@@ -84,7 +87,8 @@ public class BarChart : MonoBehaviour {
             if (currBarIndex > 0) {
                 // all bars except the first one
                 vlg.padding.left = 5;
-            } else if (currBarIndex < (inputValues.Length - 1)) {
+            }
+            if (currBarIndex < (inputValues.Length - 1)) {
                 // all bars except the last one
                 vlg.padding.right = 5;
             }
@@ -96,7 +100,8 @@ public class BarChart : MonoBehaviour {
             // Set the bottom label of the bar
             if (labels.Length <= currBarIndex) {
                 newBarHolder.label.text = "UNDEFINED";
-            } else {
+            }
+            else {
                 newBarHolder.label.text = labels[currBarIndex];
             }
 
@@ -104,30 +109,40 @@ public class BarChart : MonoBehaviour {
             Vector3 labelLocalPos = newBarHolder.label.rectTransform.localPosition;
             if (currBarIndex > 0) {
                 newBarHolder.label.rectTransform.localPosition = new Vector3(-7.5f, labelLocalPos.y);
-            } else {
+            }
+            else {
                 newBarHolder.label.rectTransform.localPosition = new Vector3(7.5f, labelLocalPos.y);
             }
 
             // Set the value label at the top of the bar
-            if (topVal > 0f) {
-                // put the label at the top bar
-                newBarHolder.topBarValue.text = inputValues[currBarIndex].ToString();
-                newBarHolder.bottomBarValue.text = string.Empty;
-                // if height is too small, move label to top of bar
-                if (rtTopBar.sizeDelta.y < 30f) {
-                    newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                    newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                }
-            } else {
-                // put the label at the bottom bar
+            if (inputValues[currBarIndex].ToString() == previousBarValueLabel) {
+                // if the label value is the same like for the previous bar, dont show it.
                 newBarHolder.topBarValue.text = string.Empty;
-                newBarHolder.bottomBarValue.text = inputValues[currBarIndex].ToString();
-                // if height is too small, move label to top of bar
-                if (rtBottomBar.sizeDelta.y < 30f) {
-                    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                newBarHolder.bottomBarValue.text = string.Empty;
+            }
+            else {
+                if (topVal > 0f) {
+                    // put the label at the top bar
+                    newBarHolder.topBarValue.text = inputValues[currBarIndex].ToString();
+                    newBarHolder.bottomBarValue.text = string.Empty;
+                    // if height is too small, move label to top of bar
+                    if (rtTopBar.sizeDelta.y < 30f) {
+                        newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                        newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    }
+                }
+                else {
+                    // put the label at the bottom bar
+                    newBarHolder.topBarValue.text = string.Empty;
+                    newBarHolder.bottomBarValue.text = inputValues[currBarIndex].ToString();
+                    // if height is too small, move label to top of bar
+                    if (rtBottomBar.sizeDelta.y < 30f) {
+                        newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                        newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    }
                 }
             }
+            previousBarValueLabel = inputValues[currBarIndex].ToString();
 
             // Finally, add the bar to the list
             barHolders.Add(newBarHolder);
