@@ -7,8 +7,10 @@ using UnityEngine;
 public class DataViewManager : ScriptableObject {
 
     public Dictionary<string, DataTable> dataTableDict { get; private set; }
-    private Dictionary<string, float[]> chartValues = new Dictionary<string, float[]>();
-    private Dictionary<string, string[]> chartLabels = new Dictionary<string, string[]>();
+    private Dictionary<string, float[]> chartValuesDict = new Dictionary<string, float[]>();
+    private Dictionary<string, string[]> chartLabelsDict = new Dictionary<string, string[]>();
+    private Dictionary<string, List<string[]>> tableRowsDict = new Dictionary<string, List<string[]>>();
+
 
     private string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
@@ -70,10 +72,130 @@ public class DataViewManager : ScriptableObject {
     }
 
 
+    /// <summary>
+    /// Preferred method to be execute when a List<string[]> with labels and values for the Table is requested.
+    /// </summary>
+    /// <param name="year"></param>
+    /// <param name="month"></param>
+    /// <param name="day"></param>
+    /// <returns></returns>
+    public List<string[]> GetTableRows(int year, int month, int day = 0) {
+        return GetTableRows(SceneManager.Instance.activeCategories, SceneManager.Instance.GetActiveCategoriesBinaryString(), year, month, day);
+    }
+
+
+    /// <summary>
+    /// Overrides the above method, where the [activeCategories] and [activeCategoriesBinaryString] must be provided.
+    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible.
+    /// </summary>
+    /// <param name="activeCategories"></param>
+    /// <param name="activeCategoriesBinaryString"></param>
+    /// <param name="year"></param>
+    /// <param name="month"></param>
+    /// <param name="day"></param>
+    /// <returns></returns>
+    public List<string[]> GetTableRows(HashSet<string> activeCategories, string activeCategoriesBinaryString, int year, int month, int day = 0) {
+        // creates a unique key for year, month, day and selected categories
+        string key = year.ToString() + "-" + month.ToString() + "-" + day.ToString() + "-" + activeCategoriesBinaryString;
+
+        List<string[]> rows;
+
+        // check if the key already exists in the Dictionary
+        if (tableRowsDict.TryGetValue(key, out rows) == false) {
+            // Apparently not, so create new entries!
+
+            string query = String.Empty;
+            string filter = GetFilterQueryForActiveCategories(activeCategories);
+
+            DataView dataView = GetDataView(year, month);
+            dataView.RowFilter = filter;
+
+            // since it was empty, initialise it
+            rows = new List<string[]>();
+
+            //-----------------------------------------------------------------------------------------------------------------
+
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+            int startDay = 1;
+            int endDay = daysInMonth;
+
+            if (day > 0 && day <= daysInMonth) {
+                // INDIVIDUAL DAY!
+                startDay = day;
+                endDay = day;
+            }
+
+            for (int currDay = startDay; currDay <= endDay; currDay++) {
+                // prepare query for single day
+                query = "[Date] = #" + new DateTime(year, month, currDay).ToString("MM/dd/yyyy") + "#";
+                // apply it together with the categories filter
+                dataView.RowFilter = filter + " AND " + query;
+
+                if (dataView.Count > 0) {
+                    Debug.Log("DataView with " + dataView.Count + " entries found");
+                    // go through every single transaction of a day
+                    foreach (DataRowView rowView in dataView) {
+                        DataRow row = rowView.Row;
+                        string[] rowAry = new string[5];
+                        Debug.Log("aaaa");
+                        // Date
+                        rowAry[0] = row["Date"].ToString();
+                        Debug.Log("bbb");
+                        // Recipient
+                        rowAry[1] = row["Recipient / Order issuer"].ToString();
+                        Debug.Log("ccc");
+                        // Currency
+                        rowAry[2] = row["Currency"].ToString();
+                        Debug.Log("ddd");
+                        // Amount
+                        rowAry[3] = row["Amount"].ToString();
+                        Debug.Log("eee");
+                        //Category
+                        rowAry[4] = row["Main category"].ToString();
+                        Debug.Log("fff");
+
+                        Debug.Log("before add to list, length = ");
+                        Debug.Log("before add to list, length = " + rows.Count.ToString());
+                        rows.Add(rowAry);
+                        Debug.Log("after add to list");
+                    }
+                }
+            }
+
+            // add it to the Dictionary
+            tableRowsDict.Add(key, rows);
+
+            Debug.Log("GetTableRows returns a NEW List<string[]>");
+        }
+        else {
+            Debug.Log("GetTableRows returns a CACHED List<string[]>");
+        }
+
+        // Now return it!
+        return rows;
+    }
+
+
+    /// <summary>
+    /// Preferred method to be execute when a KeyValuePair with labels and values for a Bar Chart is requested.
+    /// </summary>
+    /// <param name="year"></param>
+    /// <param name="month">Optional parameter. If left out, the returned KeyValuePair is for the whole year instead of a single month.</param>
+    /// <returns></returns>
     public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(int year, int month = 0) {
         return GetBarChartValuesAndLabels(SceneManager.Instance.activeCategories, SceneManager.Instance.GetActiveCategoriesBinaryString(), year, month);
     }
 
+
+    /// <summary>
+    /// Overrides the above method, where the [activeCategories] and [activeCategoriesBinaryString] must be provided.
+    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible.
+    /// </summary>
+    /// <param name="activeCategories"></param>
+    /// <param name="activeCategoriesBinaryString"></param>
+    /// <param name="year"></param>
+    /// <param name="month">Optional parameter. If left out, the returned KeyValuePair is for the whole year instead of a single month.</param>
+    /// <returns></returns>
     public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(HashSet<string> activeCategories, string activeCategoriesBinaryString, int year, int month = 0) {
         // creates a unique key for year, month and selected categories
         string key = year.ToString() + "-" + month.ToString() + "-" + activeCategoriesBinaryString;
@@ -82,26 +204,11 @@ public class DataViewManager : ScriptableObject {
         string[] labels = { };
 
         // check if the key already exists in the Dictionary
-        if ((chartValues.TryGetValue(key, out values) && chartLabels.TryGetValue(key, out labels)) == false) {
+        if ((chartValuesDict.TryGetValue(key, out values) && chartLabelsDict.TryGetValue(key, out labels)) == false) {
             // Apparently not, so create new entries!
 
             string query = String.Empty;
-            string filter = String.Empty;
-
-            // prepare the category filter
-            foreach (string hashVal in activeCategories) {
-                query += "'" + hashVal + "',";
-            }
-
-            // if there is at least one entry (incl. a comma), remove the last character (i.e. the comma) again
-            if (query.Length > 0) {
-                query = query.Remove(query.Length - 1);
-                filter = "[Main category] IN(" + query + ")";
-            }
-            else {
-                // when nothing is selected, nothing is shown
-                filter = "[Main category] = ''";
-            }
+            string filter = GetFilterQueryForActiveCategories(activeCategories);
 
             DataView dataView = GetDataView(year, month);
             dataView.RowFilter = filter;
@@ -171,8 +278,8 @@ public class DataViewManager : ScriptableObject {
                 }
             }
 
-            chartValues.Add(key, values);
-            chartLabels.Add(key, labels);
+            chartValuesDict.Add(key, values);
+            chartLabelsDict.Add(key, labels);
 
             Debug.Log("GetBarChartValuesAndLabels returns a NEW KeyValuePair");
         } else {
@@ -182,6 +289,30 @@ public class DataViewManager : ScriptableObject {
         // Now return it!
         return new KeyValuePair<string[], float[]>(labels, values);
     }
+
+
+    private string GetFilterQueryForActiveCategories(HashSet<string> activeCategories) {
+        string query = String.Empty;
+        string filter = String.Empty;
+
+        // prepare the category filter
+        foreach (string hashVal in activeCategories) {
+            query += "'" + hashVal + "',";
+        }
+
+        // if there is at least one entry (incl. a comma), remove the last character (i.e. the comma) again
+        if (query.Length > 0) {
+            query = query.Remove(query.Length - 1);
+            filter = "[Main category] IN(" + query + ")";
+        }
+        else {
+            // when nothing is selected, nothing is shown
+            filter = "[Main category] = ''";
+        }
+
+        return filter;
+    }
+
 
     public int GetMonthNoFromString(string monthName) {
         for (int i = 1; i <= yearOverviewLabels.Length; i++) {

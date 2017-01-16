@@ -12,6 +12,8 @@ public class SceneManager : Singleton<SceneManager> {
     // Singleton
     protected SceneManager() { }
 
+    //--------------------------------------------------------------------------
+
     // Constants for CSV File location
     private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
     private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
@@ -20,16 +22,28 @@ public class SceneManager : Singleton<SceneManager> {
     private const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
     private const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
 
+    //--------------------------------------------------------------------------
+
+    // A mapping of the GameObject name of a category, and itsuser-friendly name
     private Dictionary<string, string> gameObjectCategoryMap;
+
+    //--------------------------------------------------------------------------
 
     // A hashset that contains all active categories
     public HashSet<string> activeCategories { get; private set; }
 
+    //--------------------------------------------------------------------------
+
     // Data containers
     private DataTable dataTable;
     private DataView dataView;
-    private DataView monthlyDataView;
     private DataViewManager dvManager;
+
+    // The first and last Date from the (sorted) DataTable.
+    private DateTime firstDate;
+    private DateTime lastDate;
+
+    //--------------------------------------------------------------------------
 
     // array values for charts
     float[] yearOverviewValues = new float[12];
@@ -39,21 +53,29 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
+    // list with financial transactions for table
+    List<string[]> tableOverviewValues = new List<string[]>();
+
+    //--------------------------------------------------------------------------
+
     // selected values
     int selectedYear = 2016;
     int selectedMonth;
     int selectedDay;
 
-    // Get the first and last Date from the (sorted) DataTable.
-    private DateTime firstDate;
-    private DateTime lastDate;
+    //--------------------------------------------------------------------------
 
     // Blockers for Category processing
     private bool isCategoryBeingProcessed = false;
 
+    //--------------------------------------------------------------------------
+
     // Multithreading
     bool _threadRunning;
     Thread _thread;
+
+    //==========================================================================
+
 
     /// <summary>
     /// Awake is always called before any Start functions
@@ -182,8 +204,9 @@ public class SceneManager : Singleton<SceneManager> {
 
             // Do Work...
             if (_threadRunning == false) {
-                // Only update the bar charts (in the main thread), when the update-thread is completed
+                // Only update the bar charts and table (in the main thread), when the update-thread is completed
                 updateBarCharts();
+                updateTable();
 
                 if (iconClickerClass != null) {
                     iconClickerClass.SetFinalColor();
@@ -207,7 +230,6 @@ public class SceneManager : Singleton<SceneManager> {
         while (_threadRunning && !workDone) {
             // since there was an update, refresh the DataView
             updateArrayLists();
-            //updateBarCharts();
 
             _threadRunning = false;
         }
@@ -240,6 +262,9 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     private void updateArrayLists() {
+        bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
+        bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
+
         KeyValuePair<string[], float[]> kvp;
         
         // First get the YEAR
@@ -248,14 +273,28 @@ public class SceneManager : Singleton<SceneManager> {
         yearOverviewValues = kvp.Value;
 
         // Then get the MONTH
-        if (selectedMonth > 0 && selectedMonth <= 12) {
+        if (validMonth) {
             kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
             monthOverviewLabels = kvp.Key;
             monthOverviewValues = kvp.Value;
+
+            if (!validDay) {
+                // No valid day selected
+                // In this case, also update the tableOverview Values
+                tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth);
+            }
         } else {
             monthOverviewLabels = new string[] { };
             monthOverviewValues = new float[] { };
         }
+
+        // Finally check the DAY
+        if (validDay) {
+            // valid day selected, update the tableOverview Values
+            tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth, selectedDay);
+        }
+
+        Debug.Log("complete");
     }
 
 
@@ -278,8 +317,6 @@ public class SceneManager : Singleton<SceneManager> {
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
                     //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
-                    Debug.Log(monthOverviewValues + " has a length of: " + monthOverviewValues.Length);
-
                     // update this chart with its corresponding data
                     barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
 
@@ -296,6 +333,33 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
+
+    private void updateTable() {
+        // Get the first Tables
+        Table table = GameObject.FindObjectOfType<Table>();
+
+        if (table != null) {
+            // if value list is not empty
+            bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
+            bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
+
+            // at least a valid month must be provided for the Table to be updated
+            if (validMonth) {
+                string tableTitle = yearOverviewLabels[selectedMonth - 1] + " ";    // e.g. [January ]
+                if (validDay) {
+                    tableTitle += selectedDay.ToString() + ", ";                    // e.g. [January 10, ]
+                }
+                tableTitle += selectedYear.ToString();                              // e.g. [January 10, 2016] or [January 2016]
+
+                table.DisplayTable(tableOverviewValues, tableTitle);
+            }
+        } else {
+            Debug.LogError("No table found to be updated!");
+        }
+
+    }
+
+
     public void updateSelection(string selectedLabelText) {
         if (!String.IsNullOrEmpty(selectedLabelText)) {
             int number;
@@ -306,6 +370,8 @@ public class SceneManager : Singleton<SceneManager> {
             } else {
                 // As the label is not numeric, it must have been a month
                 selectedMonth = dvManager.GetMonthNoFromString(selectedLabelText);
+                // when the selected month changes, reset the selected day!
+                selectedDay = 0;
             }
             // Finally, update the charts
             StartCoroutine(YieldingWork());
