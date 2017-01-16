@@ -318,7 +318,7 @@ public class SceneManager : Singleton<SceneManager> {
                     //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString());
 
                     // continue with next chart
                     continue;
