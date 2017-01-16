@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,11 +10,20 @@ using UnityEngine.UI;
 /// </summary>
 public class BarChart : MonoBehaviour {
 
+    [Header("[Bar]", order = 0)]
     public Bar barHolderPrefab;
-    public float threshold;
+
+    [Header("[Color]", order = 1)]
     public Color bottomBarColor;
     public Color topBarColor;
+
+    [Header("[float]", order = 2)]
+    public float threshold;
+
+    [Header("[Image]", order = 3)]
     public Image thresholdLine;
+
+    [Header("[Text]", order = 4)]
     public Text thresholdValueLabel;
     public Text chartTitle;
 
@@ -25,6 +35,7 @@ public class BarChart : MonoBehaviour {
     const float AXES_GRAPH_OFFSET = 6;  // the offset of a bar compared to the axes-graph
     const float BAR_SCALE_FACTOR = 0.95f; // the scaling of the max bar height
 
+    System.Globalization.CultureInfo modCulture = new System.Globalization.CultureInfo("de-CH");
 
     /// <summary>
     /// Use this for initialization
@@ -53,10 +64,12 @@ public class BarChart : MonoBehaviour {
         for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
             Bar newBarHolder;
+            bool reuseBar = false;
 
-            // first check if we already ahve instances of barHolders
+            // first check if we already have instances of barHolders
             if (barHolders.Count > currBarIndex) {
                 newBarHolder = barHolders.ElementAt<Bar>(currBarIndex);
+                reuseBar = true;
             }
             else {
                 // Instantiate new Bar
@@ -118,39 +131,85 @@ public class BarChart : MonoBehaviour {
                 newBarHolder.label.rectTransform.localPosition = new Vector3(7.5f, labelLocalPos.y);
             }
 
+            float currBarValue = inputValues[currBarIndex];
+            string currBarValueTextFmt = currBarValue.ToString("#,##0.00", modCulture);
+
             // Set the value label at the top of the bar
-            if (inputValues[currBarIndex].ToString() == previousBarValueLabel) {
+            if (currBarValue.ToString() == previousBarValueLabel) {
                 // if the label value is the same like for the previous bar, dont show it.
                 newBarHolder.topBarValue.text = string.Empty;
                 newBarHolder.bottomBarValue.text = string.Empty;
             }
             else {
+                Text activeBarValueText;
                 if (topVal > 0f) {
                     // put the label at the top bar
-                    newBarHolder.topBarValue.text = inputValues[currBarIndex].ToString();
+                    newBarHolder.topBarValue.text = currBarValueTextFmt;
                     newBarHolder.bottomBarValue.text = string.Empty;
-                    // if height is too small, move label to top of bar
-                    if (rtTopBar.sizeDelta.y < 30f) {
-                        newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                        newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    }
+                    //// if height is too small, move label to top of bar
+                    //if (rtTopBar.sizeDelta.y < 30f) {
+                    //    newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    //} else {
+                    //    // otherwise make sure the default is set (in case the bar was resused)
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
+                    //}
+
+                    activeBarValueText = newBarHolder.topBarValue;
                 }
                 else {
                     // put the label at the bottom bar
                     newBarHolder.topBarValue.text = string.Empty;
-                    newBarHolder.bottomBarValue.text = inputValues[currBarIndex].ToString();
-                    // if height is too small, move label to top of bar
-                    if (rtBottomBar.sizeDelta.y < 30f) {
-                        newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                        newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    }
+                    newBarHolder.bottomBarValue.text = currBarValueTextFmt;
+                    //// if height is too small, move label to top of bar
+                    //if (rtBottomBar.sizeDelta.y < 30f) {
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    //} else {
+                    //    // otherwise make sure the default is set (in case the bar was resused)
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
+                    //}
+
+                    activeBarValueText = newBarHolder.bottomBarValue;
+                }
+
+                // when length of labels is > 12, then we are in the monthly-chart
+                if (labels.Length > 12) {
+                    // rotate the label and shift it a bit
+                    activeBarValueText.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                    activeBarValueText.rectTransform.anchoredPosition = new Vector2(20f, 90f);
+                    activeBarValueText.alignment = TextAnchor.MiddleLeft;
+                }
+                else {
+                    // otherwise make sure the default is set (in case the bar was resused)
+                    activeBarValueText.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                    activeBarValueText.rectTransform.anchoredPosition = Vector2.zero;
+                    activeBarValueText.alignment = TextAnchor.MiddleCenter;
                 }
             }
-            previousBarValueLabel = inputValues[currBarIndex].ToString();
+            previousBarValueLabel = currBarValue.ToString();
 
             // Finally, add the bar to the list
-            barHolders.Add(newBarHolder);
+            if (!reuseBar) {
+                barHolders.Add(newBarHolder);
+            }
         }
+
+
+        // Clean up potentially no longer required bars (e.g. when changing from December to November (31 -> 30 bars)
+        while(barHolders.Count > labels.Length) {
+            // First get the Bar
+            Bar barToRemove = barHolders.ElementAt(barHolders.Count - 1);
+            // then remove it from the barHolders-List
+            barHolders.Remove(barToRemove);
+            // then detach it from its parent
+            barToRemove.transform.SetParent(null);
+            // Finally, destroy the GameObject
+            Destroy(barToRemove);
+        }
+
 
         // set the threshold line
         RectTransform rtThresholdLine = thresholdLine.GetComponent<RectTransform>();

@@ -12,6 +12,8 @@ public class SceneManager : Singleton<SceneManager> {
     // Singleton
     protected SceneManager() { }
 
+    //--------------------------------------------------------------------------
+
     // Constants for CSV File location
     private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
     private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
@@ -20,16 +22,28 @@ public class SceneManager : Singleton<SceneManager> {
     private const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
     private const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
 
+    //--------------------------------------------------------------------------
+
+    // A mapping of the GameObject name of a category, and itsuser-friendly name
     private Dictionary<string, string> gameObjectCategoryMap;
+
+    //--------------------------------------------------------------------------
 
     // A hashset that contains all active categories
     public HashSet<string> activeCategories { get; private set; }
 
+    //--------------------------------------------------------------------------
+
     // Data containers
     private DataTable dataTable;
     private DataView dataView;
-    private DataView monthlyDataView;
     private DataViewManager dvManager;
+
+    // The first and last Date from the (sorted) DataTable.
+    private DateTime firstDate;
+    private DateTime lastDate;
+
+    //--------------------------------------------------------------------------
 
     // array values for charts
     float[] yearOverviewValues = new float[12];
@@ -39,17 +53,29 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
+    // list with financial transactions for table
+    List<string[]> tableOverviewValues = new List<string[]>();
+
+    //--------------------------------------------------------------------------
+
     // selected values
     int selectedYear = 2016;
-    int selectedMonth = 9;
+    int selectedMonth;
+    int selectedDay;
 
-    // Get the first and last Date from the (sorted) DataTable.
-    private DateTime firstDate;
-    private DateTime lastDate;
+    //--------------------------------------------------------------------------
+
+    // Blockers for Category processing
+    private bool isCategoryBeingProcessed = false;
+
+    //--------------------------------------------------------------------------
 
     // Multithreading
     bool _threadRunning;
     Thread _thread;
+
+    //==========================================================================
+
 
     /// <summary>
     /// Awake is always called before any Start functions
@@ -114,45 +140,59 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
-    /// <summary>
-    /// Adds a category to the categories filter for the graphs
-    /// </summary>
-    /// <param name="gameObjectName"></param>
-    public void addGameObjectToCategoryFilter(string gameObjectName) {
-        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
+    public void addGameObjectToCategoryFilter(GameObject gameObject) {
+        // only proceed if no other processing is ongoing
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
 
-        if (categoryName.Trim() != string.Empty) {
-            activeCategories.Add(categoryName);
-            Debug.Log("Category [" + categoryName + "] added to filter!");
-            Debug.Log(activeCategories.Count + " entries");
+            string gameObjectName = gameObject.name;
+            string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
 
-            // Begin our heavy work in a coroutine.
-            StartCoroutine(YieldingWork());
+            // Only proceed if no other processing is currently running
+            if (categoryName.Trim() != string.Empty) {
+                // Set color to loading color
+                CategoryIconClick clickerClass = gameObject.GetComponent<CategoryIconClick>();
+                gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
+
+                activeCategories.Add(categoryName);
+                //Debug.Log("Category [" + categoryName + "] added to filter!");
+                //Debug.Log(activeCategories.Count + " entries");
+
+                // Begin our heavy work in a coroutine.
+                StartCoroutine(YieldingWork(clickerClass));
+            }
+        }
+    }
+
+    public void removeGameObjectFromCategoryFilter(GameObject gameObject) {
+        // only proceed if no other processing is ongoing
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
+
+            string gameObjectName = gameObject.name;
+            string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
+
+            // Only proceed if no other processing is currently running
+            if (categoryName.Trim() != string.Empty) {
+                // Set color to loading color
+                CategoryIconClick clickerClass = gameObject.GetComponent<CategoryIconClick>();
+                gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
+
+                activeCategories.Remove(categoryName);
+                //Debug.Log("Category [" + categoryName + "] removed from filter!");
+                //Debug.Log(activeCategories.Count + " entries");
+
+                // Begin our heavy work in a coroutine.
+                StartCoroutine(YieldingWork(clickerClass));
+            }
         }
     }
 
 
-    /// <summary>
-    /// Removes a category from the categories filter for the graphs
-    /// </summary>
-    /// <param name="gameObjectName"></param>
-    public void removeGameObjectFromCategoryFilter(string gameObjectName) {
-        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
-
-        if (categoryName.Trim() != string.Empty) {
-            activeCategories.Remove(categoryName);
-            Debug.Log("Category [" + categoryName + "] removed from filter!");
-            Debug.Log(activeCategories.Count + " entries");
-
-            // Begin our heavy work in a coroutine.
-            StartCoroutine(YieldingWork());
-        }
-    }
-
-    IEnumerator YieldingWork() {
+    IEnumerator YieldingWork(CategoryIconClick iconClickerClass = null) {
         bool workDone = false;
-
-        SetBarChartsState(false);
 
         // Begin our heavy work on a new thread.
         _thread = new Thread(ThreadedWork);
@@ -164,9 +204,16 @@ public class SceneManager : Singleton<SceneManager> {
 
             // Do Work...
             if (_threadRunning == false) {
-                // Only update the bar charts (in the main thread), when the update-thread is completed
-                SetBarChartsState(true);
+                // Only update the bar charts and table (in the main thread), when the update-thread is completed
                 updateBarCharts();
+                updateTable();
+
+                if (iconClickerClass != null) {
+                    iconClickerClass.SetFinalColor();
+
+                    // RELEASE the blocker
+                    isCategoryBeingProcessed = false;
+                }
                 workDone = true;
             }
         }
@@ -183,7 +230,6 @@ public class SceneManager : Singleton<SceneManager> {
         while (_threadRunning && !workDone) {
             // since there was an update, refresh the DataView
             updateArrayLists();
-            //updateBarCharts();
 
             _threadRunning = false;
         }
@@ -216,6 +262,9 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     private void updateArrayLists() {
+        bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
+        bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
+
         KeyValuePair<string[], float[]> kvp;
         
         // First get the YEAR
@@ -224,19 +273,30 @@ public class SceneManager : Singleton<SceneManager> {
         yearOverviewValues = kvp.Value;
 
         // Then get the MONTH
-        kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
-        monthOverviewLabels = kvp.Key;
-        monthOverviewValues = kvp.Value;
-    }
+        if (validMonth) {
+            kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
+            monthOverviewLabels = kvp.Key;
+            monthOverviewValues = kvp.Value;
 
-    private void SetBarChartsState(bool enabled) {
-        // Get all Bar Charts
-        BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
-
-        foreach (BarChart chart in barCharts) {
-            chart.enabled = enabled;
+            if (!validDay) {
+                // No valid day selected
+                // In this case, also update the tableOverview Values
+                tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth);
+            }
+        } else {
+            monthOverviewLabels = new string[] { };
+            monthOverviewValues = new float[] { };
         }
+
+        // Finally check the DAY
+        if (validDay) {
+            // valid day selected, update the tableOverview Values
+            tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth, selectedDay);
+        }
+
+        Debug.Log("complete");
     }
+
 
     private void updateBarCharts() {
         // Get all Bar Charts
@@ -245,7 +305,7 @@ public class SceneManager : Singleton<SceneManager> {
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
             if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
-                Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
+                //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 // update this chart with its corresponding data
                 barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, selectedYear.ToString());
@@ -255,17 +315,69 @@ public class SceneManager : Singleton<SceneManager> {
             } else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW && monthOverviewValues.Length > 0) {
                 // Look for the Year Overview Chart
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
-                    Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
+                    //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString());
 
                     // continue with next chart
                     continue;
                 }
-            }
+            } else if (selectedMonth == 0) {
+                // No month was selected, which is also a valid case
 
+                // continue with next chart
+                continue;
+            }
             Debug.LogError("No charts found to be updated!");
+        }
+    }
+
+
+    private void updateTable() {
+        // Get the first Tables
+        Table table = GameObject.FindObjectOfType<Table>();
+
+        if (table != null) {
+            // if value list is not empty
+            bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
+            bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
+
+            // at least a valid month must be provided for the Table to be updated
+            if (validMonth) {
+                string tableTitle = yearOverviewLabels[selectedMonth - 1] + " ";    // e.g. [January ]
+                if (validDay) {
+                    tableTitle += selectedDay.ToString() + ", ";                    // e.g. [January 10, ]
+                }
+                tableTitle += selectedYear.ToString();                              // e.g. [January 10, 2016] or [January 2016]
+
+                table.DisplayTable(tableOverviewValues, tableTitle);
+            }
+        } else {
+            Debug.LogError("No table found to be updated!");
+        }
+
+    }
+
+
+    public void updateSelection(string selectedLabelText) {
+        if (!String.IsNullOrEmpty(selectedLabelText)) {
+            int number;
+            bool isNumeric = int.TryParse(selectedLabelText, out number);
+            if (isNumeric) {
+                // A day was selected, since the label is numeric
+                selectedDay = number;
+            } else {
+                // As the label is not numeric, it must have been a month
+                selectedMonth = dvManager.GetMonthNoFromString(selectedLabelText);
+                // when the selected month changes, reset the selected day!
+                selectedDay = 0;
+            }
+            // Finally, update the charts
+            StartCoroutine(YieldingWork());
+
+        } else {
+            Debug.LogError("Invalid Label selected!");
         }
     }
 
