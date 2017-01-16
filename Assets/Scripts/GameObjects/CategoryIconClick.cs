@@ -1,7 +1,15 @@
 ﻿using UnityEngine;
 using VRTK;
 
-public class CategoryIcon : VRTK_InteractableObject {
+public class CategoryIconClick : VRTK_InteractableObject {
+
+    [Header("Category Options", order = 4)]
+    [Tooltip("Sets the treshold for the planned/expected expenses in this category for a single month. It is used for the visualisation of the bar chart.")]
+    public float monthlyCategoryThreshold = 0f;
+    [Tooltip("If this is checked then the below defined Annual 'Category Threshold' will be used instead of multiplying the monthly threshold by 12 (months).")]
+    public bool overrideAnnualThreshold = false;
+    [Tooltip("Overrides the annual threshold for the planned/expected expenses.")]
+    public float annualCategoryThreshold = 0f;
 
     bool isActivated = false;
     bool hasChanged = false;
