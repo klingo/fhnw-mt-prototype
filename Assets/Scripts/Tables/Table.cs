@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,8 @@ public class Table : MonoBehaviour {
     public Text tableTitle;
 
     List<Row> rowHolders = new List<Row>();
+
+    System.Globalization.CultureInfo modCulture = new System.Globalization.CultureInfo("de-CH");
 
 
     /// <summary>
@@ -56,7 +59,7 @@ public class Table : MonoBehaviour {
             newRowHolder.dateText.text = currTableRow[0];
             newRowHolder.recipientText.text = currTableRow[1];
             newRowHolder.currencyText.text = currTableRow[2];
-            newRowHolder.amountText.text = currTableRow[3];
+            newRowHolder.amountText.text = Single.Parse(currTableRow[3]).ToString("#,##0.00", modCulture);
             newRowHolder.categoryText.text = currTableRow[4];
 
             // Finally, add the bar to the list

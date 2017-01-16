@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -34,6 +35,7 @@ public class BarChart : MonoBehaviour {
     const float AXES_GRAPH_OFFSET = 6;  // the offset of a bar compared to the axes-graph
     const float BAR_SCALE_FACTOR = 0.95f; // the scaling of the max bar height
 
+    System.Globalization.CultureInfo modCulture = new System.Globalization.CultureInfo("de-CH");
 
     /// <summary>
     /// Use this for initialization
@@ -129,8 +131,11 @@ public class BarChart : MonoBehaviour {
                 newBarHolder.label.rectTransform.localPosition = new Vector3(7.5f, labelLocalPos.y);
             }
 
+            float currBarValue = inputValues[currBarIndex];
+            string currBarValueTextFmt = currBarValue.ToString("#,##0.00", modCulture);
+
             // Set the value label at the top of the bar
-            if (inputValues[currBarIndex].ToString() == previousBarValueLabel) {
+            if (currBarValue.ToString() == previousBarValueLabel) {
                 // if the label value is the same like for the previous bar, dont show it.
                 newBarHolder.topBarValue.text = string.Empty;
                 newBarHolder.bottomBarValue.text = string.Empty;
@@ -138,7 +143,7 @@ public class BarChart : MonoBehaviour {
             else {
                 if (topVal > 0f) {
                     // put the label at the top bar
-                    newBarHolder.topBarValue.text = inputValues[currBarIndex].ToString();
+                    newBarHolder.topBarValue.text = currBarValueTextFmt;
                     newBarHolder.bottomBarValue.text = string.Empty;
                     // if height is too small, move label to top of bar
                     if (rtTopBar.sizeDelta.y < 30f) {
@@ -149,7 +154,7 @@ public class BarChart : MonoBehaviour {
                 else {
                     // put the label at the bottom bar
                     newBarHolder.topBarValue.text = string.Empty;
-                    newBarHolder.bottomBarValue.text = inputValues[currBarIndex].ToString();
+                    newBarHolder.bottomBarValue.text = currBarValueTextFmt;
                     // if height is too small, move label to top of bar
                     if (rtBottomBar.sizeDelta.y < 30f) {
                         newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
@@ -157,7 +162,7 @@ public class BarChart : MonoBehaviour {
                     }
                 }
             }
-            previousBarValueLabel = inputValues[currBarIndex].ToString();
+            previousBarValueLabel = currBarValue.ToString();
 
             // Finally, add the bar to the list
             if (!reuseBar) {

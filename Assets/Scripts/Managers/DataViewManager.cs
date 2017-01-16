@@ -11,7 +11,6 @@ public class DataViewManager : ScriptableObject {
     private Dictionary<string, string[]> chartLabelsDict = new Dictionary<string, string[]>();
     private Dictionary<string, List<string[]>> tableRowsDict = new Dictionary<string, List<string[]>>();
 
-
     private string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
     public DataViewManager() {
@@ -132,32 +131,22 @@ public class DataViewManager : ScriptableObject {
                 dataView.RowFilter = filter + " AND " + query;
 
                 if (dataView.Count > 0) {
-                    Debug.Log("DataView with " + dataView.Count + " entries found");
                     // go through every single transaction of a day
                     foreach (DataRowView rowView in dataView) {
                         DataRow row = rowView.Row;
                         string[] rowAry = new string[5];
-                        Debug.Log("aaaa");
                         // Date
                         rowAry[0] = row["Date"].ToString();
-                        Debug.Log("bbb");
                         // Recipient
                         rowAry[1] = row["Recipient / Order issuer"].ToString();
-                        Debug.Log("ccc");
                         // Currency
                         rowAry[2] = row["Currency"].ToString();
-                        Debug.Log("ddd");
                         // Amount
                         rowAry[3] = row["Amount"].ToString();
-                        Debug.Log("eee");
                         //Category
                         rowAry[4] = row["Main category"].ToString();
-                        Debug.Log("fff");
 
-                        Debug.Log("before add to list, length = ");
-                        Debug.Log("before add to list, length = " + rows.Count.ToString());
                         rows.Add(rowAry);
-                        Debug.Log("after add to list");
                     }
                 }
             }
