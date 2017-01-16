@@ -41,8 +41,8 @@ public class SceneManager : Singleton<SceneManager> {
 
     // selected values
     int selectedYear = 2016;
-    int selectedMonth = 9;
-    int selectedDay = 15;
+    int selectedMonth;
+    int selectedDay;
 
     // Get the first and last Date from the (sorted) DataTable.
     private DateTime firstDate;
@@ -248,9 +248,14 @@ public class SceneManager : Singleton<SceneManager> {
         yearOverviewValues = kvp.Value;
 
         // Then get the MONTH
-        kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
-        monthOverviewLabels = kvp.Key;
-        monthOverviewValues = kvp.Value;
+        if (selectedMonth > 0 && selectedMonth <= 12) {
+            kvp = dvManager.GetBarChartValuesAndLabels(selectedYear, selectedMonth);
+            monthOverviewLabels = kvp.Key;
+            monthOverviewValues = kvp.Value;
+        } else {
+            monthOverviewLabels = new string[] { };
+            monthOverviewValues = new float[] { };
+        }
     }
 
 
@@ -273,14 +278,20 @@ public class SceneManager : Singleton<SceneManager> {
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
                     //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
+                    Debug.Log(monthOverviewValues + " has a length of: " + monthOverviewValues.Length);
+
                     // update this chart with its corresponding data
                     barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
 
                     // continue with next chart
                     continue;
                 }
-            }
+            } else if (selectedMonth == 0) {
+                // No month was selected, which is also a valid case
 
+                // continue with next chart
+                continue;
+            }
             Debug.LogError("No charts found to be updated!");
         }
     }
