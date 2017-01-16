@@ -53,10 +53,12 @@ public class BarChart : MonoBehaviour {
         for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
             Bar newBarHolder;
+            bool reuseBar = false;
 
-            // first check if we already ahve instances of barHolders
+            // first check if we already have instances of barHolders
             if (barHolders.Count > currBarIndex) {
                 newBarHolder = barHolders.ElementAt<Bar>(currBarIndex);
+                reuseBar = true;
             }
             else {
                 // Instantiate new Bar
@@ -149,8 +151,24 @@ public class BarChart : MonoBehaviour {
             previousBarValueLabel = inputValues[currBarIndex].ToString();
 
             // Finally, add the bar to the list
-            barHolders.Add(newBarHolder);
+            if (!reuseBar) {
+                barHolders.Add(newBarHolder);
+            }
         }
+
+
+        // Clean up potentially no longer required bars (e.g. when changing from December to November (31 -> 30 bars)
+        while(barHolders.Count > labels.Length) {
+            // First get the Bar
+            Bar barToRemove = barHolders.ElementAt(barHolders.Count - 1);
+            // then remove it from the barHolders-List
+            barHolders.Remove(barToRemove);
+            // then detach it from its parent
+            barToRemove.transform.SetParent(null);
+            // Finally, destroy the GameObject
+            Destroy(barToRemove);
+        }
+
 
         // set the threshold line
         RectTransform rtThresholdLine = thresholdLine.GetComponent<RectTransform>();

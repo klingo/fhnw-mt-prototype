@@ -14,11 +14,7 @@ public class ChartBarClick : VRTK_InteractableObject {
         Bar barholder = currentUsingObject.GetComponent<Bar>();
         string label = barholder.label.text;
 
-        Debug.Log("Currently Using: " + currentUsingObject.name + " --> " + barholder.label.text);
         SceneManager.Instance.updateSelection(label);
-
-
-
     }
 
 

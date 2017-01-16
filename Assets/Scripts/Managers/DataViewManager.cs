@@ -115,12 +115,11 @@ public class DataViewManager : ScriptableObject {
 
             if (month > 0) {
                 // INDIVIDUAL MONTH!
-                values = new float[DateTime.DaysInMonth(year, month)];
-                labels = new string[DateTime.DaysInMonth(year, month)];
-
                 int daysInMonth = DateTime.DaysInMonth(year, month);
+                values = new float[daysInMonth];
+                labels = new string[daysInMonth];
 
-                for (int currDay = 1; currDay < (daysInMonth + 1); currDay++) {
+                for (int currDay = 1; currDay <= daysInMonth; currDay++) {
                     // prepare query for single day
                     query = "[Date] = #" + new DateTime(year, month, currDay).ToString("MM/dd/yyyy") + "#";
                     // apply it together with the categories filter
