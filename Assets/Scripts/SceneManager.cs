@@ -153,8 +153,6 @@ public class SceneManager : Singleton<SceneManager> {
     IEnumerator YieldingWork() {
         bool workDone = false;
 
-        SetBarChartsState(false);
-
         // Begin our heavy work on a new thread.
         _thread = new Thread(ThreadedWork);
         _thread.Start();
@@ -166,7 +164,6 @@ public class SceneManager : Singleton<SceneManager> {
             // Do Work...
             if (_threadRunning == false) {
                 // Only update the bar charts (in the main thread), when the update-thread is completed
-                SetBarChartsState(true);
                 updateBarCharts();
                 workDone = true;
             }
@@ -230,14 +227,6 @@ public class SceneManager : Singleton<SceneManager> {
         monthOverviewValues = kvp.Value;
     }
 
-    private void SetBarChartsState(bool enabled) {
-        // Get all Bar Charts
-        BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
-
-        foreach (BarChart chart in barCharts) {
-            chart.enabled = enabled;
-        }
-    }
 
     private void updateBarCharts() {
         // Get all Bar Charts
