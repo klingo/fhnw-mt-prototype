@@ -12,11 +12,9 @@ public class DataViewManager : ScriptableObject {
 
     private string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
-
     public DataViewManager() {
         dataTableDict = new Dictionary<string, DataTable>();
     }
-
 
     /// <summary>
     /// Creates a new DataTable Object based on a filter for the given month and year, and stores it in the dataTableDictionary.

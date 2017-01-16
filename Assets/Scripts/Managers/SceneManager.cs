@@ -48,6 +48,9 @@ public class SceneManager : Singleton<SceneManager> {
     private DateTime firstDate;
     private DateTime lastDate;
 
+    // Blockers for Category processing
+    private bool isCategoryBeingProcessed = false;
+
     // Multithreading
     bool _threadRunning;
     Thread _thread;
@@ -115,42 +118,58 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
-    /// <summary>
-    /// Adds a category to the categories filter for the graphs
-    /// </summary>
-    /// <param name="gameObjectName"></param>
-    public void addGameObjectToCategoryFilter(string gameObjectName) {
-        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
+    public void addGameObjectToCategoryFilter(GameObject gameObject) {
+        // only proceed if no other processing is ongoing
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
 
-        if (categoryName.Trim() != string.Empty) {
-            activeCategories.Add(categoryName);
-            Debug.Log("Category [" + categoryName + "] added to filter!");
-            Debug.Log(activeCategories.Count + " entries");
+            string gameObjectName = gameObject.name;
+            string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
 
-            // Begin our heavy work in a coroutine.
-            StartCoroutine(YieldingWork());
+            // Only proceed if no other processing is currently running
+            if (categoryName.Trim() != string.Empty) {
+                // Set color to loading color
+                CategoryIconClick clickerClass = gameObject.GetComponent<CategoryIconClick>();
+                gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
+
+                activeCategories.Add(categoryName);
+                //Debug.Log("Category [" + categoryName + "] added to filter!");
+                //Debug.Log(activeCategories.Count + " entries");
+
+                // Begin our heavy work in a coroutine.
+                StartCoroutine(YieldingWork(clickerClass));
+            }
+        }
+    }
+
+    public void removeGameObjectFromCategoryFilter(GameObject gameObject) {
+        // only proceed if no other processing is ongoing
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
+
+            string gameObjectName = gameObject.name;
+            string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
+
+            // Only proceed if no other processing is currently running
+            if (categoryName.Trim() != string.Empty) {
+                // Set color to loading color
+                CategoryIconClick clickerClass = gameObject.GetComponent<CategoryIconClick>();
+                gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
+
+                activeCategories.Remove(categoryName);
+                //Debug.Log("Category [" + categoryName + "] removed from filter!");
+                //Debug.Log(activeCategories.Count + " entries");
+
+                // Begin our heavy work in a coroutine.
+                StartCoroutine(YieldingWork(clickerClass));
+            }
         }
     }
 
 
-    /// <summary>
-    /// Removes a category from the categories filter for the graphs
-    /// </summary>
-    /// <param name="gameObjectName"></param>
-    public void removeGameObjectFromCategoryFilter(string gameObjectName) {
-        string categoryName = GetCategoryNameFromGameObjectName(gameObjectName);
-
-        if (categoryName.Trim() != string.Empty) {
-            activeCategories.Remove(categoryName);
-            Debug.Log("Category [" + categoryName + "] removed from filter!");
-            Debug.Log(activeCategories.Count + " entries");
-
-            // Begin our heavy work in a coroutine.
-            StartCoroutine(YieldingWork());
-        }
-    }
-
-    IEnumerator YieldingWork() {
+    IEnumerator YieldingWork(CategoryIconClick iconClickerClass = null) {
         bool workDone = false;
 
         // Begin our heavy work on a new thread.
@@ -165,6 +184,13 @@ public class SceneManager : Singleton<SceneManager> {
             if (_threadRunning == false) {
                 // Only update the bar charts (in the main thread), when the update-thread is completed
                 updateBarCharts();
+
+                if (iconClickerClass != null) {
+                    iconClickerClass.SetFinalColor();
+
+                    // RELEASE the blocker
+                    isCategoryBeingProcessed = false;
+                }
                 workDone = true;
             }
         }
@@ -235,7 +261,7 @@ public class SceneManager : Singleton<SceneManager> {
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
             if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
-                Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
+                //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 // update this chart with its corresponding data
                 barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, selectedYear.ToString());
@@ -245,7 +271,7 @@ public class SceneManager : Singleton<SceneManager> {
             } else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW && monthOverviewValues.Length > 0) {
                 // Look for the Year Overview Chart
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
-                    Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
+                    //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
                     // update this chart with its corresponding data
                     barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1]);
