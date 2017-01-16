@@ -141,25 +141,52 @@ public class BarChart : MonoBehaviour {
                 newBarHolder.bottomBarValue.text = string.Empty;
             }
             else {
+                Text activeBarValueText;
                 if (topVal > 0f) {
                     // put the label at the top bar
                     newBarHolder.topBarValue.text = currBarValueTextFmt;
                     newBarHolder.bottomBarValue.text = string.Empty;
-                    // if height is too small, move label to top of bar
-                    if (rtTopBar.sizeDelta.y < 30f) {
-                        newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                        newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    }
+                    //// if height is too small, move label to top of bar
+                    //if (rtTopBar.sizeDelta.y < 30f) {
+                    //    newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    //} else {
+                    //    // otherwise make sure the default is set (in case the bar was resused)
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
+                    //}
+
+                    activeBarValueText = newBarHolder.topBarValue;
                 }
                 else {
                     // put the label at the bottom bar
                     newBarHolder.topBarValue.text = string.Empty;
                     newBarHolder.bottomBarValue.text = currBarValueTextFmt;
-                    // if height is too small, move label to top of bar
-                    if (rtBottomBar.sizeDelta.y < 30f) {
-                        newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                        newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    }
+                    //// if height is too small, move label to top of bar
+                    //if (rtBottomBar.sizeDelta.y < 30f) {
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
+                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
+                    //} else {
+                    //    // otherwise make sure the default is set (in case the bar was resused)
+                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
+                    //}
+
+                    activeBarValueText = newBarHolder.bottomBarValue;
+                }
+
+                // when length of labels is > 12, then we are in the monthly-chart
+                if (labels.Length > 12) {
+                    // rotate the label and shift it a bit
+                    activeBarValueText.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                    activeBarValueText.rectTransform.anchoredPosition = new Vector2(20f, 90f);
+                    activeBarValueText.alignment = TextAnchor.MiddleLeft;
+                }
+                else {
+                    // otherwise make sure the default is set (in case the bar was resused)
+                    activeBarValueText.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                    activeBarValueText.rectTransform.anchoredPosition = Vector2.zero;
+                    activeBarValueText.alignment = TextAnchor.MiddleCenter;
                 }
             }
             previousBarValueLabel = currBarValue.ToString();
