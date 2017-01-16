@@ -186,4 +186,13 @@ public class DataViewManager : ScriptableObject {
         return new KeyValuePair<string[], float[]>(labels, values);
     }
 
+    public int GetMonthNoFromString(string monthName) {
+        for (int i = 1; i <= yearOverviewLabels.Length; i++) {
+            if (yearOverviewLabels[i - 1] == monthName) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

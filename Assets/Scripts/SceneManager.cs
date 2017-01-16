@@ -42,6 +42,7 @@ public class SceneManager : Singleton<SceneManager> {
     // selected values
     int selectedYear = 2016;
     int selectedMonth = 9;
+    int selectedDay = 15;
 
     // Get the first and last Date from the (sorted) DataTable.
     private DateTime firstDate;
@@ -266,6 +267,25 @@ public class SceneManager : Singleton<SceneManager> {
             }
 
             Debug.LogError("No charts found to be updated!");
+        }
+    }
+
+    public void updateSelection(string selectedLabelText) {
+        if (!String.IsNullOrEmpty(selectedLabelText)) {
+            int number;
+            bool isNumeric = int.TryParse(selectedLabelText, out number);
+            if (isNumeric) {
+                // A day was selected, since the label is numeric
+                selectedDay = number;
+            } else {
+                // As the label is not numeric, it must have been a month
+                selectedMonth = dvManager.GetMonthNoFromString(selectedLabelText);
+            }
+            // Finally, update the charts
+            StartCoroutine(YieldingWork());
+
+        } else {
+            Debug.LogError("Invalid Label selected!");
         }
     }
 
