@@ -9,11 +9,20 @@ using UnityEngine.UI;
 /// </summary>
 public class BarChart : MonoBehaviour {
 
+    [Header("[Bar]", order = 0)]
     public Bar barHolderPrefab;
-    public float threshold;
+
+    [Header("[Color]", order = 1)]
     public Color bottomBarColor;
     public Color topBarColor;
+
+    [Header("[float]", order = 2)]
+    public float threshold;
+
+    [Header("[Image]", order = 3)]
     public Image thresholdLine;
+
+    [Header("[Text]", order = 4)]
     public Text thresholdValueLabel;
     public Text chartTitle;
 
