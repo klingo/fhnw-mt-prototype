@@ -333,8 +333,9 @@ public class SceneManager : Singleton<SceneManager> {
 
                 // continue with next chart
                 continue;
+            } else {
+                Debug.LogError("No charts found to be updated!");
             }
-            Debug.LogError("No charts found to be updated!");
         }
     }
 
