@@ -73,24 +73,31 @@ public class ChartBarClick : VRTK_InteractableObject {
     public override void StartTouching(GameObject currentTouchingObject) {
         base.StartTouching(currentTouchingObject);
 
-        //List<Image> images = new List<Image>(currentTouchingObject.GetComponentsInChildren<Image>());
-
-        //StopAllCoroutines();
-        //StartCoroutine(Flash(images, 0.5f));
+        List<Image> images = new List<Image>(currentTouchingObject.GetComponentsInChildren<Image>());
+        foreach (Image image in images) {
+            // Only start to highlight it, if it currently has 1.00 alpha value
+            if (image.color.a == 1f) {
+                // Then highlight it to 0.5f alpha, to distinguish it from flashing that does not go below 0.51f
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 0.5f);
+                //image.CrossFadeAlpha(0.5f, 0.1f, false);
+            }
+        }
     }
 
 
     public override void StopTouching(GameObject previousTouchingObject) {
         base.StopTouching(previousTouchingObject);
 
-        //// Stop All Coroutines (or specifically, the flashing)
-        //StopAllCoroutines();
-
-        //// In case some images are currently partially faded out, fad them back in!
-        //List<Image> images = new List<Image>(previousTouchingObject.GetComponentsInChildren<Image>());
-        //foreach (Image image in images) {
-        //    image.CrossFadeAlpha(1f, 0.5f, false);
-        //}
+        // In case some images are currently partially faded out, fade them back in!
+        List<Image> images = new List<Image>(previousTouchingObject.GetComponentsInChildren<Image>());
+        foreach (Image image in images) {
+            // Only revert the highlight, if it currently is being highlighted, but NOT flashing
+            Debug.Log("image.color.a = " + image.color.a);
+            if (image.color.a == 0.5f) {
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
+                //image.CrossFadeAlpha(1f, 0.1f, false);
+            }
+        }
     }
 
 
@@ -100,14 +107,18 @@ public class ChartBarClick : VRTK_InteractableObject {
             if (fadeState) {
                 //Debug.Log("FADE IN");
                 foreach (Image image in images) {
-                    image.CrossFadeAlpha(1f, duration, false);
+                    // Flashing only goes back to 0.99 alpha value, in order to distinguish it with non-flasing
+                    // bar that always has an alpha value of 1.00
+                    image.CrossFadeAlpha(0.99f, duration, false);
                 }
                 yield return new WaitForSeconds(duration);
             }
             else {
                 //Debug.Log("FADE OUT");
                 foreach (Image image in images) {
-                    image.CrossFadeAlpha(0.5f, duration, false);
+                    // Flashing only goes down to 0.51 alpha value, in order to distinguish it with non-flashing
+                    // but highlighted bars that always have an alpha value of 0.50
+                    image.CrossFadeAlpha(0.51f, duration, false);
                 }
                 yield return new WaitForSeconds(duration);
             }
