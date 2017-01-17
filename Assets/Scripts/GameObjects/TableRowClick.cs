@@ -50,7 +50,6 @@ public class TableRowClick : VRTK_InteractableObject {
         Image image = previousTouchingObject.GetComponentInChildren<Image>();
         if (image.color != selectedColor) {
             image.CrossFadeColor(Color.white, 0.1f, false, false);
-            
         }
     }
 
