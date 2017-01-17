@@ -443,6 +443,13 @@ public class SceneManager : Singleton<SceneManager> {
             // Since there was a change of month/day, the selected transaction has to be re-set!
             updateDetailView(null);
 
+            // Also make sure to reset the coloured table-selection (if existing)
+            if (selectedTableRowImage != null) {
+                selectedTableRowImage.CrossFadeColor(Color.white, 0.1f, false, false);
+                selectedTableRowImage.color = Color.white;
+                selectedTableRowImage = null;
+            }
+
             // Finally, update the charts
             StartCoroutine(YieldingWork());
 
