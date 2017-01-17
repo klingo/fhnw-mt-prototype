@@ -7,6 +7,8 @@ using VRTK.Highlighters;
 
 public class ChartBarClick : VRTK_InteractableObject {
 
+    Rect rect;
+
     public override void StartUsing(GameObject currentUsingObject) {
         base.StartUsing(currentUsingObject);
 

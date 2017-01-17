@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using System;
 using System.Threading;
+using UnityEngine.UI;
 
 public class SceneManager : Singleton<SceneManager> {
 
@@ -63,6 +64,10 @@ public class SceneManager : Singleton<SceneManager> {
     int selectedYear = 2016;
     int selectedMonth;
     int selectedDay;
+
+    //--------------------------------------------------------------------------
+
+    public Image selectedTableRowImage;
 
     //--------------------------------------------------------------------------
 

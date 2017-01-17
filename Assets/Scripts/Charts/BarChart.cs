@@ -146,32 +146,12 @@ public class BarChart : MonoBehaviour {
                     // put the label at the top bar
                     newBarHolder.topBarValue.text = currBarValueTextFmt;
                     newBarHolder.bottomBarValue.text = string.Empty;
-                    //// if height is too small, move label to top of bar
-                    //if (rtTopBar.sizeDelta.y < 30f) {
-                    //    newBarHolder.topBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    //} else {
-                    //    // otherwise make sure the default is set (in case the bar was resused)
-                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
-                    //    newBarHolder.topBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
-                    //}
-
                     activeBarValueText = newBarHolder.topBarValue;
                 }
                 else {
                     // put the label at the bottom bar
                     newBarHolder.topBarValue.text = string.Empty;
                     newBarHolder.bottomBarValue.text = currBarValueTextFmt;
-                    //// if height is too small, move label to top of bar
-                    //if (rtBottomBar.sizeDelta.y < 30f) {
-                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 0f);
-                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = Vector2.zero;
-                    //} else {
-                    //    // otherwise make sure the default is set (in case the bar was resused)
-                    //    newBarHolder.bottomBarValue.rectTransform.pivot = new Vector2(0.5f, 1f);
-                    //    newBarHolder.bottomBarValue.rectTransform.anchoredPosition = new Vector2(0f, 30f);
-                    //}
-
                     activeBarValueText = newBarHolder.bottomBarValue;
                 }
 
