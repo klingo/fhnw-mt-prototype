@@ -12,4 +12,10 @@ public class Row : MonoBehaviour {
     public Text currencyText;
     public Text amountText;
     public Text categoryText;
+
+    public string accountName { get; set; }
+    public string accountNo { get; set; }
+    public string bookingText { get; set; }
+    public string subcategory { get; set; }
+
 }

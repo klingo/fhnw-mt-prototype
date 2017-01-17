@@ -38,6 +38,7 @@ public class SceneManager : Singleton<SceneManager> {
     private DataTable dataTable;
     private DataView dataView;
     private DataViewManager dvManager;
+    private Detail detailPanel;
 
     // The first and last Date from the (sorted) DataTable.
     private DateTime firstDate;
@@ -100,6 +101,10 @@ public class SceneManager : Singleton<SceneManager> {
         for (int i = 0; i < monthOverviewLabels.Length; i++) {
             monthOverviewLabels[i] = (i + 1).ToString();
         }
+
+        // Get the first (and only) Detail View, and store it (so it can be hidden)
+        detailPanel = GameObject.FindObjectOfType<Detail>();
+        detailPanel.gameObject.SetActive(false);
 
         // Prepare CSV path
         string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
@@ -335,7 +340,7 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     private void updateTable() {
-        // Get the first Tables
+        // Get the first (and only) Table
         Table table = GameObject.FindObjectOfType<Table>();
 
         if (table != null) {
@@ -359,6 +364,43 @@ public class SceneManager : Singleton<SceneManager> {
 
     }
 
+    public void updateDetailView(Row rowHolder) {
+
+        // Check the Detail View Panel
+        if (detailPanel != null) {
+            // if selected transaction is not empty
+            if (rowHolder != null) {
+                detailPanel.gameObject.SetActive(true);
+
+                // Date
+                detailPanel.dateText.text = rowHolder.dateText.text;
+                // Recipient / Order issue
+                detailPanel.recipientText.text = rowHolder.recipientText.text;
+                // Account no. / Account name
+                detailPanel.accountNoNameText.text = rowHolder.accountNo;
+                string accountName = rowHolder.accountName;
+                if (!String.IsNullOrEmpty(accountName)) {
+                    detailPanel.accountNoNameText.text += " / " + accountName;
+                }
+                // Currency / Amount
+                detailPanel.currencyAmountText.text = rowHolder.currencyText.text + " " + rowHolder.amountText.text;
+                // Booking text
+                detailPanel.bookingTextText.text = rowHolder.bookingText;
+                // Main category
+                detailPanel.mainCategoryText.text = rowHolder.categoryText.text;
+                // Subcategory
+                detailPanel.subcategoryText.text = rowHolder.subcategory;
+
+            } else {
+                detailPanel.gameObject.SetActive(false);
+            }
+        }
+        else {
+            Debug.LogError("No detail found to be updated!");
+        }
+
+    }
+
 
     public void updateSelection(string selectedLabelText) {
         if (!String.IsNullOrEmpty(selectedLabelText)) {
@@ -373,6 +415,10 @@ public class SceneManager : Singleton<SceneManager> {
                 // when the selected month changes, reset the selected day!
                 selectedDay = 0;
             }
+
+            // Since there was a change of month/day, the selected transaction has to be re-set!
+            updateDetailView(null);
+
             // Finally, update the charts
             StartCoroutine(YieldingWork());
 
