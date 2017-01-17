@@ -79,7 +79,6 @@ public class ChartBarClick : VRTK_InteractableObject {
             if (image.color.a == 1f) {
                 // Then highlight it to 0.5f alpha, to distinguish it from flashing that does not go below 0.51f
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 0.5f);
-                //image.CrossFadeAlpha(0.5f, 0.1f, false);
             }
         }
     }
@@ -95,7 +94,6 @@ public class ChartBarClick : VRTK_InteractableObject {
             Debug.Log("image.color.a = " + image.color.a);
             if (image.color.a == 0.5f) {
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
-                //image.CrossFadeAlpha(1f, 0.1f, false);
             }
         }
     }
