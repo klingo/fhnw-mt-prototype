@@ -15,13 +15,18 @@ public class CategoryIconClick : VRTK_InteractableObject {
     public float monthlyCategoryThreshold = 0f;
 
 
-    Color highlightColor = new Color(1, 1, 0.8f);
+    Color highlightColorInactive = new Color(1, 1, 0.8f);
+    Color highlightColorActive = new Color(0.8f, 1, 0.8f);
     bool isActivated = false;
+    bool isLoading = false;
 
     public override void StartUsing(GameObject usingObject) {
         base.StartUsing(usingObject);
 
+        // change activation state
         isActivated = !isActivated;
+        // indicate that loading started
+        isLoading = true;
 
         if (isActivated) {
             SceneManager.Instance.addGameObjectToCategoryFilter(gameObject, monthlyCategoryThreshold);
@@ -36,7 +41,11 @@ public class CategoryIconClick : VRTK_InteractableObject {
         base.StartTouching(currentTouchingObject);
 
         if (!isActivated) {
-            gameObject.GetComponent<Renderer>().material.color = highlightColor;
+            // when NOT activated, allow a highlight color
+            gameObject.GetComponent<Renderer>().material.color = highlightColorInactive;
+        } else if(!isLoading) {
+            // when activated and NOT loading anymore, allow a highlight color as well
+            gameObject.GetComponent<Renderer>().material.color = highlightColorActive;
         }
     }
 
@@ -45,7 +54,12 @@ public class CategoryIconClick : VRTK_InteractableObject {
         base.StopTouching(previousTouchingObject);
 
         if (!isActivated) {
-            gameObject.GetComponent<Renderer>().material.color = Color.white;
+            // when NOT activated, remove a highlight color
+            gameObject.GetComponent<Renderer>().material.color = inactiveColor;
+        }
+        else if (!isLoading) {
+            // when activated and NOT loading anymore, remove a highlight color as well
+            gameObject.GetComponent<Renderer>().material.color = activeColor;
         }
     }
 
@@ -57,6 +71,9 @@ public class CategoryIconClick : VRTK_InteractableObject {
         else {
             gameObject.GetComponent<Renderer>().material.color = inactiveColor;
         }
+
+        // loading is complete
+        isLoading = false;
     }
 
 }
