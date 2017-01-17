@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Data;
-using UnityEngine;
 using System.Text.RegularExpressions;
-using System;
 using System.Threading;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class SceneManager : Singleton<SceneManager> {
@@ -168,8 +168,6 @@ public class SceneManager : Singleton<SceneManager> {
                 gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
 
                 activeCategories.Add(categoryName);
-                //Debug.Log("Category [" + categoryName + "] added to filter!");
-                //Debug.Log(activeCategories.Count + " entries");
 
                 // Update the global threshold
                 globalThreashold += monthlyCategoryThreshold;
@@ -196,8 +194,6 @@ public class SceneManager : Singleton<SceneManager> {
                 gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
 
                 activeCategories.Remove(categoryName);
-                //Debug.Log("Category [" + categoryName + "] removed from filter!");
-                //Debug.Log(activeCategories.Count + " entries");
 
                 // Update the global threshold
                 globalThreashold -= monthlyCategoryThreshold;
