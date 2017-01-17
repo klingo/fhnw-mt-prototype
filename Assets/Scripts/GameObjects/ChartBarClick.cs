@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VRTK;
-using VRTK.Highlighters;
 
 public class ChartBarClick : VRTK_InteractableObject {
-
-    Rect rect;
 
     public override void StartUsing(GameObject currentUsingObject) {
         base.StartUsing(currentUsingObject);
@@ -66,14 +63,4 @@ public class ChartBarClick : VRTK_InteractableObject {
         }
     }
 
-
-    //// Use this for initialization
-    //void Start () {
-
-    //}
-
-    //// Update is called once per frame
-    //void Update () {
-
-    //}
 }

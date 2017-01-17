@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using VRTK;
 
 public class CategoryIconClick : VRTK_InteractableObject {
