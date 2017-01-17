@@ -55,6 +55,8 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
+    float globalThreashold = 0f;
+
     // list with financial transactions for table
     List<string[]> tableOverviewValues = new List<string[]>();
 
@@ -150,7 +152,7 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
-    public void addGameObjectToCategoryFilter(GameObject gameObject) {
+    public void addGameObjectToCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
@@ -169,13 +171,16 @@ public class SceneManager : Singleton<SceneManager> {
                 //Debug.Log("Category [" + categoryName + "] added to filter!");
                 //Debug.Log(activeCategories.Count + " entries");
 
+                // Update the global threshold
+                globalThreashold += monthlyCategoryThreshold;
+
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
             }
         }
     }
 
-    public void removeGameObjectFromCategoryFilter(GameObject gameObject) {
+    public void removeGameObjectFromCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
@@ -193,6 +198,9 @@ public class SceneManager : Singleton<SceneManager> {
                 activeCategories.Remove(categoryName);
                 //Debug.Log("Category [" + categoryName + "] removed from filter!");
                 //Debug.Log(activeCategories.Count + " entries");
+
+                // Update the global threshold
+                globalThreashold -= monthlyCategoryThreshold;
 
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
@@ -312,13 +320,16 @@ public class SceneManager : Singleton<SceneManager> {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
+        string chartTitle = String.Empty;
+
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
             if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
                 //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
+                chartTitle = selectedYear.ToString();
                 // update this chart with its corresponding data
-                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, selectedYear.ToString());
+                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, chartTitle, globalThreashold);
 
                 // continue with next chart
                 continue;
@@ -327,8 +338,9 @@ public class SceneManager : Singleton<SceneManager> {
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
                     //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
+                    chartTitle = yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString();
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString());
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreashold);
 
                     // continue with next chart
                     continue;

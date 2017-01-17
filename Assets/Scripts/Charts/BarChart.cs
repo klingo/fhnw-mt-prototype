@@ -17,13 +17,10 @@ public class BarChart : MonoBehaviour {
     public Color bottomBarColor;
     public Color topBarColor;
 
-    [Header("[float]", order = 2)]
-    public float threshold;
-
-    [Header("[Image]", order = 3)]
+    [Header("[Image]", order = 2)]
     public Image thresholdLine;
 
-    [Header("[Text]", order = 4)]
+    [Header("[Text]", order = 3)]
     public Text thresholdValueLabel;
     public Text chartTitle;
 
@@ -51,7 +48,7 @@ public class BarChart : MonoBehaviour {
     /// <summary>
     /// 
     /// </summary>
-    public void DisplayGraph(string[] labels, float[] inputValues, string title) {
+    public void DisplayGraph(string[] labels, float[] inputValues, string title, float threshold) {
 
         float maxValue = inputValues.Max();
         float normalizedThresholdValue = threshold / maxValue;

@@ -21,10 +21,10 @@ public class CategoryIconClick : VRTK_InteractableObject {
         isActivated = !isActivated;
 
         if (isActivated) {
-            SceneManager.Instance.addGameObjectToCategoryFilter(gameObject);
+            SceneManager.Instance.addGameObjectToCategoryFilter(gameObject, monthlyCategoryThreshold);
         }
         else {
-            SceneManager.Instance.removeGameObjectFromCategoryFilter(gameObject);
+            SceneManager.Instance.removeGameObjectFromCategoryFilter(gameObject, monthlyCategoryThreshold);
         }
     }
 
