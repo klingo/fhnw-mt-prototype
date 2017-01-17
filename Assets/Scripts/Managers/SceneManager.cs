@@ -20,8 +20,8 @@ public class SceneManager : Singleton<SceneManager> {
     private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
 
     // Constants for names of the different charts
-    private const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
-    private const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
+    public const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
+    public const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
 
     //--------------------------------------------------------------------------
 
@@ -70,6 +70,8 @@ public class SceneManager : Singleton<SceneManager> {
     //--------------------------------------------------------------------------
 
     public Image selectedTableRowImage;
+    public Bar selectedMonthBar;
+    public Bar selectedDayBar;
 
     //--------------------------------------------------------------------------
 
