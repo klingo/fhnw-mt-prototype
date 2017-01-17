@@ -358,6 +358,12 @@ public class SceneManager : Singleton<SceneManager> {
                 tableTitle += selectedYear.ToString();                              // e.g. [January 10, 2016] or [January 2016]
 
                 table.DisplayTable(tableOverviewValues, tableTitle);
+
+                // if there is exactly one result, also show the detail view
+                Row firstRow = table.GetFirstRowIfOnlyOneExists();
+                if (firstRow != null) {
+                    updateDetailView(firstRow);
+                }
             }
         } else {
             Debug.LogError("No table found to be updated!");

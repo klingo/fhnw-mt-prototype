@@ -86,4 +86,16 @@ public class Table : MonoBehaviour {
             Destroy(rowToRemove);
         }
     }
+
+
+    /// <summary>
+    /// Returns the first [Row] object, if there is only one existing. In all other cases, [null] will be returned.
+    /// </summary>
+    /// <returns></returns>
+    public Row GetFirstRowIfOnlyOneExists() {
+        if (rowHolders.Count == 1) {
+            return rowHolders.ElementAt<Row>(0);
+        }
+        return null;
+    }
 }
