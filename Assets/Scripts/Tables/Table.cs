@@ -27,6 +27,11 @@ public class Table : MonoBehaviour {
         // set the table title
         this.tableTitle.text = tableTitle;
 
+        // make it null-safe (easier for other methods, to just pass 'null' for clearing the table
+        if (tableRows == null) {
+            tableRows = new List<string[]>();
+        }
+
         for (int currRowIndex = 0; currRowIndex < tableRows.Count; currRowIndex++) {
 
             string[] currTableRow = tableRows.ElementAt<string[]>(currRowIndex);
@@ -81,9 +86,18 @@ public class Table : MonoBehaviour {
             // then remove it from the barHolders-List
             rowHolders.Remove(rowToRemove);
             // then detach it from its parent
-            rowToRemove.transform.SetParent(null);
+                                //rowToRemove.transform.SetParent(null);
             // Finally, destroy the GameObject
+            rowToRemove.name = "DELETE THIS ROW";
+            rowToRemove.gameObject.SetActive(false);
+            rowToRemove.enabled = false;
+            rowToRemove.transform.localScale = Vector3.zero;
+            rowToRemove.transform.localPosition = Vector3.zero;
+            GameObject.Destroy(rowToRemove);
+            GameObject.DestroyImmediate(rowToRemove, true);
             Destroy(rowToRemove);
+            DestroyImmediate(rowToRemove, true);
+            rowToRemove = null;
         }
     }
 
@@ -97,5 +111,10 @@ public class Table : MonoBehaviour {
             return rowHolders.ElementAt<Row>(0);
         }
         return null;
+    }
+
+
+    public bool HasEntries() {
+        return (rowHolders.Count > 0);
     }
 }

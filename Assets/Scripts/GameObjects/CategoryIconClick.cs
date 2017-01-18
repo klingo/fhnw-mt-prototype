@@ -19,16 +19,15 @@ public class CategoryIconClick : VRTK_InteractableObject {
     bool isActivated = false;
     bool isLoading = false;
 
+
     public override void StartUsing(GameObject usingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
             // change activation state
-            isActivated = !isActivated;
+            // indicate that loading started
+            SetToLoadingState();
 
             base.StartUsing(usingObject);
-
-            // indicate that loading started
-            isLoading = true;
 
             if (isActivated) {
                 SceneManager.Instance.addGameObjectToCategoryFilter(gameObject, monthlyCategoryThreshold);
@@ -77,6 +76,14 @@ public class CategoryIconClick : VRTK_InteractableObject {
         }
     }
 
+
+    public void SetToLoadingState() {
+        // change activation state
+        isActivated = !isActivated;
+
+        // indicate that loading started
+        isLoading = true;
+    }
 
     public void SetFinalColor() {
         if (isActivated) {

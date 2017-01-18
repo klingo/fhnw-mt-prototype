@@ -17,7 +17,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
     public static T Instance {
         get {
             if (applicationIsQuitting) {
-                Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
+                Logger.LogWarning("[Singleton] Instance '" + typeof(T) +
                     "' already destroyed on application quit." +
                     " Won't create again - returning null.");
                 return null;
@@ -28,7 +28,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
                     _instance = (T)FindObjectOfType(typeof(T));
 
                     if (FindObjectsOfType(typeof(T)).Length > 1) {
-                        Debug.LogError("[Singleton] Something went really wrong " +
+                        Logger.LogError("[Singleton] Something went really wrong " +
                             " - there should never be more than 1 singleton!" +
                             " Reopening the scene might fix it.");
                         return _instance;
@@ -54,12 +54,12 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
                         singleton.name = "(singleton) " + typeof(T).ToString();
                         DontDestroyOnLoad(singleton);
 
-                        // Debug.Log("[Singleton] An instance of " + typeof(T) + 
-                        // 	" is needed in the scene, so '" + singleton +
-                        // 	"' was created with DontDestroyOnLoad.");
+                        Logger.Log(2, "[Singleton] An instance of " + typeof(T) +
+                            " is needed in the scene, so '" + singleton +
+                            "' was created with DontDestroyOnLoad.");
                     }
                     else {
-                        Debug.Log("[Singleton] Using instance already created: " +
+                        Logger.Log(0, "[Singleton] Using instance already created: " +
                             _instance.gameObject.name);
                     }
                 }

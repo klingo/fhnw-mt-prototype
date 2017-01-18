@@ -29,7 +29,7 @@ public class DataViewManager : ScriptableObject {
 
         // Check if key already exists
         if (dataTableDict.ContainsKey(key)) {
-            Debug.LogError("DataTable for key [" + key + "] has already been added to DataTableDictionary");
+            Logger.LogWarning("DataTable for key [" + key + "] has already been added to DataTableDictionary");
         } else {
             string query = String.Empty;
             if (month > 0) {
@@ -62,7 +62,7 @@ public class DataViewManager : ScriptableObject {
         // Check if entry for that key exists
         // if no dataView was found, log error
         if (dataTableDict.TryGetValue(key, out dataTable) == false) {
-            Debug.LogError("No DataTable found in DataTableManager for key = [" + key + "]");
+            Logger.LogError("No DataTable found in DataTableManager for key = [" + key + "]");
         } else {
             dataView = new DataView(dataTable);
         }
@@ -165,10 +165,10 @@ public class DataViewManager : ScriptableObject {
             // add it to the Dictionary
             tableRowsDict.Add(key, rows);
 
-            Debug.Log("GetTableRows returns a NEW List<string[]>");
+            Logger.Log(1,"GetTableRows returns a NEW List<string[]>   |   KEY = " + key);
         }
         else {
-            Debug.Log("GetTableRows returns a CACHED List<string[]>");
+            Logger.Log(1, "GetTableRows returns a CACHED List<string[]>   |   KEY = " + key);
         }
 
         // Now return it!
@@ -249,6 +249,8 @@ public class DataViewManager : ScriptableObject {
                 values = new float[12];
                 labels = new string[12];
 
+                float totalYearAmount = 0f;
+
                 // now create the data-list for the chart
                 for (int currMonth = 1; currMonth < 13; currMonth++) {
                     int daysInMonth = DateTime.DaysInMonth(year, currMonth);
@@ -275,15 +277,24 @@ public class DataViewManager : ScriptableObject {
                     values[currMonth - 1] = totalMonthAmount;
                     // also prepare the labels array
                     labels[currMonth - 1] = yearOverviewLabels[currMonth - 1];
+                    // also su up the year total
+                    totalYearAmount += totalMonthAmount;
+                }
+
+                // all calculations are done, check the year total
+                if (totalYearAmount == 0f) {
+                    // no data was found at all, resetting values and keys
+                    values = new float[] { };
+                    labels = new string[] { };
                 }
             }
 
             chartValuesDict.Add(key, values);
             chartLabelsDict.Add(key, labels);
 
-            Debug.Log("GetBarChartValuesAndLabels returns a NEW KeyValuePair");
+            Logger.Log(1, "GetBarChartValuesAndLabels returns a NEW KeyValuePair   |   KEY = " + key);
         } else {
-            Debug.Log("GetBarChartValuesAndLabels returns a CACHED KeyValuePair");
+            Logger.Log(1, "GetBarChartValuesAndLabels returns a CACHED KeyValuePair   |   KEY = " + key);
         }
 
         // Now return it!
