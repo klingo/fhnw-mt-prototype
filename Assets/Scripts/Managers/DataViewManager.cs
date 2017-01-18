@@ -292,9 +292,9 @@ public class DataViewManager : ScriptableObject {
             chartValuesDict.Add(key, values);
             chartLabelsDict.Add(key, labels);
 
-            Debug.Log("GetBarChartValuesAndLabels returns a NEW KeyValuePair");
+            Debug.Log("GetBarChartValuesAndLabels returns a NEW KeyValuePair   |   KEY = " + key);
         } else {
-            Debug.Log("GetBarChartValuesAndLabels returns a CACHED KeyValuePair");
+            Debug.Log("GetBarChartValuesAndLabels returns a CACHED KeyValuePair   |   KEY = " + key);
         }
 
         // Now return it!

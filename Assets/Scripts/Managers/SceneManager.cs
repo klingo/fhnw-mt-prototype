@@ -85,6 +85,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     // Blockers for Category processing
     public bool isCategoryBeingProcessed = false;
+    CategoryIconClick[] categoryIconClickers;
 
     //--------------------------------------------------------------------------
 
@@ -235,31 +236,68 @@ public class SceneManager : Singleton<SceneManager> {
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
             isCategoryBeingProcessed = true;
+            // Check if we already have a list of all clickers
+            if (categoryIconClickers == null || categoryIconClickers.Length == 0) {
+                // If not, populate them
+                categoryIconClickers = GameObject.FindObjectsOfType<CategoryIconClick>();
+            }
+
+            foreach (CategoryIconClick clicker in categoryIconClickers) {
+                // Get the category name from the GameObject name
+                string categoryName = GetCategoryNameFromGameObjectName(clicker.name);
+
+                // Only for the active ones, change the state
+                if (activeCategories.Contains(categoryName)) {
+                    // toggles the [isActived] flag, and sets [isLoading] to [true]
+                    clicker.SetToLoadingState();
+
+                    // Changes the Color to the loadingColor
+                    clicker.GetComponentInParent<Renderer>().material.color = clicker.loadingColor;
+                }
+            }
+
+            // clear all active Categories
+            activeCategories.Clear();
+
+            // Update the global threshold
+            globalThreshold = 0f;
+
+            // Begin our heavy work in a coroutine.
+            StartCoroutine(YieldingWork(categoryIconClickers));
         }
     }
 
 
     public void addAllGameObjectsToCategoryFilter() {
         // only proceed if no other processing is ongoing
-        Debug.Log("111");
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
             isCategoryBeingProcessed = true;
-            Debug.Log("222");
-            CategoryIconClick[] clickerClasses = gameObject.GetComponents<CategoryIconClick>();
-            Debug.Log("clickerClasses.Length=" + clickerClasses.Length);
-            foreach (CategoryIconClick clicker in clickerClasses) {
+            // Check if we already have a list of all clickers
+            if (categoryIconClickers == null || categoryIconClickers.Length == 0) {
+                // If not, populate them
+                categoryIconClickers = GameObject.FindObjectsOfType<CategoryIconClick>();
+            }
+
+            foreach (CategoryIconClick clicker in categoryIconClickers) {
+                // Get the category name from the GameObject name
+                string categoryName = GetCategoryNameFromGameObjectName(clicker.name);
+
+                // toggles the [isActived] flag, and sets [isLoading] to [true]
+                clicker.SetToLoadingState();
+
+                // Changes the Color to the loadingColor
                 clicker.GetComponentInParent<Renderer>().material.color = clicker.loadingColor;
 
-                Debug.Log("Is this my name? " + clicker.GetComponentInParent<GameObject>().name);
+                // Add he individual category to the list of active ones
+                activeCategories.Add(categoryName);
 
-                //activeCategories.Add(categoryName);
-
+                // Update the global threshold
                 globalThreshold = globalMaxThreshold;
-
-                // Begin our heavy work in a coroutine.
-                //StartCoroutine(YieldingWork(clickerClasses));
             }
+
+            // Begin our heavy work in a coroutine.
+            StartCoroutine(YieldingWork(categoryIconClickers));
         }
     }
 
@@ -287,7 +325,6 @@ public class SceneManager : Singleton<SceneManager> {
                 // Only update the bar charts and table (in the main thread), when the update-thread is completed
                 updateBarCharts();
                 updateTable();
-
                 // Set the final color!
                 if (iconClickerClasses != null) {
                     foreach (CategoryIconClick clicker in iconClickerClasses) {
@@ -586,9 +623,6 @@ public class SceneManager : Singleton<SceneManager> {
             foreach (CategoryIconClick clicker in clickersAry) {
                 globalMaxThreshold += clicker.monthlyCategoryThreshold;
             }
-
-            Debug.Log("globalMaxThreshold=" + globalMaxThreshold);
-
         } else {
             Debug.LogError("GameObject CategoryMap already initialised!");
         }
