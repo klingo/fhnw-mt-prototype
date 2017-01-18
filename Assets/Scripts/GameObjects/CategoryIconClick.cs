@@ -86,7 +86,6 @@ public class CategoryIconClick : VRTK_InteractableObject {
     }
 
     public void SetFinalColor() {
-        Debug.Log("currently, isActivated=" + isActivated + ", therefore want to change to: "+!isActivated);
         if (isActivated) {
             gameObject.GetComponent<Renderer>().material.color = activeColor;
         }

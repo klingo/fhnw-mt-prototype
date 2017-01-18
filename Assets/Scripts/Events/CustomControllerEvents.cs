@@ -6,7 +6,7 @@ public class CustomControllerEvents : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         if (GetComponent<VRTK_ControllerEvents>() == null) {
-            Debug.LogError("CustomControllerEvents is required to be attached to a Controller that has the VRTK_ControllerEvents script attached to it");
+            Logger.LogError("CustomControllerEvents is required to be attached to a Controller that has the VRTK_ControllerEvents script attached to it");
             return;
         }
 

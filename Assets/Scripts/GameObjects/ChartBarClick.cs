@@ -50,7 +50,7 @@ public class ChartBarClick : VRTK_InteractableObject {
             }
         }
         else {
-            UnityEngine.Debug.LogError("Invalid Bar Chart for Using!");
+            Logger.LogError("Invalid Bar Chart for Using!");
         }
 
         SceneManager.Instance.updateSelection(label);

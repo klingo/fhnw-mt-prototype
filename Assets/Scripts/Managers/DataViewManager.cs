@@ -29,7 +29,7 @@ public class DataViewManager : ScriptableObject {
 
         // Check if key already exists
         if (dataTableDict.ContainsKey(key)) {
-            Debug.LogError("DataTable for key [" + key + "] has already been added to DataTableDictionary");
+            Logger.LogWarning("DataTable for key [" + key + "] has already been added to DataTableDictionary");
         } else {
             string query = String.Empty;
             if (month > 0) {
@@ -62,7 +62,7 @@ public class DataViewManager : ScriptableObject {
         // Check if entry for that key exists
         // if no dataView was found, log error
         if (dataTableDict.TryGetValue(key, out dataTable) == false) {
-            Debug.LogError("No DataTable found in DataTableManager for key = [" + key + "]");
+            Logger.LogError("No DataTable found in DataTableManager for key = [" + key + "]");
         } else {
             dataView = new DataView(dataTable);
         }
@@ -165,10 +165,10 @@ public class DataViewManager : ScriptableObject {
             // add it to the Dictionary
             tableRowsDict.Add(key, rows);
 
-            Debug.Log("GetTableRows returns a NEW List<string[]>");
+            Logger.Log(1,"GetTableRows returns a NEW List<string[]>   |   KEY = " + key);
         }
         else {
-            Debug.Log("GetTableRows returns a CACHED List<string[]>");
+            Logger.Log(1, "GetTableRows returns a CACHED List<string[]>   |   KEY = " + key);
         }
 
         // Now return it!
@@ -292,9 +292,9 @@ public class DataViewManager : ScriptableObject {
             chartValuesDict.Add(key, values);
             chartLabelsDict.Add(key, labels);
 
-            Debug.Log("GetBarChartValuesAndLabels returns a NEW KeyValuePair   |   KEY = " + key);
+            Logger.Log(1, "GetBarChartValuesAndLabels returns a NEW KeyValuePair   |   KEY = " + key);
         } else {
-            Debug.Log("GetBarChartValuesAndLabels returns a CACHED KeyValuePair   |   KEY = " + key);
+            Logger.Log(1, "GetBarChartValuesAndLabels returns a CACHED KeyValuePair   |   KEY = " + key);
         }
 
         // Now return it!

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Data;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class SceneManager : Singleton<SceneManager> {
     // Singleton
     protected SceneManager() { }
 
-    //--------------------------------------------------------------------------
+    //==========================================================================
 
     // Constants for CSV File location
     private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
@@ -24,7 +24,13 @@ public class SceneManager : Singleton<SceneManager> {
     public const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
     public const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
 
-    //--------------------------------------------------------------------------
+    // Time in seconds after which the controller tooltips shall disapper
+    private const float CONTROLLER_TOOLTIP_TIMEOUT = 15f;
+
+    // Whether certain debug statements should be printed or not (0 = none; 1 = some, 2 = all)
+    public const int DEBUG_LEVEL = 0;
+
+    //==========================================================================
 
     // A mapping of the GameObject name of a category, and itsuser-friendly name
     public Dictionary<string, string> gameObjectCategoryMap { get; private set; }
@@ -101,7 +107,7 @@ public class SceneManager : Singleton<SceneManager> {
     /// </summary>
     void Awake() {
         // Debug to inform that Singleton was created!
-        Debug.Log("Awoke Singleton Instance: " + gameObject.GetInstanceID());
+        Logger.Log(0, "Awoke Singleton Instance: " + gameObject.GetInstanceID());
     }
 
 
@@ -138,7 +144,7 @@ public class SceneManager : Singleton<SceneManager> {
             dataView.Sort = "[Date] ASC";
             // save it back to the DataTable
             dataTable = dataView.ToTable();
-            Debug.Log(dataView.Count + " entries loaded and sorted to DataView!");
+            Logger.Log(1, dataView.Count + " entries loaded and sorted to DataView!");
 
             // Get the first and last Date from the (sorted) DataTable.
             firstDate = (DateTime)dataTable.Rows[0]["Date"];
@@ -170,11 +176,11 @@ public class SceneManager : Singleton<SceneManager> {
             selectedYear = lastDate.Year;
         }
         else {
-            Debug.LogError(CSV_FILE_NAME + " could not be found!");
+            Logger.LogError(CSV_FILE_NAME + " could not be found!");
         }
 
         // Hides the controller tooltips after a given time
-        StartCoroutine(HideTooltipsAfterTime(10));
+        StartCoroutine(HideTooltipsAfterTime(CONTROLLER_TOOLTIP_TIMEOUT));
     }
 
 
@@ -346,7 +352,7 @@ public class SceneManager : Singleton<SceneManager> {
         _threadRunning = true;
         bool workDone = false;
 
-        Debug.Log("START THREAD");
+        Logger.Log(2, "START THREAD");
         var watch = System.Diagnostics.Stopwatch.StartNew();
 
         // This pattern lets us interrupt the work at a safe point if neeeded.
@@ -359,7 +365,7 @@ public class SceneManager : Singleton<SceneManager> {
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
-        Debug.Log("END THREAD after " + elapsedMs + " ms");
+        Logger.Log(2, "END THREAD after " + elapsedMs + " ms");
     }
 
 
@@ -432,7 +438,7 @@ public class SceneManager : Singleton<SceneManager> {
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
             if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW) {
-                //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
+                Logger.Log(2, "Chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
                 if (yearOverviewValues.Length <= 0) {
                     chartTitle += " (no data found)";
@@ -447,8 +453,8 @@ public class SceneManager : Singleton<SceneManager> {
             }
             // Look for the Month Overview Chart
             else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
-                //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
-                
+                Logger.Log(2, "Chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
+
                 if (monthOverviewValues.Length > 0) {
                     chartTitle = yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString();
                 } else {
@@ -464,7 +470,7 @@ public class SceneManager : Singleton<SceneManager> {
                 continue;
 
             } else {
-                Debug.LogError("No charts found to be updated!");
+                Logger.LogError("No charts found to be updated!");
             }
         }
     }
@@ -504,7 +510,7 @@ public class SceneManager : Singleton<SceneManager> {
                 }
             }
         } else {
-            Debug.LogError("No table found to be updated!");
+            Logger.LogError("No table found to be updated!");
         }
 
     }
@@ -541,7 +547,7 @@ public class SceneManager : Singleton<SceneManager> {
             }
         }
         else {
-            Debug.LogError("No detail found to be updated!");
+            Logger.LogError("No detail found to be updated!");
         }
 
     }
@@ -582,7 +588,7 @@ public class SceneManager : Singleton<SceneManager> {
             StartCoroutine(YieldingWork());
 
         } else {
-            Debug.LogError("Invalid Label selected!");
+            Logger.LogError("Invalid Label selected!");
         }
     }
 
@@ -624,7 +630,7 @@ public class SceneManager : Singleton<SceneManager> {
                 globalMaxThreshold += clicker.monthlyCategoryThreshold;
             }
         } else {
-            Debug.LogError("GameObject CategoryMap already initialised!");
+            Logger.LogWarning("GameObject CategoryMap already initialised!");
         }
     }
 

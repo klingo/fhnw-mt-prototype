@@ -22,7 +22,6 @@ public static class Flasher {
         bool fadeState = false;
         while (true) {
             if (fadeState) {
-                //Debug.Log("FADE IN");
                 foreach (Image image in images) {
                     // Flashing only goes back to 0.99 alpha value, in order to distinguish it with non-flasing
                     // bar that always has an alpha value of 1.00
@@ -31,7 +30,6 @@ public static class Flasher {
                 yield return new WaitForSeconds(duration);
             }
             else {
-                //Debug.Log("FADE OUT");
                 foreach (Image image in images) {
                     // Flashing only goes down to 0.51 alpha value, in order to distinguish it with non-flashing
                     // but highlighted bars that always have an alpha value of 0.50
