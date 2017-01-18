@@ -4,8 +4,6 @@ using VRTK;
 
 public class YearRowClick : VRTK_InteractableObject {
 
-    bool isHighlighted = false;
-
     public override void StartUsing(GameObject currentUsingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
