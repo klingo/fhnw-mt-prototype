@@ -268,6 +268,10 @@ public class SceneManager : Singleton<SceneManager> {
             // Update the global threshold
             globalThreshold = 0f;
 
+            // when we remove all categories, we also have to re-set the day/month selection!
+            selectedMonth = 0;
+            selectedDay = 0;
+
             // Begin our heavy work in a coroutine.
             StartCoroutine(YieldingWork(categoryIconClickers));
         }
@@ -508,6 +512,9 @@ public class SceneManager : Singleton<SceneManager> {
                 if (table.HasEntries()) {
                     table.DisplayTable(tableOverviewValues, tableTitle);
                 }
+
+                // also update the detail view (i.e. hide it)
+                updateDetailView(null);
             }
         } else {
             Logger.LogError("No table found to be updated!");
