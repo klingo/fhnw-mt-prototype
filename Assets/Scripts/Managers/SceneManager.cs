@@ -70,6 +70,7 @@ public class SceneManager : Singleton<SceneManager> {
     //--------------------------------------------------------------------------
 
     public Image selectedTableRowImage;
+    public Image selectedYearRowImage;
     public Bar selectedMonthBar;
     public Bar selectedDayBar;
 
@@ -153,7 +154,8 @@ public class SceneManager : Singleton<SceneManager> {
                 dvManager.StoreFilteredDataTable(dataTable, currYear);
 
                 // Add the current year to the year selection table
-                //yearTable.AddYearToTable(currYear);
+                YearTable yearTable = GameObject.FindObjectOfType<YearTable>();
+                yearTable.AddYearToTable(currYear);
             }
 
             // Finally, initialise the application with the latest year, as the selected one.
@@ -320,8 +322,6 @@ public class SceneManager : Singleton<SceneManager> {
             // valid day selected, update the tableOverview Values
             tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth, selectedDay);
         }
-
-        Debug.Log("complete");
     }
 
 
@@ -440,8 +440,15 @@ public class SceneManager : Singleton<SceneManager> {
             int number;
             bool isNumeric = int.TryParse(selectedLabelText, out number);
             if (isNumeric) {
-                // A day was selected, since the label is numeric
-                selectedDay = number;
+                // A day or year was selected, since the label is numeric
+                if (number > 31) {
+                    // since the number is > 31 it must be a year
+                    //selectedYear = number;
+                    //selectedMonth = 0;
+                    //selectedDay = 0;
+                } else {
+                    selectedDay = number;
+                }
             } else {
                 // As the label is not numeric, it must have been a month
                 selectedMonth = dvManager.GetMonthNoFromString(selectedLabelText);
@@ -449,7 +456,7 @@ public class SceneManager : Singleton<SceneManager> {
                 selectedDay = 0;
             }
 
-            // Since there was a change of month/day, the selected transaction has to be re-set!
+            // Since there was a change of month/day/year, the selected transaction has to be re-set!
             updateDetailView(null);
 
             // Also make sure to reset the coloured table-selection (if existing)
