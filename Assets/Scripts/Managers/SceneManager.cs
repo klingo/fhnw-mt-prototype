@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using VRTK;
 
 public class SceneManager : Singleton<SceneManager> {
 
@@ -26,7 +27,7 @@ public class SceneManager : Singleton<SceneManager> {
     //--------------------------------------------------------------------------
 
     // A mapping of the GameObject name of a category, and itsuser-friendly name
-    private Dictionary<string, string> gameObjectCategoryMap;
+    public Dictionary<string, string> gameObjectCategoryMap { get; private set; }
 
     //--------------------------------------------------------------------------
 
@@ -60,7 +61,8 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
-    float globalThreashold = 0f;
+    float globalMaxThreshold = 0f;
+    float globalThreshold = 0f;
 
     // list with financial transactions for table
     List<string[]> tableOverviewValues = new List<string[]>();
@@ -169,6 +171,9 @@ public class SceneManager : Singleton<SceneManager> {
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
         }
+
+        // Hides the controller tooltips after a given time
+        StartCoroutine(HideTooltipsAfterTime(10));
     }
 
 
@@ -190,7 +195,7 @@ public class SceneManager : Singleton<SceneManager> {
                 activeCategories.Add(categoryName);
 
                 // Update the global threshold
-                globalThreashold += monthlyCategoryThreshold;
+                globalThreshold += monthlyCategoryThreshold;
 
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
@@ -216,7 +221,7 @@ public class SceneManager : Singleton<SceneManager> {
                 activeCategories.Remove(categoryName);
 
                 // Update the global threshold
-                globalThreashold -= monthlyCategoryThreshold;
+                globalThreshold -= monthlyCategoryThreshold;
 
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
@@ -225,7 +230,48 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    public void removeAllGameObjectsFromCategoryFilter() {
+        // only proceed if no other processing is ongoing
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
+        }
+    }
+
+
+    public void addAllGameObjectsToCategoryFilter() {
+        // only proceed if no other processing is ongoing
+        Debug.Log("111");
+        if (!isCategoryBeingProcessed) {
+            // ENABLE the blocker
+            isCategoryBeingProcessed = true;
+            Debug.Log("222");
+            CategoryIconClick[] clickerClasses = gameObject.GetComponents<CategoryIconClick>();
+            Debug.Log("clickerClasses.Length=" + clickerClasses.Length);
+            foreach (CategoryIconClick clicker in clickerClasses) {
+                clicker.GetComponentInParent<Renderer>().material.color = clicker.loadingColor;
+
+                Debug.Log("Is this my name? " + clicker.GetComponentInParent<GameObject>().name);
+
+                //activeCategories.Add(categoryName);
+
+                globalThreshold = globalMaxThreshold;
+
+                // Begin our heavy work in a coroutine.
+                //StartCoroutine(YieldingWork(clickerClasses));
+            }
+        }
+    }
+
+
     IEnumerator YieldingWork(CategoryIconClick iconClickerClass = null) {
+        CategoryIconClick[] clickerAry = new CategoryIconClick[1];
+        clickerAry[0] = iconClickerClass;
+        return YieldingWork(clickerAry);
+    }
+
+
+    IEnumerator YieldingWork(CategoryIconClick[] iconClickerClasses) {
         bool workDone = false;
 
         // Begin our heavy work on a new thread.
@@ -242,15 +288,21 @@ public class SceneManager : Singleton<SceneManager> {
                 updateBarCharts();
                 updateTable();
 
-                if (iconClickerClass != null) {
-                    iconClickerClass.SetFinalColor();
-
-                    // RELEASE the blocker
-                    isCategoryBeingProcessed = false;
+                // Set the final color!
+                if (iconClickerClasses != null) {
+                    foreach (CategoryIconClick clicker in iconClickerClasses) {
+                        if (clicker != null) {
+                            clicker.SetFinalColor();
+                        }
+                    }
                 }
+
+                // RELEASE the blocker
+                isCategoryBeingProcessed = false;
+
                 workDone = true;
             }
-        }
+        } 
     }
 
     void ThreadedWork() {
@@ -351,7 +403,7 @@ public class SceneManager : Singleton<SceneManager> {
 
                 // update this chart with its corresponding data
                 // in this case, [yearOverviewLabels] and [yearOverviewValues] should already be empty because of [GetBarChartValuesAndLabels();]
-                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, chartTitle, globalThreashold);
+                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, chartTitle, globalThreshold);
 
                 // continue with next chart
                 continue;
@@ -369,7 +421,7 @@ public class SceneManager : Singleton<SceneManager> {
 
                 // update this chart with its corresponding data
                 // in this case, [monthOverviewLabels] and [monthOverviewValues] should already be empty because of [updateArrayLists();]
-                barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreashold);
+                barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreshold);
 
                 // continue with next chart
                 continue;
@@ -512,20 +564,49 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     private void InitGameObjectCategoryMap() {
-        gameObjectCategoryMap = new Dictionary<string, string>();
-        gameObjectCategoryMap.Add("Movie", "Communication & media");
-        gameObjectCategoryMap.Add("MedicalBox", "Health");
-        gameObjectCategoryMap.Add("ShoppingCart", "Household");
-        //gameObjectCategoryMap.Add("tbd", "Income & credits"); // out of scope since it is not an expense, but an income
-        gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
-        gameObjectCategoryMap.Add("House", "Living & energy");
-        gameObjectCategoryMap.Add("Others", "Other expenses");
-        gameObjectCategoryMap.Add("Person", "Personal expenditure");
-        gameObjectCategoryMap.Add("Taxes", "Taxes & duties");
-        gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
-        gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
-        gameObjectCategoryMap.Add("Cash", "Withdrawals");
-        //gameObjectCategoryMap.Add("PiggyBank", "tbd");
+        if (globalMaxThreshold == 0) {
+            gameObjectCategoryMap = new Dictionary<string, string>();
+
+            gameObjectCategoryMap.Add("Movie", "Communication & media");
+            gameObjectCategoryMap.Add("MedicalBox", "Health");
+            gameObjectCategoryMap.Add("ShoppingCart", "Household");
+            //gameObjectCategoryMap.Add("tbd", "Income & credits"); // out of scope since it is not an expense, but an income
+            gameObjectCategoryMap.Add("Football", "Leisure time, sport & hobby");
+            gameObjectCategoryMap.Add("House", "Living & energy");
+            gameObjectCategoryMap.Add("Others", "Other expenses");
+            gameObjectCategoryMap.Add("Person", "Personal expenditure");
+            gameObjectCategoryMap.Add("Taxes", "Taxes & duties");
+            gameObjectCategoryMap.Add("Car", "Traffic, car & transport");
+            gameObjectCategoryMap.Add("Airplane", "Vacation & travel");
+            gameObjectCategoryMap.Add("Cash", "Withdrawals");
+            //gameObjectCategoryMap.Add("PiggyBank", "tbd");
+
+            // now loop through all categories, to evaluate the maximum overall threshold (for when all categories are activated
+            CategoryIconClick[] clickersAry = GameObject.FindObjectsOfType<CategoryIconClick>();
+            foreach (CategoryIconClick clicker in clickersAry) {
+                globalMaxThreshold += clicker.monthlyCategoryThreshold;
+            }
+
+            Debug.Log("globalMaxThreshold=" + globalMaxThreshold);
+
+        } else {
+            Debug.LogError("GameObject CategoryMap already initialised!");
+        }
+    }
+
+
+    /// <summary>
+    /// Hides the controller tooltips after a given time
+    /// </summary>
+    /// <param name="time">Time in seconds until the controller tooltips shall be hidden</param>
+    /// <returns></returns>
+    IEnumerator HideTooltipsAfterTime(float time) {
+        yield return new WaitForSeconds(time);
+        VRTK_ControllerTooltips[] tooltips = GameObject.FindObjectsOfType<VRTK_ControllerTooltips>();
+        foreach (VRTK_ControllerTooltips tooltip in tooltips) {
+            tooltip.ToggleTips(false);
+        }
+        yield break;
     }
 
 
