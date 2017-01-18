@@ -249,6 +249,8 @@ public class DataViewManager : ScriptableObject {
                 values = new float[12];
                 labels = new string[12];
 
+                float totalYearAmount = 0f;
+
                 // now create the data-list for the chart
                 for (int currMonth = 1; currMonth < 13; currMonth++) {
                     int daysInMonth = DateTime.DaysInMonth(year, currMonth);
@@ -275,6 +277,15 @@ public class DataViewManager : ScriptableObject {
                     values[currMonth - 1] = totalMonthAmount;
                     // also prepare the labels array
                     labels[currMonth - 1] = yearOverviewLabels[currMonth - 1];
+                    // also su up the year total
+                    totalYearAmount += totalMonthAmount;
+                }
+
+                // all calculations are done, check the year total
+                if (totalYearAmount == 0f) {
+                    // no data was found at all, resetting values and keys
+                    values = new float[] { };
+                    labels = new string[] { };
                 }
             }
 

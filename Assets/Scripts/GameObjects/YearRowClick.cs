@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using VRTK;
 
 public class YearRowClick : VRTK_InteractableObject {
-
-    Color highlightColor = new Color(0.9f, 0.9f, 1);
-    Color selectedColor = new Color(0.7f, 0.7f, 1);
 
     bool isHighlighted = false;
 
@@ -29,7 +24,7 @@ public class YearRowClick : VRTK_InteractableObject {
 
             // color it according to the [selectedColor]
             Image newImage = currentUsingObject.GetComponentInChildren<Image>();
-            newImage.color = selectedColor;
+            newImage.color = SceneManager.Instance.selectedRowColor;
             // store the (new) image of the new bar as the reference
             SceneManager.Instance.selectedYearRowImage = newImage;
 
@@ -51,7 +46,6 @@ public class YearRowClick : VRTK_InteractableObject {
                 SceneManager.Instance.selectedMonthBar = null;
             }
 
-
             // Update all the Tables/Views
             SceneManager.Instance.updateSelection(yearHolder.yearText.text);
         }
@@ -60,7 +54,7 @@ public class YearRowClick : VRTK_InteractableObject {
     public override void StartTouching(GameObject currentTouchingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
-            gameObject.GetComponent<Image>().CrossFadeColor(highlightColor, 0.1f, false, false);
+            gameObject.GetComponent<Image>().CrossFadeColor(SceneManager.Instance.highlightRowColor, 0.1f, false, false);
             base.StartTouching(currentTouchingObject);
         }
     }

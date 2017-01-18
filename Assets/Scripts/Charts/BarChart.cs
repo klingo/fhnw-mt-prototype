@@ -48,8 +48,14 @@ public class BarChart : MonoBehaviour {
     /// </summary>
     public void DisplayGraph(string[] labels, float[] inputValues, string title, float threshold) {
 
-        float maxValue = inputValues.Max();
-        float normalizedThresholdValue = threshold / maxValue;
+        float maxValue = 0;
+        float normalizedThresholdValue = 0;
+
+        // check if there are indeed values, otherwise remain maxValue and normalizedThreshold on 0
+        if (inputValues.Any<float>()) {
+            maxValue = inputValues.Max();
+            normalizedThresholdValue = threshold / maxValue;
+        }
 
         string previousBarValueLabel = string.Empty;
 
@@ -172,17 +178,25 @@ public class BarChart : MonoBehaviour {
             }
         }
 
-
         // Clean up potentially no longer required bars (e.g. when changing from December to November (31 -> 30 bars)
-        while(barHolders.Count > labels.Length) {
+        while (barHolders.Count > labels.Length) {
             // First get the Bar
             Bar barToRemove = barHolders.ElementAt(barHolders.Count - 1);
             // then remove it from the barHolders-List
             barHolders.Remove(barToRemove);
             // then detach it from its parent
-            barToRemove.transform.SetParent(null);
+                            //barToRemove.transform.SetParent(null);
             // Finally, destroy the GameObject
+            barToRemove.name = "DELETE THIS BAR";
+            barToRemove.gameObject.SetActive(false);
+            barToRemove.enabled = false;
+            barToRemove.transform.localScale = Vector3.zero;
+            barToRemove.transform.localPosition = Vector3.zero;
+            GameObject.Destroy(barToRemove);
+            GameObject.DestroyImmediate(barToRemove, true);
+            DestroyImmediate(barToRemove, true);
             Destroy(barToRemove);
+            barToRemove = null;
         }
 
 
@@ -193,7 +207,7 @@ public class BarChart : MonoBehaviour {
             thresholdLineOffsetY = rtThresholdLine.transform.localPosition.y;
         }
 
-        if (normalizedThresholdValue > 1) {
+        if (double.IsNaN(normalizedThresholdValue) || normalizedThresholdValue > 1) {
             thresholdLine.enabled = false;
             thresholdValueLabel.enabled = false;
         } else {

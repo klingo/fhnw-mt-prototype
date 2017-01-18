@@ -4,9 +4,6 @@ using VRTK;
 
 public class TableRowClick : VRTK_InteractableObject {
 
-    Color highlightColor = new Color(0.9f, 0.9f, 1);
-    Color selectedColor = new Color(0.7f, 0.7f, 1);
-
 
     public override void StartUsing(GameObject currentUsingObject) {
         // User clicked on a row!
@@ -22,7 +19,7 @@ public class TableRowClick : VRTK_InteractableObject {
 
         // color it according to the [selectedColor]
         Image newImage = currentUsingObject.GetComponentInChildren<Image>();
-        newImage.color = selectedColor;
+        newImage.color = SceneManager.Instance.selectedRowColor;
         // store the (new) image of the new bar as the reference
         SceneManager.Instance.selectedTableRowImage = newImage;
 
@@ -37,8 +34,8 @@ public class TableRowClick : VRTK_InteractableObject {
         base.StartTouching(currentTouchingObject);
 
         Image image = currentTouchingObject.GetComponentInChildren<Image>();
-        if (image.color != selectedColor) {
-            image.CrossFadeColor(highlightColor, 0.1f, false, false);
+        if (image.color != SceneManager.Instance.selectedRowColor) {
+            image.CrossFadeColor(SceneManager.Instance.highlightRowColor, 0.1f, false, false);
         }
     }
 
@@ -46,7 +43,7 @@ public class TableRowClick : VRTK_InteractableObject {
         base.StopTouching(previousTouchingObject);
 
         Image image = previousTouchingObject.GetComponentInChildren<Image>();
-        if (image.color != selectedColor) {
+        if (image.color != SceneManager.Instance.selectedRowColor) {
             image.CrossFadeColor(Color.white, 0.1f, false, false);
         }
     }

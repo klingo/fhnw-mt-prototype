@@ -47,6 +47,11 @@ public class SceneManager : Singleton<SceneManager> {
 
     //--------------------------------------------------------------------------
 
+    public Color highlightRowColor = new Color(0.9f, 0.9f, 1);
+    public Color selectedRowColor = new Color(0.7f, 0.7f, 1);
+
+    //--------------------------------------------------------------------------
+
     // array values for charts
     float[] yearOverviewValues = new float[12];
     float[] monthOverviewValues = new float[31];
@@ -265,7 +270,7 @@ public class SceneManager : Singleton<SceneManager> {
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
-        Debug.Log("END THREAD after " + (elapsedMs / 1000) + " s");
+        Debug.Log("END THREAD after " + elapsedMs + " ms");
     }
 
 
@@ -307,20 +312,24 @@ public class SceneManager : Singleton<SceneManager> {
             monthOverviewLabels = kvp.Key;
             monthOverviewValues = kvp.Value;
 
-            if (!validDay) {
+            if (validDay) {
+                // valid day selected, update the tableOverview Values
+                tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth, selectedDay);
+            }
+            else {
                 // No valid day selected
-                // In this case, also update the tableOverview Values
+                // In this case, also update the tableOverview Values, but without a Day
                 tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth);
             }
-        } else {
+        }
+        else {
             monthOverviewLabels = new string[] { };
             monthOverviewValues = new float[] { };
-        }
 
-        // Finally check the DAY
-        if (validDay) {
-            // valid day selected, update the tableOverview Values
-            tableOverviewValues = dvManager.GetTableRows(selectedYear, selectedMonth, selectedDay);
+            if (!validDay) {
+                // if also no valid day, then reset the Table
+                tableOverviewValues = null;
+            }
         }
     }
 
@@ -329,36 +338,42 @@ public class SceneManager : Singleton<SceneManager> {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
-        string chartTitle = String.Empty;
+        string chartTitle = selectedYear.ToString();
 
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
-            if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
+            if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW) {
                 //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
-                chartTitle = selectedYear.ToString();
+                if (yearOverviewValues.Length <= 0) {
+                    chartTitle += " (no data found)";
+                }
+
                 // update this chart with its corresponding data
+                // in this case, [yearOverviewLabels] and [yearOverviewValues] should already be empty because of [GetBarChartValuesAndLabels();]
                 barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, chartTitle, globalThreashold);
 
                 // continue with next chart
                 continue;
-            } else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW && monthOverviewValues.Length > 0) {
-                // Look for the Year Overview Chart
-                if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
-                    //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
-
+            }
+            // Look for the Month Overview Chart
+            else if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
+                //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
+                
+                if (monthOverviewValues.Length > 0) {
                     chartTitle = yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString();
-                    // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreashold);
-
-                    // continue with next chart
-                    continue;
+                } else {
+                    // No month was selected, which is also a valid case
+                    chartTitle = "Month Overview (no month selected)";
                 }
-            } else if (selectedMonth == 0) {
-                // No month was selected, which is also a valid case
+
+                // update this chart with its corresponding data
+                // in this case, [monthOverviewLabels] and [monthOverviewValues] should already be empty because of [updateArrayLists();]
+                barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreashold);
 
                 // continue with next chart
                 continue;
+
             } else {
                 Debug.LogError("No charts found to be updated!");
             }
@@ -370,6 +385,8 @@ public class SceneManager : Singleton<SceneManager> {
         // Get the first (and only) Table
         Table table = GameObject.FindObjectOfType<Table>();
 
+        string tableTitle = "Day Overview";
+
         if (table != null) {
             // if value list is not empty
             bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
@@ -377,7 +394,7 @@ public class SceneManager : Singleton<SceneManager> {
 
             // at least a valid month must be provided for the Table to be updated
             if (validMonth) {
-                string tableTitle = yearOverviewLabels[selectedMonth - 1] + " ";    // e.g. [January ]
+                tableTitle = yearOverviewLabels[selectedMonth - 1] + " ";    // e.g. [January ]
                 if (validDay) {
                     tableTitle += selectedDay.ToString() + ", ";                    // e.g. [January 10, ]
                 }
@@ -389,6 +406,12 @@ public class SceneManager : Singleton<SceneManager> {
                 Row firstRow = table.GetFirstRowIfOnlyOneExists();
                 if (firstRow != null) {
                     updateDetailView(firstRow);
+                }
+                
+            } else {
+                // no (valid) month provided
+                if (table.HasEntries()) {
+                    table.DisplayTable(tableOverviewValues, tableTitle);
                 }
             }
         } else {
@@ -443,9 +466,9 @@ public class SceneManager : Singleton<SceneManager> {
                 // A day or year was selected, since the label is numeric
                 if (number > 31) {
                     // since the number is > 31 it must be a year
-                    //selectedYear = number;
-                    //selectedMonth = 0;
-                    //selectedDay = 0;
+                    selectedYear = number;
+                    selectedMonth = 0;
+                    selectedDay = 0;
                 } else {
                     selectedDay = number;
                 }

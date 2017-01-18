@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VRTK;
@@ -7,6 +6,7 @@ using VRTK;
 public class ChartBarClick : VRTK_InteractableObject {
 
     public override void StartUsing(GameObject currentUsingObject) {
+
         base.StartUsing(currentUsingObject);
 
         Bar previousBarChart;
@@ -50,7 +50,7 @@ public class ChartBarClick : VRTK_InteractableObject {
             }
         }
         else {
-            Debug.LogError("Invalid Bar Chart for Using!");
+            UnityEngine.Debug.LogError("Invalid Bar Chart for Using!");
         }
 
         SceneManager.Instance.updateSelection(label);

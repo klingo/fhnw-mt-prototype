@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class YearTable : MonoBehaviour {
 
     [Header("[Year]", order = 0)]
     public Year yearHolderPrefab;
-
 
     List<Year> yearHolders = new List<Year>();
 
@@ -27,6 +26,14 @@ public class YearTable : MonoBehaviour {
 
         // Set the label
         newYearHolder.yearText.text = year.ToString();
+
+        if (yearHolders.Count == 0) {
+            // This is the first year we add, and thus also the pre-selected one
+            Image firstYearImage = newYearHolder.GetComponent<Image>();
+            firstYearImage.color = SceneManager.Instance.selectedRowColor;
+            // store it in the scenemanager so it can be properly de-selected
+            SceneManager.Instance.selectedYearRowImage = firstYearImage;
+        }
 
         // Finally, add the bar to the list
         yearHolders.Add(newYearHolder);
