@@ -91,7 +91,6 @@ public class ChartBarClick : VRTK_InteractableObject {
         List<Image> images = new List<Image>(previousTouchingObject.GetComponentsInChildren<Image>());
         foreach (Image image in images) {
             // Only revert the highlight, if it currently is being highlighted, but NOT flashing
-            Debug.Log("image.color.a = " + image.color.a);
             if (image.color.a == 0.5f) {
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
             }

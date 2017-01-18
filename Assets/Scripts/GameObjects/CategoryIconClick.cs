@@ -20,45 +20,60 @@ public class CategoryIconClick : VRTK_InteractableObject {
     bool isLoading = false;
 
     public override void StartUsing(GameObject usingObject) {
-        base.StartUsing(usingObject);
+        // If category processing is already going on... do NOTHING
+        if (!SceneManager.Instance.isCategoryBeingProcessed) {
+            // change activation state
+            isActivated = !isActivated;
 
-        // change activation state
-        isActivated = !isActivated;
-        // indicate that loading started
-        isLoading = true;
+            base.StartUsing(usingObject);
 
-        if (isActivated) {
-            SceneManager.Instance.addGameObjectToCategoryFilter(gameObject, monthlyCategoryThreshold);
-        }
-        else {
-            SceneManager.Instance.removeGameObjectFromCategoryFilter(gameObject, monthlyCategoryThreshold);
+            // indicate that loading started
+            isLoading = true;
+
+            if (isActivated) {
+                SceneManager.Instance.addGameObjectToCategoryFilter(gameObject, monthlyCategoryThreshold);
+            }
+            else {
+                SceneManager.Instance.removeGameObjectFromCategoryFilter(gameObject, monthlyCategoryThreshold);
+            }
         }
     }
 
 
     public override void StartTouching(GameObject currentTouchingObject) {
-        base.StartTouching(currentTouchingObject);
-
-        if (!isActivated) {
-            // when NOT activated, allow a highlight color
-            gameObject.GetComponent<Renderer>().material.color = highlightColorInactive;
-        } else if(!isLoading) {
-            // when activated and NOT loading anymore, allow a highlight color as well
-            gameObject.GetComponent<Renderer>().material.color = highlightColorActive;
+        // If category processing is already going on... do NOTHING
+        if (!SceneManager.Instance.isCategoryBeingProcessed) {
+            if (!isLoading) {
+                // Only update the highlight colour, when NOT loading
+                if (isActivated) {
+                    // when activated, allow a highlight color
+                    gameObject.GetComponent<Renderer>().material.color = highlightColorActive;
+                }
+                else {
+                    // when NOT activated, allow a highlight color as well
+                    gameObject.GetComponent<Renderer>().material.color = highlightColorInactive;
+                }
+            }
+            base.StartTouching(currentTouchingObject);
         }
     }
 
 
     public override void StopTouching(GameObject previousTouchingObject) {
-        base.StopTouching(previousTouchingObject);
-
-        if (!isActivated) {
-            // when NOT activated, remove a highlight color
-            gameObject.GetComponent<Renderer>().material.color = inactiveColor;
-        }
-        else if (!isLoading) {
-            // when activated and NOT loading anymore, remove a highlight color as well
-            gameObject.GetComponent<Renderer>().material.color = activeColor;
+        // If category processing is already going on... do NOTHING
+        if (!SceneManager.Instance.isCategoryBeingProcessed) {
+            if (!isLoading) {
+                // Only update the highlight colour, when NOT loading
+                if (isActivated) {
+                    // when activated, remove a highlight color
+                    gameObject.GetComponent<Renderer>().material.color = activeColor;
+                }
+                else {
+                    // when NOT activated, remove a highlight color as well
+                    gameObject.GetComponent<Renderer>().material.color = inactiveColor;
+                }
+            }
+            base.StopTouching(previousTouchingObject);
         }
     }
 

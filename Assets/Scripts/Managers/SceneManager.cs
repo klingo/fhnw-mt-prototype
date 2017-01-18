@@ -63,7 +63,7 @@ public class SceneManager : Singleton<SceneManager> {
     //--------------------------------------------------------------------------
 
     // selected values
-    int selectedYear = 2016;
+    int selectedYear;
     int selectedMonth;
     int selectedDay;
 
@@ -76,7 +76,7 @@ public class SceneManager : Singleton<SceneManager> {
     //--------------------------------------------------------------------------
 
     // Blockers for Category processing
-    private bool isCategoryBeingProcessed = false;
+    public bool isCategoryBeingProcessed = false;
 
     //--------------------------------------------------------------------------
 
@@ -135,18 +135,29 @@ public class SceneManager : Singleton<SceneManager> {
             firstDate = (DateTime)dataTable.Rows[0]["Date"];
             lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
             // Create all DataViews in the DataViewManager
-            for (int currYear = firstDate.Year; currYear <= lastDate.Year; currYear++) {
+            for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
+                int startMonth = 1;
                 int endMonth = 12;
                 if (currYear == lastDate.Year) {
                     // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
                     endMonth = lastDate.Month;
                 }
-                for (int currMonth = firstDate.Month; currMonth <= endMonth; currMonth++) {
+                if (currYear == firstDate.Year) {
+                    // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
+                    startMonth = firstDate.Month;
+                }
+                for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
                     dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
                 }
                 // Also store a table for the year
                 dvManager.StoreFilteredDataTable(dataTable, currYear);
+
+                // Add the current year to the year selection table
+                //yearTable.AddYearToTable(currYear);
             }
+
+            // Finally, initialise the application with the latest year, as the selected one.
+            selectedYear = lastDate.Year;
         }
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
