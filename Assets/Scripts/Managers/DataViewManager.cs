@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using UnityEngine;
 
 public class DataViewManager : ScriptableObject {
@@ -124,6 +124,8 @@ public class DataViewManager : ScriptableObject {
                 endDay = day;
             }
 
+            CultureInfo provider = CultureInfo.InvariantCulture;
+
             for (int currDay = startDay; currDay <= endDay; currDay++) {
                 // prepare query for single day
                 query = "[Date] = #" + new DateTime(year, month, currDay).ToString("MM/dd/yyyy") + "#";
@@ -134,9 +136,9 @@ public class DataViewManager : ScriptableObject {
                     // go through every single transaction of a day
                     foreach (DataRowView rowView in dataView) {
                         DataRow row = rowView.Row;
-                        string[] rowAry = new string[5];
+                        string[] rowAry = new string[9];
                         // Date
-                        rowAry[0] = row["Date"].ToString();
+                        rowAry[0] = DateTime.Parse(row["Date"].ToString()).ToString("dd.MM.yyyy");
                         // Recipient
                         rowAry[1] = row["Recipient / Order issuer"].ToString();
                         // Currency
@@ -145,6 +147,15 @@ public class DataViewManager : ScriptableObject {
                         rowAry[3] = row["Amount"].ToString();
                         //Category
                         rowAry[4] = row["Main category"].ToString();
+
+                        // Account name
+                        rowAry[5] = row["Account name"].ToString();
+                        // Account no
+                        rowAry[6] = row["Account no."].ToString();
+                        // BookingText
+                        rowAry[7] = row["Booking text"].ToString();
+                        // Subcategory
+                        rowAry[8] = row["Subcategory"].ToString();
 
                         rows.Add(rowAry);
                     }

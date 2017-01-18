@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Data;
-using UnityEngine;
 using System.Text.RegularExpressions;
-using System;
 using System.Threading;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class SceneManager : Singleton<SceneManager> {
 
@@ -19,8 +20,8 @@ public class SceneManager : Singleton<SceneManager> {
     private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
 
     // Constants for names of the different charts
-    private const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
-    private const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
+    public const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
+    public const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
 
     //--------------------------------------------------------------------------
 
@@ -38,6 +39,7 @@ public class SceneManager : Singleton<SceneManager> {
     private DataTable dataTable;
     private DataView dataView;
     private DataViewManager dvManager;
+    private Detail detailPanel;
 
     // The first and last Date from the (sorted) DataTable.
     private DateTime firstDate;
@@ -53,20 +55,28 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
+    float globalThreashold = 0f;
+
     // list with financial transactions for table
     List<string[]> tableOverviewValues = new List<string[]>();
 
     //--------------------------------------------------------------------------
 
     // selected values
-    int selectedYear = 2016;
+    int selectedYear;
     int selectedMonth;
     int selectedDay;
 
     //--------------------------------------------------------------------------
 
+    public Image selectedTableRowImage;
+    public Bar selectedMonthBar;
+    public Bar selectedDayBar;
+
+    //--------------------------------------------------------------------------
+
     // Blockers for Category processing
-    private bool isCategoryBeingProcessed = false;
+    public bool isCategoryBeingProcessed = false;
 
     //--------------------------------------------------------------------------
 
@@ -101,6 +111,10 @@ public class SceneManager : Singleton<SceneManager> {
             monthOverviewLabels[i] = (i + 1).ToString();
         }
 
+        // Get the first (and only) Detail View, and store it (so it can be hidden)
+        detailPanel = GameObject.FindObjectOfType<Detail>();
+        detailPanel.gameObject.SetActive(false);
+
         // Prepare CSV path
         string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
         string csvFilePath = csvFolderPath + CSV_FILE_NAME;
@@ -121,18 +135,29 @@ public class SceneManager : Singleton<SceneManager> {
             firstDate = (DateTime)dataTable.Rows[0]["Date"];
             lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
             // Create all DataViews in the DataViewManager
-            for (int currYear = firstDate.Year; currYear <= lastDate.Year; currYear++) {
+            for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
+                int startMonth = 1;
                 int endMonth = 12;
                 if (currYear == lastDate.Year) {
                     // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
                     endMonth = lastDate.Month;
                 }
-                for (int currMonth = firstDate.Month; currMonth <= endMonth; currMonth++) {
+                if (currYear == firstDate.Year) {
+                    // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
+                    startMonth = firstDate.Month;
+                }
+                for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
                     dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
                 }
                 // Also store a table for the year
                 dvManager.StoreFilteredDataTable(dataTable, currYear);
+
+                // Add the current year to the year selection table
+                //yearTable.AddYearToTable(currYear);
             }
+
+            // Finally, initialise the application with the latest year, as the selected one.
+            selectedYear = lastDate.Year;
         }
         else {
             Debug.LogError(CSV_FILE_NAME + " could not be found!");
@@ -140,7 +165,7 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
-    public void addGameObjectToCategoryFilter(GameObject gameObject) {
+    public void addGameObjectToCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
@@ -156,8 +181,9 @@ public class SceneManager : Singleton<SceneManager> {
                 gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
 
                 activeCategories.Add(categoryName);
-                //Debug.Log("Category [" + categoryName + "] added to filter!");
-                //Debug.Log(activeCategories.Count + " entries");
+
+                // Update the global threshold
+                globalThreashold += monthlyCategoryThreshold;
 
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
@@ -165,7 +191,7 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
-    public void removeGameObjectFromCategoryFilter(GameObject gameObject) {
+    public void removeGameObjectFromCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
             // ENABLE the blocker
@@ -181,8 +207,9 @@ public class SceneManager : Singleton<SceneManager> {
                 gameObject.GetComponent<Renderer>().material.color = clickerClass.loadingColor;
 
                 activeCategories.Remove(categoryName);
-                //Debug.Log("Category [" + categoryName + "] removed from filter!");
-                //Debug.Log(activeCategories.Count + " entries");
+
+                // Update the global threshold
+                globalThreashold -= monthlyCategoryThreshold;
 
                 // Begin our heavy work in a coroutine.
                 StartCoroutine(YieldingWork(clickerClass));
@@ -302,13 +329,16 @@ public class SceneManager : Singleton<SceneManager> {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
 
+        string chartTitle = String.Empty;
+
         for (int i = 0; i < barCharts.Length; i++) {
             // Look for the Year Overview Chart
             if (barCharts[i].name == CHART_NAME_YEAR_OVERVIEW && yearOverviewValues.Length > 0) {
                 //Debug.Log("chart [" + CHART_NAME_YEAR_OVERVIEW + "] found");
 
+                chartTitle = selectedYear.ToString();
                 // update this chart with its corresponding data
-                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, selectedYear.ToString());
+                barCharts[i].DisplayGraph(yearOverviewLabels, yearOverviewValues, chartTitle, globalThreashold);
 
                 // continue with next chart
                 continue;
@@ -317,8 +347,9 @@ public class SceneManager : Singleton<SceneManager> {
                 if (barCharts[i].name == CHART_NAME_MONTH_OVERVIEW) {
                     //Debug.Log("chart [" + CHART_NAME_MONTH_OVERVIEW + "] found");
 
+                    chartTitle = yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString();
                     // update this chart with its corresponding data
-                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, yearOverviewLabels[selectedMonth - 1] + " " + selectedYear.ToString());
+                    barCharts[i].DisplayGraph(monthOverviewLabels, monthOverviewValues, chartTitle, globalThreashold);
 
                     // continue with next chart
                     continue;
@@ -328,14 +359,15 @@ public class SceneManager : Singleton<SceneManager> {
 
                 // continue with next chart
                 continue;
+            } else {
+                Debug.LogError("No charts found to be updated!");
             }
-            Debug.LogError("No charts found to be updated!");
         }
     }
 
 
     private void updateTable() {
-        // Get the first Tables
+        // Get the first (and only) Table
         Table table = GameObject.FindObjectOfType<Table>();
 
         if (table != null) {
@@ -352,9 +384,52 @@ public class SceneManager : Singleton<SceneManager> {
                 tableTitle += selectedYear.ToString();                              // e.g. [January 10, 2016] or [January 2016]
 
                 table.DisplayTable(tableOverviewValues, tableTitle);
+
+                // if there is exactly one result, also show the detail view
+                Row firstRow = table.GetFirstRowIfOnlyOneExists();
+                if (firstRow != null) {
+                    updateDetailView(firstRow);
+                }
             }
         } else {
             Debug.LogError("No table found to be updated!");
+        }
+
+    }
+
+    public void updateDetailView(Row rowHolder) {
+
+        // Check the Detail View Panel
+        if (detailPanel != null) {
+            // if selected transaction is not empty
+            if (rowHolder != null) {
+                detailPanel.gameObject.SetActive(true);
+
+                // Date
+                detailPanel.dateText.text = rowHolder.dateText.text;
+                // Recipient / Order issue
+                detailPanel.recipientText.text = rowHolder.recipientText.text;
+                // Account no. / Account name
+                detailPanel.accountNoNameText.text = rowHolder.accountNo;
+                string accountName = rowHolder.accountName;
+                if (!String.IsNullOrEmpty(accountName)) {
+                    detailPanel.accountNoNameText.text += " / " + accountName;
+                }
+                // Currency / Amount
+                detailPanel.currencyAmountText.text = rowHolder.currencyText.text + " " + rowHolder.amountText.text;
+                // Booking text
+                detailPanel.bookingTextText.text = rowHolder.bookingText;
+                // Main category
+                detailPanel.mainCategoryText.text = rowHolder.categoryText.text;
+                // Subcategory
+                detailPanel.subcategoryText.text = rowHolder.subcategory;
+
+            } else {
+                detailPanel.gameObject.SetActive(false);
+            }
+        }
+        else {
+            Debug.LogError("No detail found to be updated!");
         }
 
     }
@@ -373,6 +448,17 @@ public class SceneManager : Singleton<SceneManager> {
                 // when the selected month changes, reset the selected day!
                 selectedDay = 0;
             }
+
+            // Since there was a change of month/day, the selected transaction has to be re-set!
+            updateDetailView(null);
+
+            // Also make sure to reset the coloured table-selection (if existing)
+            if (selectedTableRowImage != null) {
+                selectedTableRowImage.CrossFadeColor(Color.white, 0.1f, false, false);
+                selectedTableRowImage.color = Color.white;
+                selectedTableRowImage = null;
+            }
+
             // Finally, update the charts
             StartCoroutine(YieldingWork());
 

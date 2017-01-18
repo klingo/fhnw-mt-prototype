@@ -55,12 +55,18 @@ public class Table : MonoBehaviour {
             // Set the color of the row
             // TODO: newRowHolder.rowImage
 
-            // Set the vlaues of the rown
+            // Set the values of the rown
             newRowHolder.dateText.text = currTableRow[0];
             newRowHolder.recipientText.text = currTableRow[1];
             newRowHolder.currencyText.text = currTableRow[2];
             newRowHolder.amountText.text = Single.Parse(currTableRow[3]).ToString("#,##0.00", modCulture);
             newRowHolder.categoryText.text = currTableRow[4];
+
+            // Also store the other values, for the detail view later on
+            newRowHolder.accountName = currTableRow[5];
+            newRowHolder.accountNo = currTableRow[6];
+            newRowHolder.bookingText = currTableRow[7];
+            newRowHolder.subcategory = currTableRow[8];
 
             // Finally, add the bar to the list
             if (!reuseRow) {
@@ -79,5 +85,17 @@ public class Table : MonoBehaviour {
             // Finally, destroy the GameObject
             Destroy(rowToRemove);
         }
+    }
+
+
+    /// <summary>
+    /// Returns the first [Row] object, if there is only one existing. In all other cases, [null] will be returned.
+    /// </summary>
+    /// <returns></returns>
+    public Row GetFirstRowIfOnlyOneExists() {
+        if (rowHolders.Count == 1) {
+            return rowHolders.ElementAt<Row>(0);
+        }
+        return null;
     }
 }
