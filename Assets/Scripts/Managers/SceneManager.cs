@@ -38,10 +38,6 @@ public class SceneManager : Singleton<SceneManager> {
 
     //==========================================================================
 
-    // Constants for CSV File location
-    private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
-    private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
-
     // Constants for names of the different charts
     public const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
     public const string CHART_NAME_MONTH_OVERVIEW = "BarChart-MonthOverview";
@@ -153,52 +149,66 @@ public class SceneManager : Singleton<SceneManager> {
         detailPanel.gameObject.SetActive(false);
 
         // Prepare CSV path
-        string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
-        string csvFilePath = csvFolderPath + CSV_FILE_NAME;
+        string rootDir = Directory.GetCurrentDirectory();
+        string csvFilePath = "N/A";
+        // get all CSV files under that path
+        string[] files = Directory.GetFiles(rootDir, "*.csv");
 
-        // If CSV exist, load it into a DataTable/DataView
-        if (File.Exists(csvFilePath)) {
-            dvManager = DataViewManager.CreateInstance<DataViewManager>();
-
-            dataTable = ConvertCSVtoDataTable(csvFilePath);
-            dataView = new DataView(dataTable);
-            // sort the DataView by Date
-            dataView.Sort = "[Date] ASC";
-            // save it back to the DataTable
-            dataTable = dataView.ToTable();
-            Logger.Log(1, dataView.Count + " entries loaded and sorted to DataView!");
-
-            // Get the first and last Date from the (sorted) DataTable.
-            firstDate = (DateTime)dataTable.Rows[0]["Date"];
-            lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
-            // Create all DataViews in the DataViewManager
-            for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
-                int startMonth = 1;
-                int endMonth = 12;
-                if (currYear == lastDate.Year) {
-                    // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
-                    endMonth = lastDate.Month;
-                }
-                if (currYear == firstDate.Year) {
-                    // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
-                    startMonth = firstDate.Month;
-                }
-                for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
-                    dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
-                }
-                // Also store a table for the year
-                dvManager.StoreFilteredDataTable(dataTable, currYear);
-
-                // Add the current year to the year selection table
-                YearTable yearTable = GameObject.FindObjectOfType<YearTable>();
-                yearTable.AddYearToTable(currYear);
+        if (files.Length == 0) {
+            // no files found, log error
+            Logger.LogError("No CSV file could be found! Please make sure you have one available in the projects root folder: [" + rootDir + "\\]");
+        } else {
+            if (files.Length > 1) {
+                // more than one file found, log warning and use first file
+                Logger.LogWarning("More than one CSV file found under [" + rootDir + "]. Using the first one.");
             }
+            csvFilePath = files[0];
 
-            // Finally, initialise the application with the latest year, as the selected one.
-            selectedYear = lastDate.Year;
-        }
-        else {
-            Logger.LogError(CSV_FILE_NAME + " could not be found!");
+            // If CSV exist, load it into a DataTable/DataView
+            if (File.Exists(csvFilePath)) {
+                Logger.Log(0, "Reading CSV file from: " + csvFilePath);
+
+                dvManager = DataViewManager.CreateInstance<DataViewManager>();
+
+                dataTable = ConvertCSVtoDataTable(csvFilePath);
+                dataView = new DataView(dataTable);
+                // sort the DataView by Date
+                dataView.Sort = "[Date] ASC";
+                // save it back to the DataTable
+                dataTable = dataView.ToTable();
+                Logger.Log(1, dataView.Count + " entries loaded and sorted to DataView!");
+
+                // Get the first and last Date from the (sorted) DataTable.
+                firstDate = (DateTime)dataTable.Rows[0]["Date"];
+                lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
+                // Create all DataViews in the DataViewManager
+                for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
+                    int startMonth = 1;
+                    int endMonth = 12;
+                    if (currYear == lastDate.Year) {
+                        // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
+                        endMonth = lastDate.Month;
+                    }
+                    if (currYear == firstDate.Year) {
+                        // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
+                        startMonth = firstDate.Month;
+                    }
+                    for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
+                        dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
+                    }
+                    // Also store a table for the year
+                    dvManager.StoreFilteredDataTable(dataTable, currYear);
+
+                    // Add the current year to the year selection table
+                    YearTable yearTable = GameObject.FindObjectOfType<YearTable>();
+                    yearTable.AddYearToTable(currYear);
+                }
+
+                // Finally, initialise the application with the latest year, as the selected one.
+                selectedYear = lastDate.Year;
+            } else {
+                Logger.LogError("Could not read CSV file: [" + csvFilePath + "]");
+            }
         }
 
         // Hides the controller tooltips after a given time
