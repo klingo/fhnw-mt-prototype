@@ -122,6 +122,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     /// <summary>
     /// Awake is always called before any Start functions
+    /// Makes sure the Singleton instance is created
     /// </summary>
     void Awake() {
         // Debug to inform that Singleton was created!
@@ -130,7 +131,9 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     /// <summary>
-    /// 
+    /// Start is directly called after the Awake function
+    /// Makes sure all initialisation tasks are completed and reads in the (first) CSF file from
+    /// the projects root folder, mapps it into DataTables and stores the in the DataViewManager class.
     /// </summary>
     void Start() {
         // init HashSet
@@ -216,6 +219,11 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Puts the provided gameObject (Category) to the filter list and updates the global threshold level.
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="monthlyCategoryThreshold"></param>
     public void addGameObjectToCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -242,6 +250,12 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
+
+    /// <summary>
+    /// Removes the provided gameObject (Category) from the filter list and updates the global threshold level.
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="monthlyCategoryThreshold"></param>
     public void removeGameObjectFromCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -269,6 +283,9 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Removes all gameObjects (Categories) from the filter and sets the global threshold level to zero.
+    /// </summary>
     public void removeAllGameObjectsFromCategoryFilter() {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -310,6 +327,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Adds all not yet added gameObjects (Categories) to the filter and sets the globla threshold level
+    /// to the maximum.
+    /// </summary>
     public void addAllGameObjectsToCategoryFilter() {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -344,6 +365,13 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// The wrapper class for the CoRoutine work that has to be run in parallel to keeping the game
+    /// up to date. This method allows to provide a single iconClickerClass (CategoryIconClick.cs) instead
+    /// of an array of them.
+    /// </summary>
+    /// <param name="iconClickerClass">Optional paramters where a specific icon (category) can be provided to be updated</param>
+    /// <returns></returns>
     IEnumerator YieldingWork(CategoryIconClick iconClickerClass = null) {
         CategoryIconClick[] clickerAry = new CategoryIconClick[1];
         clickerAry[0] = iconClickerClass;
@@ -351,6 +379,15 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// The main CoRoutine method where a second Thread is started to to the heavy workload on filtering the
+    /// DataViews, preparing the data sets for the charts/tables and stores them in the cache. After the thread has
+    /// ended, the control goes back to the CoRoutine which then sets the final colour on the Categories to green
+    /// and unblocks the whole processing. The CoRoutine is required as the MainThread cannot wait for the processing
+    /// to be over but still needs to allow the user to look and move around in the virtual environment.
+    /// </summary>
+    /// <param name="iconClickerClasses">An array if iconClickerClasses that shall be updated</param>
+    /// <returns></returns>
     IEnumerator YieldingWork(CategoryIconClick[] iconClickerClasses) {
         bool workDone = false;
 
@@ -384,6 +421,12 @@ public class SceneManager : Singleton<SceneManager> {
         } 
     }
 
+
+    /// <summary>
+    /// The actual work that is executed in a separate Thread. It mainly updates all the arrayLists that 
+    /// will be cached afterwards. This has to be done in a separate thread as it otherwise would
+    /// literally freeze the whole game world for several seconds until the processing has completed.
+    /// </summary>
     void ThreadedWork() {
         _threadRunning = true;
         bool workDone = false;
@@ -405,6 +448,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// This method is automatically called when the application is closed. It makes sure that if a 
+    /// second Thread was still running, that it gets closed properly.
+    /// </summary>
     void OnDisable() {
         // If the thread is still running, we should shut it down,
         // otherwise it can prevent the game from exiting correctly.
@@ -416,16 +463,24 @@ public class SceneManager : Singleton<SceneManager> {
             // ensuring any cleanup we do after this is safe. 
             _thread.Join();
         }
-
         // Thread is guaranteed no longer running. Do other cleanup tasks.
     }
 
 
+    /// <summary>
+    /// Returns the Category Name that is used in the CSV based on a provided CategoryIcon name.
+    /// </summary>
+    /// <param name="gameObjectName"></param>
+    /// <returns></returns>
     private string GetCategoryNameFromGameObjectName(string gameObjectName) {
         return gameObjectCategoryMap[gameObjectName];
     }
 
 
+    /// <summary>
+    /// This is the heavy workload task where all the array lists are updated based on the latest filter
+    /// settings.
+    /// </summary>
     private void updateArrayLists() {
         bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
         bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
@@ -465,6 +520,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Updates both bar charts with their new title and uses the values and labels available
+    /// in the Singleton class that before have been updated by the updateArrayLists() method.
+    /// </summary>
     private void updateBarCharts() {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
@@ -512,6 +571,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Updates the table with the values and labels available in the Singleton class that before have 
+    /// been updated by the updateArrayLists() method.
+    /// </summary>
     private void updateTable() {
         // Get the first (and only) Table
         Table table = GameObject.FindObjectOfType<Table>();
@@ -538,7 +601,7 @@ public class SceneManager : Singleton<SceneManager> {
                 if (firstRow != null) {
                     updateDetailView(firstRow);
                 }
-                
+
             } else {
                 // no (valid) month provided
                 if (table.HasEntries()) {
@@ -551,9 +614,14 @@ public class SceneManager : Singleton<SceneManager> {
         } else {
             Logger.LogError("No table found to be updated!");
         }
-
     }
 
+
+    /// <summary>
+    /// Updates the detail view with the values based on the selected Row in the Table. The provided
+    /// Row can also be empty which will hide the detail view.
+    /// </summary>
+    /// <param name="rowHolder">Optional. If null, then the detail view will be hidden in the world.</param>
     public void updateDetailView(Row rowHolder) {
 
         // Check the Detail View Panel
@@ -588,10 +656,15 @@ public class SceneManager : Singleton<SceneManager> {
         else {
             Logger.LogError("No detail found to be updated!");
         }
-
     }
 
 
+    /// <summary>
+    /// A generic method where either a yar, a month name or a day can be handed over. It will then update
+    /// the currently selected year/month/day accordingly. This is a core feature to make sure that the
+    /// updateArrayLists() works correctly.
+    /// </summary>
+    /// <param name="selectedLabelText"></param>
     public void updateSelection(string selectedLabelText) {
         if (!String.IsNullOrEmpty(selectedLabelText)) {
             int number;
@@ -632,6 +705,11 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Returns a binary string from all categories to indicate their current state. A '1' represents that the
+    /// category is active whereas a '0' indicates that it is inactive.
+    /// </summary>
+    /// <returns></returns>
     public string GetActiveCategoriesBinaryString() {
         string binaryState = String.Empty;
         foreach (string gameObjectName in gameObjectCategoryMap.Values) {
@@ -645,6 +723,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Initialises the GameObjectCategoryMap which is used as a mapping between the category names from the CSV
+    /// and the names of the GameObjects that represent them.
+    /// </summary>
     private void InitGameObjectCategoryMap() {
         if (globalMaxThreshold == 0) {
             gameObjectCategoryMap = new Dictionary<string, string>();
@@ -691,6 +773,8 @@ public class SceneManager : Singleton<SceneManager> {
 
     /// <summary>
     /// Based on: https://immortalcoder.blogspot.ch/2013/12/convert-csv-file-to-datatable-in-c.html
+    /// This method reads in a CSV file and creates a DataTable based on it. The first row will be used
+    /// for the Header information.
     /// </summary>
     /// <param name="strFilePath"></param>
     /// <returns></returns>

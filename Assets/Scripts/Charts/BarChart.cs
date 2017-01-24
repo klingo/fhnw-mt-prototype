@@ -237,9 +237,5 @@ public class BarChart : MonoBehaviour {
             thresholdValueLabel.enabled = true; ;
             thresholdValueLabel.text = threshold.ToString();
         }
-
-
     }
-
-
 }
