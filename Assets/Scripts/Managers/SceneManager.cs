@@ -1,4 +1,26 @@
-﻿using System;
+﻿// The MIT License (MIT)
+
+// Copyright(c) 2017 Fabian Schär
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -15,10 +37,6 @@ public class SceneManager : Singleton<SceneManager> {
     protected SceneManager() { }
 
     //==========================================================================
-
-    // Constants for CSV File location
-    private const string CSV_REL_PATH = "\\Assets\\Resources\\CSV\\";
-    private const string CSV_FILE_NAME = "Expenses_2016_anonymized.csv";
 
     // Constants for names of the different charts
     public const string CHART_NAME_YEAR_OVERVIEW = "BarChart-YearOverview";
@@ -104,6 +122,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     /// <summary>
     /// Awake is always called before any Start functions
+    /// Makes sure the Singleton instance is created
     /// </summary>
     void Awake() {
         // Debug to inform that Singleton was created!
@@ -112,7 +131,9 @@ public class SceneManager : Singleton<SceneManager> {
 
 
     /// <summary>
-    /// 
+    /// Start is directly called after the Awake function
+    /// Makes sure all initialisation tasks are completed and reads in the (first) CSF file from
+    /// the projects root folder, mapps it into DataTables and stores the in the DataViewManager class.
     /// </summary>
     void Start() {
         // init HashSet
@@ -131,52 +152,66 @@ public class SceneManager : Singleton<SceneManager> {
         detailPanel.gameObject.SetActive(false);
 
         // Prepare CSV path
-        string csvFolderPath = Directory.GetCurrentDirectory() + CSV_REL_PATH;
-        string csvFilePath = csvFolderPath + CSV_FILE_NAME;
+        string rootDir = Directory.GetCurrentDirectory();
+        string csvFilePath = "N/A";
+        // get all CSV files under that path
+        string[] files = Directory.GetFiles(rootDir, "*.csv");
 
-        // If CSV exist, load it into a DataTable/DataView
-        if (File.Exists(csvFilePath)) {
-            dvManager = DataViewManager.CreateInstance<DataViewManager>();
-
-            dataTable = ConvertCSVtoDataTable(csvFilePath);
-            dataView = new DataView(dataTable);
-            // sort the DataView by Date
-            dataView.Sort = "[Date] ASC";
-            // save it back to the DataTable
-            dataTable = dataView.ToTable();
-            Logger.Log(1, dataView.Count + " entries loaded and sorted to DataView!");
-
-            // Get the first and last Date from the (sorted) DataTable.
-            firstDate = (DateTime)dataTable.Rows[0]["Date"];
-            lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
-            // Create all DataViews in the DataViewManager
-            for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
-                int startMonth = 1;
-                int endMonth = 12;
-                if (currYear == lastDate.Year) {
-                    // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
-                    endMonth = lastDate.Month;
-                }
-                if (currYear == firstDate.Year) {
-                    // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
-                    startMonth = firstDate.Month;
-                }
-                for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
-                    dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
-                }
-                // Also store a table for the year
-                dvManager.StoreFilteredDataTable(dataTable, currYear);
-
-                // Add the current year to the year selection table
-                YearTable yearTable = GameObject.FindObjectOfType<YearTable>();
-                yearTable.AddYearToTable(currYear);
+        if (files.Length == 0) {
+            // no files found, log error
+            Logger.LogError("No CSV file could be found! Please make sure you have one available in the projects root folder: [" + rootDir + "\\]");
+        } else {
+            if (files.Length > 1) {
+                // more than one file found, log warning and use first file
+                Logger.LogWarning("More than one CSV file found under [" + rootDir + "]. Using the first one.");
             }
+            csvFilePath = files[0];
 
-            // Finally, initialise the application with the latest year, as the selected one.
-            selectedYear = lastDate.Year;
-        }
-        else {
-            Logger.LogError(CSV_FILE_NAME + " could not be found!");
+            // If CSV exist, load it into a DataTable/DataView
+            if (File.Exists(csvFilePath)) {
+                Logger.Log(0, "Reading CSV file from: " + csvFilePath);
+
+                dvManager = DataViewManager.CreateInstance<DataViewManager>();
+
+                dataTable = ConvertCSVtoDataTable(csvFilePath);
+                dataView = new DataView(dataTable);
+                // sort the DataView by Date
+                dataView.Sort = "[Date] ASC";
+                // save it back to the DataTable
+                dataTable = dataView.ToTable();
+                Logger.Log(1, dataView.Count + " entries loaded and sorted to DataView!");
+
+                // Get the first and last Date from the (sorted) DataTable.
+                firstDate = (DateTime)dataTable.Rows[0]["Date"];
+                lastDate = (DateTime)dataTable.Rows[dataTable.Rows.Count - 1]["Date"];
+                // Create all DataViews in the DataViewManager
+                for (int currYear = lastDate.Year; currYear >= firstDate.Year; currYear--) {
+                    int startMonth = 1;
+                    int endMonth = 12;
+                    if (currYear == lastDate.Year) {
+                        // only if the current year is the same as the last year, loop until that dates month, otherwise to 12
+                        endMonth = lastDate.Month;
+                    }
+                    if (currYear == firstDate.Year) {
+                        // only if the current year is th same as the first year, loop from that month onwards, otherwis from 1
+                        startMonth = firstDate.Month;
+                    }
+                    for (int currMonth = startMonth; currMonth <= endMonth; currMonth++) {
+                        dvManager.StoreFilteredDataTable(dataTable, currYear, currMonth);
+                    }
+                    // Also store a table for the year
+                    dvManager.StoreFilteredDataTable(dataTable, currYear);
+
+                    // Add the current year to the year selection table
+                    YearTable yearTable = GameObject.FindObjectOfType<YearTable>();
+                    yearTable.AddYearToTable(currYear);
+                }
+
+                // Finally, initialise the application with the latest year, as the selected one.
+                selectedYear = lastDate.Year;
+            } else {
+                Logger.LogError("Could not read CSV file: [" + csvFilePath + "]");
+            }
         }
 
         // Hides the controller tooltips after a given time
@@ -184,6 +219,11 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Puts the provided gameObject (Category) to the filter list and updates the global threshold level.
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="monthlyCategoryThreshold"></param>
     public void addGameObjectToCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -210,6 +250,12 @@ public class SceneManager : Singleton<SceneManager> {
         }
     }
 
+
+    /// <summary>
+    /// Removes the provided gameObject (Category) from the filter list and updates the global threshold level.
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="monthlyCategoryThreshold"></param>
     public void removeGameObjectFromCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -237,6 +283,9 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Removes all gameObjects (Categories) from the filter and sets the global threshold level to zero.
+    /// </summary>
     public void removeAllGameObjectsFromCategoryFilter() {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -278,6 +327,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Adds all not yet added gameObjects (Categories) to the filter and sets the globla threshold level
+    /// to the maximum.
+    /// </summary>
     public void addAllGameObjectsToCategoryFilter() {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -312,6 +365,13 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// The wrapper class for the CoRoutine work that has to be run in parallel to keeping the game
+    /// up to date. This method allows to provide a single iconClickerClass (CategoryIconClick.cs) instead
+    /// of an array of them.
+    /// </summary>
+    /// <param name="iconClickerClass">Optional paramters where a specific icon (category) can be provided to be updated</param>
+    /// <returns></returns>
     IEnumerator YieldingWork(CategoryIconClick iconClickerClass = null) {
         CategoryIconClick[] clickerAry = new CategoryIconClick[1];
         clickerAry[0] = iconClickerClass;
@@ -319,6 +379,15 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// The main CoRoutine method where a second Thread is started to to the heavy workload on filtering the
+    /// DataViews, preparing the data sets for the charts/tables and stores them in the cache. After the thread has
+    /// ended, the control goes back to the CoRoutine which then sets the final colour on the Categories to green
+    /// and unblocks the whole processing. The CoRoutine is required as the MainThread cannot wait for the processing
+    /// to be over but still needs to allow the user to look and move around in the virtual environment.
+    /// </summary>
+    /// <param name="iconClickerClasses">An array if iconClickerClasses that shall be updated</param>
+    /// <returns></returns>
     IEnumerator YieldingWork(CategoryIconClick[] iconClickerClasses) {
         bool workDone = false;
 
@@ -352,6 +421,12 @@ public class SceneManager : Singleton<SceneManager> {
         } 
     }
 
+
+    /// <summary>
+    /// The actual work that is executed in a separate Thread. It mainly updates all the arrayLists that 
+    /// will be cached afterwards. This has to be done in a separate thread as it otherwise would
+    /// literally freeze the whole game world for several seconds until the processing has completed.
+    /// </summary>
     void ThreadedWork() {
         _threadRunning = true;
         bool workDone = false;
@@ -373,6 +448,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// This method is automatically called when the application is closed. It makes sure that if a 
+    /// second Thread was still running, that it gets closed properly.
+    /// </summary>
     void OnDisable() {
         // If the thread is still running, we should shut it down,
         // otherwise it can prevent the game from exiting correctly.
@@ -384,16 +463,24 @@ public class SceneManager : Singleton<SceneManager> {
             // ensuring any cleanup we do after this is safe. 
             _thread.Join();
         }
-
         // Thread is guaranteed no longer running. Do other cleanup tasks.
     }
 
 
+    /// <summary>
+    /// Returns the Category Name that is used in the CSV based on a provided CategoryIcon name.
+    /// </summary>
+    /// <param name="gameObjectName"></param>
+    /// <returns></returns>
     private string GetCategoryNameFromGameObjectName(string gameObjectName) {
         return gameObjectCategoryMap[gameObjectName];
     }
 
 
+    /// <summary>
+    /// This is the heavy workload task where all the array lists are updated based on the latest filter
+    /// settings.
+    /// </summary>
     private void updateArrayLists() {
         bool validMonth = (selectedMonth > 0 && selectedMonth <= 12);
         bool validDay = (selectedDay > 0 && selectedDay <= DateTime.DaysInMonth(selectedYear, selectedMonth));
@@ -433,6 +520,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Updates both bar charts with their new title and uses the values and labels available
+    /// in the Singleton class that before have been updated by the updateArrayLists() method.
+    /// </summary>
     private void updateBarCharts() {
         // Get all Bar Charts
         BarChart[] barCharts = GameObject.FindObjectsOfType<BarChart>();
@@ -480,6 +571,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Updates the table with the values and labels available in the Singleton class that before have 
+    /// been updated by the updateArrayLists() method.
+    /// </summary>
     private void updateTable() {
         // Get the first (and only) Table
         Table table = GameObject.FindObjectOfType<Table>();
@@ -506,7 +601,7 @@ public class SceneManager : Singleton<SceneManager> {
                 if (firstRow != null) {
                     updateDetailView(firstRow);
                 }
-                
+
             } else {
                 // no (valid) month provided
                 if (table.HasEntries()) {
@@ -519,9 +614,14 @@ public class SceneManager : Singleton<SceneManager> {
         } else {
             Logger.LogError("No table found to be updated!");
         }
-
     }
 
+
+    /// <summary>
+    /// Updates the detail view with the values based on the selected Row in the Table. The provided
+    /// Row can also be empty which will hide the detail view.
+    /// </summary>
+    /// <param name="rowHolder">Optional. If null, then the detail view will be hidden in the world.</param>
     public void updateDetailView(Row rowHolder) {
 
         // Check the Detail View Panel
@@ -556,10 +656,15 @@ public class SceneManager : Singleton<SceneManager> {
         else {
             Logger.LogError("No detail found to be updated!");
         }
-
     }
 
 
+    /// <summary>
+    /// A generic method where either a yar, a month name or a day can be handed over. It will then update
+    /// the currently selected year/month/day accordingly. This is a core feature to make sure that the
+    /// updateArrayLists() works correctly.
+    /// </summary>
+    /// <param name="selectedLabelText"></param>
     public void updateSelection(string selectedLabelText) {
         if (!String.IsNullOrEmpty(selectedLabelText)) {
             int number;
@@ -600,6 +705,11 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Returns a binary string from all categories to indicate their current state. A '1' represents that the
+    /// category is active whereas a '0' indicates that it is inactive.
+    /// </summary>
+    /// <returns></returns>
     public string GetActiveCategoriesBinaryString() {
         string binaryState = String.Empty;
         foreach (string gameObjectName in gameObjectCategoryMap.Values) {
@@ -613,6 +723,10 @@ public class SceneManager : Singleton<SceneManager> {
     }
 
 
+    /// <summary>
+    /// Initialises the GameObjectCategoryMap which is used as a mapping between the category names from the CSV
+    /// and the names of the GameObjects that represent them.
+    /// </summary>
     private void InitGameObjectCategoryMap() {
         if (globalMaxThreshold == 0) {
             gameObjectCategoryMap = new Dictionary<string, string>();
@@ -659,6 +773,8 @@ public class SceneManager : Singleton<SceneManager> {
 
     /// <summary>
     /// Based on: https://immortalcoder.blogspot.ch/2013/12/convert-csv-file-to-datatable-in-c.html
+    /// This method reads in a CSV file and creates a DataTable based on it. The first row will be used
+    /// for the Header information.
     /// </summary>
     /// <param name="strFilePath"></param>
     /// <returns></returns>

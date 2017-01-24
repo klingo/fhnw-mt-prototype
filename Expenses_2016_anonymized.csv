@@ -162,8 +162,8 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 11.10.2016;Canteen Restaurant Office - MyCity;;;CHF;14.9;;Personal expenditure;Food (snacks, restaurants and bars)
 11.10.2016;RANDOM FRIENDS ADRESS XYZ;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;93.1;PAYBACK FRIEND XYZ;Other expenses;Repayments
 10.10.2016;Microns M Hauptbahnhof - MyCity;;;CHF;3.8;;Household;Food and beverage
-10.10.2016;Microns MM Downton Sälipa - Downton;;;CHF;4.7;;Household;Food and beverage
-10.10.2016;Microns MR Downton Sälipa - Downton;;;CHF;9.6;;Personal expenditure;Food (snacks, restaurants and bars)
+10.10.2016;Microns MM Downton Slipa - Downton;;;CHF;4.7;;Household;Food and beverage
+10.10.2016;Microns MR Downton Slipa - Downton;;;CHF;9.6;;Personal expenditure;Food (snacks, restaurants and bars)
 10.10.2016;TORGUARD - 8002008002;;;CHF;8.73;;Communication & media;Film, photo, electronic devices and accessories
 10.10.2016;GEEKHUB.COM  8PRK4 - 4141414141;;;CHF;10.09;;Communication & media;Film, photo, electronic devices and accessories
 10.10.2016;Stability CarSharing - Cloudcern 7;;;CHF;18;;Vacation & travel;Travel and flight costs
@@ -351,7 +351,7 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 08.07.2016;Canteen Restaurant Office - MyCity;;;CHF;11.5;;Personal expenditure;Food (snacks, restaurants and bars)
 08.07.2016;GEEKHUB.COM  8PRK4 - 4141414141;;;CHF;8.27;;Communication & media;Film, photo, electronic devices and accessories
 07.07.2016;BANK AG (CREDIT CARDS) SOMESTREET 11 9000 ACITY;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;1718.5;CREDIT CARD;Other expenses;Credit card invoice and fees
-06.07.2016;Groop-4073 Downton Säliho - Downton;;;CHF;3.85;;Household;Food and beverage
+06.07.2016;Groop-4073 Downton Sliho - Downton;;;CHF;3.85;;Household;Food and beverage
 05.07.2016;Canteen Restaurant Office - MyCity;;;CHF;17.1;;Personal expenditure;Food (snacks, restaurants and bars)
 05.07.2016;Groop-1234 Anyvillage - Anyvillage;;;CHF;12.45;;Household;Food and beverage
 05.07.2016;PUNCHSTARTER WALLZ - 9292929292;;;CHF;81.08;;Leisure time, sport & hobby;Toys and hobby articles
@@ -394,7 +394,7 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 16.06.2016;Microns M Hauptbahnhof - MyCity;;;CHF;7.6;;Household;Food and beverage
 16.06.2016;UPPER BV - HELP.UPPER.COM;;;CHF;31.7;;Traffic, car & transport;Public transport (tickets & subscriptions)
 15.06.2016;Microns M Hauptbahnhof - MyCity;;;CHF;3.9;;Household;Food and beverage
-15.06.2016;Groop-4073 Downton Säliho - Downton;;;CHF;11;;Household;Food and beverage
+15.06.2016;Groop-4073 Downton Sliho - Downton;;;CHF;11;;Household;Food and beverage
 14.06.2016;Canteen Restaurant Office - MyCity;;;CHF;10.5;;Personal expenditure;Food (snacks, restaurants and bars)
 14.06.2016;AMAZING.DE PAYMENTS - AMAZING.DE;;;CHF;19.63;;Leisure time, sport & hobby;Miscellaneous
 14.06.2016;Microns MM Anyvillage - CARD 12345678-0 1234;PRIVATE ACCOUNT;CH00 1111 2222 3333 4444 A;CHF;29;PAYMENT MAESTRO;Household;Food and beverage
@@ -517,7 +517,7 @@ Date;Recipient / Order issuer;Account name;Account no.;Currency;Amount;Booking t
 15.04.2016;Randomplace Take Away - MyCity;;;CHF;10.2;;Personal expenditure;Food (snacks, restaurants and bars)
 15.04.2016;minitec Milkyway (Online) MyCity;;;CHF;20.46;;Communication & media;Film, photo, electronic devices and accessories
 14.04.2016;Microns M Hauptbahnhof - MyCity;;;CHF;3.6;;Household;Food and beverage
-14.04.2016;Groop-4073 Downton Säliho - Downton;;;CHF;7.45;;Household;Food and beverage
+14.04.2016;Groop-4073 Downton Sliho - Downton;;;CHF;7.45;;Household;Food and beverage
 14.04.2016;minitec Milkyway (Online) MyCity;;;CHF;1220.57;;Communication & media;Film, photo, electronic devices and accessories
 13.04.2016;Microns M Hauptbahnhof - MyCity;;;CHF;4.1;;Household;Food and beverage
 13.04.2016;UTUNERS.COM/BILL - UTUNERS.COM;;;CHF;2.5;;Communication & media;Multimedia (music, video & apps)
