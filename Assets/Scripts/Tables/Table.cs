@@ -28,22 +28,27 @@ using UnityEngine.UI;
 
 public class Table : MonoBehaviour {
 
+    // Reference to the prefab of the Row object
     [Header("[Row]", order = 0)]
     public Row rowHolderPrefab;
 
+    // Reference to the Text object of the table title
     [Header("[Text]", order = 1)]
     public Text tableTitle;
 
+    // List of all rows in the table
     List<Row> rowHolders = new List<Row>();
 
+    // Required for proper formatting of Date and Amount values
     System.Globalization.CultureInfo modCulture = new System.Globalization.CultureInfo("de-CH");
 
 
     /// <summary>
-    /// 
+    /// Displays a list of string arays inside the table as individual rows, with the given
+    /// title that is shown alongside the table.
     /// </summary>
-    /// <param name="tableRows"></param>
-    /// <param name="tableTitle"></param>
+    /// <param name="tableRows">Arrays with the contents of the individual rows</param>
+    /// <param name="tableTitle">The title of the table</param>
     public void DisplayTable(List<string[]> tableRows, string tableTitle) {
 
         // set the table title
@@ -54,6 +59,7 @@ public class Table : MonoBehaviour {
             tableRows = new List<string[]>();
         }
 
+        // Loop through all row entries
         for (int currRowIndex = 0; currRowIndex < tableRows.Count; currRowIndex++) {
 
             string[] currTableRow = tableRows.ElementAt<string[]>(currRowIndex);
@@ -78,9 +84,6 @@ public class Table : MonoBehaviour {
                 // due to parent transformation, also set the rotation back to 0
                 newRowHolder.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             }
-
-            // Set the color of the row
-            // TODO: newRowHolder.rowImage
 
             // Set the values of the rown
             newRowHolder.dateText.text = currTableRow[0];
@@ -107,16 +110,18 @@ public class Table : MonoBehaviour {
             Row rowToRemove = rowHolders.ElementAt(rowHolders.Count - 1);
             // then remove it from the barHolders-List
             rowHolders.Remove(rowToRemove);
+
+            // TODO: Implement PoolManager instead of desotrying the objects!
             // then detach it from its parent
-                                //rowToRemove.transform.SetParent(null);
-            // Finally, destroy the GameObject
+            //rowToRemove.transform.SetParent(null);
+
+            // Finally, "destroy" the GameObject
+            // Unity does not actually delete the object though from runtime
             rowToRemove.name = "DELETE THIS ROW";
             rowToRemove.gameObject.SetActive(false);
             rowToRemove.enabled = false;
             rowToRemove.transform.localScale = Vector3.zero;
             rowToRemove.transform.localPosition = Vector3.zero;
-            GameObject.Destroy(rowToRemove);
-            GameObject.DestroyImmediate(rowToRemove, true);
             Destroy(rowToRemove);
             DestroyImmediate(rowToRemove, true);
             rowToRemove = null;
@@ -127,7 +132,7 @@ public class Table : MonoBehaviour {
     /// <summary>
     /// Returns the first [Row] object, if there is only one existing. In all other cases, [null] will be returned.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The first Row object in the table, if there is at least one</returns>
     public Row GetFirstRowIfOnlyOneExists() {
         if (rowHolders.Count == 1) {
             return rowHolders.ElementAt<Row>(0);
@@ -136,6 +141,10 @@ public class Table : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Returns whether there are any entries in the table or not
+    /// </summary>
+    /// <returns>boolean whether there are any entries in the table</returns>
     public bool HasEntries() {
         return (rowHolders.Count > 0);
     }

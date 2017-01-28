@@ -26,7 +26,12 @@ using VRTK;
 
 public class TableRowClick : VRTK_InteractableObject {
 
-
+    /// <summary>
+    /// Override method from VRTK. Is triggered when a row has been clicked on and thus should load the 
+    /// corresponding detail data. Will also higlhight the row as being selected and checks if another row
+    /// was selected before to remove its selected-colour.
+    /// </summary>
+    /// <param name="currentUsingObject">The GameObject to which the script is attached to</param>
     public override void StartUsing(GameObject currentUsingObject) {
         // User clicked on a row!
         base.StartUsing(currentUsingObject);
@@ -51,21 +56,35 @@ public class TableRowClick : VRTK_InteractableObject {
     }
 
 
-
+    /// <summary>
+    /// Override method from VRTK. Inititias a color change to visualise the highlighting effect on the row
+    /// where the gesture-controller-pointer is pointing at.
+    /// </summary>
+    /// <param name="currentTouchingObject">The GameObject to which the script is attached to</param>
     public override void StartTouching(GameObject currentTouchingObject) {
         base.StartTouching(currentTouchingObject);
 
+        // Get the image from the object of this script (i.e. the row-Image)
         Image image = currentTouchingObject.GetComponentInChildren<Image>();
         if (image.color != SceneManager.Instance.selectedRowColor) {
+            // Fade in highlight colour
             image.CrossFadeColor(SceneManager.Instance.highlightRowColor, 0.1f, false, false);
         }
     }
 
+
+    /// <summary>
+    /// Override method from VRTK. Sets the color back to its original value to indicate that the highlighting
+    /// is no longer active for this row. This is only done if the row is currently not selected (i.e. not activated)
+    /// </summary>
+    /// <param name="previousTouchingObject">The GameObject to which the script is attached to</param>
     public override void StopTouching(GameObject previousTouchingObject) {
         base.StopTouching(previousTouchingObject);
 
+        // Get the image from the object of this script (i.e. the row-Image)
         Image image = previousTouchingObject.GetComponentInChildren<Image>();
         if (image.color != SceneManager.Instance.selectedRowColor) {
+            // Fade back in the default (white) colour
             image.CrossFadeColor(Color.white, 0.1f, false, false);
         }
     }

@@ -25,6 +25,7 @@ using UnityEngine.UI;
 
 public class Detail : MonoBehaviour {
 
+    // References to the Text objects of the individual text blocks on the detail view
     [Header("[Text]", order = 0)]
     public Text dateText;
     public Text recipientText;

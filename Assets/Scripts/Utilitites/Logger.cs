@@ -25,7 +25,8 @@ using UnityEngine;
 public static class Logger {
 
     /// <summary>
-    /// Prints out a simple debug statement to the console, provided the debugLevel in the [SceneManager] is high enough
+    /// Prints out a simple debug statement to the console, provided the debugLevel
+    /// in the [SceneManager] is high enough
     /// </summary>
     /// <param name="debugLevel">0 = Important, will always be logged, 1 = Advanced , 2 = Info, only on highest level</param>
     /// <param name="loggingText"></param>
@@ -37,7 +38,8 @@ public static class Logger {
 
 
     /// <summary>
-    /// Prints out a simple debug statement to the console, provided the debugLevel in the [SceneManager] is high enough
+    /// Prints out a simple debug statement to the console, provided the debugLevel
+    /// in the [SceneManager] is high enough
     /// </summary>
     /// <param name="debugLevel">0 = Important, will always be logged, 1 = Advanced , 2 = Info, only on highest level</param>
     /// <param name="loggingText"></param>
@@ -49,10 +51,22 @@ public static class Logger {
         }
     }
 
+
+    /// <summary>
+    /// Prints out a warning debug statement to the console. Always works, independent
+    /// of the debugLevel in the [SceneManager]
+    /// </summary>
+    /// <param name="errorText"></param>
     public static void LogWarning(string errorText) {
         Debug.LogWarning(errorText);
     }
 
+
+    /// <summary>
+    /// /// Prints out an error debug statement to the console. Always works, independent
+    /// of the debugLevel in the [SceneManager]
+    /// </summary>
+    /// <param name="errorText"></param>
     public static void LogError(string errorText) {
         Debug.LogError(errorText);
     }

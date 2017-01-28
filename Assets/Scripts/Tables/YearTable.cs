@@ -26,11 +26,19 @@ using UnityEngine.UI;
 
 public class YearTable : MonoBehaviour {
 
+    // Reference to the Prefab of a Year-Row object for the table
     [Header("[Year]", order = 0)]
     public Year yearHolderPrefab;
 
+    // List of all Years in the table
     List<Year> yearHolders = new List<Year>();
 
+
+    /// <summary>
+    /// Adds the provided year to the table. If this is the first year added, also directly 
+    /// highlight it accordingly and set the value to the SceneManager for the initial data load.
+    /// </summary>
+    /// <param name="year">int value of the year</param>
     public void AddYearToTable(int year) {
 
         Year newYearHolder;
