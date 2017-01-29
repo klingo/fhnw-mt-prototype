@@ -28,23 +28,30 @@ using UnityEngine;
 
 public class DataViewManager : ScriptableObject {
 
+    // All the dicitonaries where the data is stored during runtime
     public Dictionary<string, DataTable> dataTableDict { get; private set; }
     private Dictionary<string, float[]> chartValuesDict = new Dictionary<string, float[]>();
     private Dictionary<string, string[]> chartLabelsDict = new Dictionary<string, string[]>();
     private Dictionary<string, List<string[]>> tableRowsDict = new Dictionary<string, List<string[]>>();
 
+    // Set of month names
     private string[] yearOverviewLabels = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
+
+    /// <summary>
+    /// Constructor for the DataViewManager that inititialses the dataTableDict.
+    /// </summary>
     public DataViewManager() {
         dataTableDict = new Dictionary<string, DataTable>();
     }
 
+
     /// <summary>
     /// Creates a new DataTable Object based on a filter for the given month and year, and stores it in the dataTableDictionary.
     /// </summary>
-    /// <param name="year"></param>
-    /// <param name="month"></param>
-    /// <param name="table"></param>
+    /// <param name="year">The year (int) of the provided dataTable</param>
+    /// <param name="month">The month (int) of the provided dataTable</param>
+    /// <param name="table">The DataTable that shall be stored</param>
     public void StoreFilteredDataTable(DataTable dataTable, int year, int month = 0 ) {
         // Create the unique key
         string key = year.ToString() + "-" + month.ToString();
@@ -73,7 +80,13 @@ public class DataViewManager : ScriptableObject {
     }
 
 
-
+    /// <summary>
+    /// Returns a DataView based on the provided month and year information. It actually gets the DataTable
+    /// from the storage, creates a DataView based on it and then returns its reference.
+    /// </summary>
+    /// <param name="year">The year (int) of the looked for DataView</param>
+    /// <param name="month">The month (int) of the looked for DataView</param>
+    /// <returns></returns>
     public DataView GetDataView(int year, int month = 0) {
         // Create the key, such as: 2016-9
         string key = year.ToString() + "-" + month.ToString();
@@ -95,10 +108,13 @@ public class DataViewManager : ScriptableObject {
 
     /// <summary>
     /// Preferred method to be execute when a List<string[]> with labels and values for the Table is requested.
+    /// Makes sure to get the remaining arguments from the SceneManager Instance.
+    /// WARNING: Cannot be executed from a secondary thread (Unity Limitaiton)! In such cases the other method 
+    /// has to be called where the values need to be directly passed on.
     /// </summary>
-    /// <param name="year"></param>
-    /// <param name="month"></param>
-    /// <param name="day"></param>
+    /// <param name="year">The selected year (int)</param>
+    /// <param name="month">The selected month (int)</param>
+    /// <param name="day">The selected day (int), default = 0</param>
     /// <returns></returns>
     public List<string[]> GetTableRows(int year, int month, int day = 0) {
         return GetTableRows(SceneManager.Instance.activeCategories, SceneManager.Instance.GetActiveCategoriesBinaryString(), year, month, day);
@@ -107,16 +123,18 @@ public class DataViewManager : ScriptableObject {
 
     /// <summary>
     /// Overrides the above method, where the [activeCategories] and [activeCategoriesBinaryString] must be provided.
-    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible.
+    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible
+    /// due to a limitation from Unity itself.
     /// </summary>
-    /// <param name="activeCategories"></param>
-    /// <param name="activeCategoriesBinaryString"></param>
-    /// <param name="year"></param>
-    /// <param name="month"></param>
-    /// <param name="day"></param>
+    /// <param name="activeCategories">A HashSet<string> with all active categories</param>
+    /// <param name="activeCategoriesBinaryString">The BinaryString of the categories</param>
+    /// <param name="year">The selected year (int)</param>
+    /// <param name="month">The selected month (int)</param>
+    /// <param name="day">The selected day (int), default = 0</param>
     /// <returns></returns>
     public List<string[]> GetTableRows(HashSet<string> activeCategories, string activeCategoriesBinaryString, int year, int month, int day = 0) {
         // creates a unique key for year, month, day and selected categories
+        //example: 2016-9-21-00111101011
         string key = year.ToString() + "-" + month.ToString() + "-" + day.ToString() + "-" + activeCategoriesBinaryString;
 
         List<string[]> rows;
@@ -200,8 +218,11 @@ public class DataViewManager : ScriptableObject {
 
     /// <summary>
     /// Preferred method to be execute when a KeyValuePair with labels and values for a Bar Chart is requested.
+    /// Makes sure to get the remaining arguments from the SceneManager Instance.
+    /// WARNING: Cannot be executed from a secondary thread (Unity Limitaiton)! In such cases the other method 
+    /// has to be called where the values need to be directly passed on.
     /// </summary>
-    /// <param name="year"></param>
+    /// <param name="year">The year for which the label and value arrays shall be returned</param>
     /// <param name="month">Optional parameter. If left out, the returned KeyValuePair is for the whole year instead of a single month.</param>
     /// <returns></returns>
     public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(int year, int month = 0) {
@@ -211,11 +232,12 @@ public class DataViewManager : ScriptableObject {
 
     /// <summary>
     /// Overrides the above method, where the [activeCategories] and [activeCategoriesBinaryString] must be provided.
-    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible.
+    /// This should only be used in Multi-Threaded cases where accessing the [SceneManger.Instance] is not allowed/possible
+    /// due to a limitation from Unity itself.
     /// </summary>
-    /// <param name="activeCategories"></param>
-    /// <param name="activeCategoriesBinaryString"></param>
-    /// <param name="year"></param>
+    /// <param name="activeCategories">A HashSet<string> with all active categories</param>
+    /// <param name="activeCategoriesBinaryString">The BinaryString of the categories</param>
+    /// <param name="year">The year for which the label and value arrays shall be returned</param>
     /// <param name="month">Optional parameter. If left out, the returned KeyValuePair is for the whole year instead of a single month.</param>
     /// <returns></returns>
     public KeyValuePair<string[], float[]> GetBarChartValuesAndLabels(HashSet<string> activeCategories, string activeCategoriesBinaryString, int year, int month = 0) {
@@ -324,6 +346,12 @@ public class DataViewManager : ScriptableObject {
     }
 
 
+    /// <summary>
+    /// Returns a string query for the categories based on the provided HashSet. The query then can be applied 
+    /// on a DataView to only see the transactions that match the activated categories
+    /// </summary>
+    /// <param name="activeCategories">A HashSet<string> with all active categories</param>
+    /// <returns></returns>
     private string GetFilterQueryForActiveCategories(HashSet<string> activeCategories) {
         string query = String.Empty;
         string filter = String.Empty;
@@ -347,13 +375,18 @@ public class DataViewManager : ScriptableObject {
     }
 
 
+    /// <summary>
+    /// Returns the numeric value of a month, based on its name.
+    /// Example: December => 12
+    /// </summary>
+    /// <param name="monthName">The English name of the month</param>
+    /// <returns></returns>
     public int GetMonthNoFromString(string monthName) {
         for (int i = 1; i <= yearOverviewLabels.Length; i++) {
-            if (yearOverviewLabels[i - 1] == monthName) {
+            if (monthName.Equals(yearOverviewLabels[i - 1], StringComparison.OrdinalIgnoreCase)) {
                 return i;
             }
         }
         return -1;
     }
-
 }

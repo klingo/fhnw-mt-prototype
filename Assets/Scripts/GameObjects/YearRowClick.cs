@@ -26,12 +26,20 @@ using VRTK;
 
 public class YearRowClick : VRTK_InteractableObject {
 
+
+    /// <summary>
+    /// Override method from VRTK. Is triggered when a row has been clicked on and thus should load the 
+    /// corresponding YearOverview data. Will also higlhight the row as being selected and checks if another row
+    /// was selected before to remove its selected-colour.
+    /// </summary>
+    /// <param name="currentUsingObject">The GameObject to which the script is attached to</param>
     public override void StartUsing(GameObject currentUsingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
             // User clicked on a row!
             base.StartUsing(currentUsingObject);
 
+            // Get the Year object of the clicked on year
             Year yearHolder = currentUsingObject.GetComponent<Year>();
 
             // get the image reference, of the previously selected image (to de-color it)
@@ -71,6 +79,12 @@ public class YearRowClick : VRTK_InteractableObject {
         }
     }
 
+
+    /// <summary>
+    /// Override method from VRTK. Inititias a color change to visualise the highlighting effect on the row
+    /// where the gesture-controller-pointer is pointing at.
+    /// </summary>
+    /// <param name="currentTouchingObject">The GameObject to which the script is attached to</param>
     public override void StartTouching(GameObject currentTouchingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
@@ -80,6 +94,11 @@ public class YearRowClick : VRTK_InteractableObject {
     }
 
 
+    /// <summary>
+    /// Override method from VRTK. Sets the color back to its original value to indicate that the highlighting
+    /// is no longer active for this row. This is only done if the row is currently not selected (i.e. not activated)
+    /// </summary>
+    /// <param name="previousTouchingObject">The GameObject to which the script is attached to</param>
     public override void StopTouching(GameObject previousTouchingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {

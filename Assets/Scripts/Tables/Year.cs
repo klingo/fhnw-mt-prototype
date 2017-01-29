@@ -25,9 +25,11 @@ using UnityEngine.UI;
 
 public class Year : MonoBehaviour {
 
+    // Reference to the Image object of the year row
     [Header("[Image]", order = 0)]
     public Image yearImage;
 
+    // Reference to the Text object of the table row
     [Header("[Text]", order = 1)]
     public Text yearText;
 }

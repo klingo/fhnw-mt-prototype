@@ -25,6 +25,10 @@ using VRTK;
 
 public class CustomControllerEvents : MonoBehaviour {
 
+    /// <summary>
+    /// Method is called upon inititalisation of this script.
+    /// Prepares the Custom Controller Events
+    /// </summary>
 	void Start () {
         if (GetComponent<VRTK_ControllerEvents>() == null) {
             Logger.LogError("CustomControllerEvents has to be attached to a controller with the VRTK_ControllerEvents script");
@@ -37,6 +41,12 @@ public class CustomControllerEvents : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Method that is executed when 'Button One' is pressed. In this case, either all categories
+    /// will be activated, or deactivated, depending on whether currently at least one is already activated.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void DoButtonOnePressed(object sender, ControllerInteractionEventArgs e) {
         
         // Only proceed, if no processing is currently ongoing
@@ -53,6 +63,12 @@ public class CustomControllerEvents : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Method that is executed when 'Button One' is release. Has no functionality as of this moment.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void DoButtonOneReleased(object sender, ControllerInteractionEventArgs e) {
         // Do nothing on release
     }

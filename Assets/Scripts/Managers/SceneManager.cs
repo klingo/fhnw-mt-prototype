@@ -72,6 +72,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     //--------------------------------------------------------------------------
 
+    // The highlight Colours for the table rows
     public Color highlightRowColor = new Color(0.9f, 0.9f, 1);
     public Color selectedRowColor = new Color(0.7f, 0.7f, 1);
 
@@ -85,6 +86,7 @@ public class SceneManager : Singleton<SceneManager> {
     string[] yearOverviewLabels = new string[12];
     string[] monthOverviewLabels = new string[31];
 
+    // max and current threshold level for the bar charts
     float globalMaxThreshold = 0f;
     float globalThreshold = 0f;
 
@@ -100,6 +102,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     //--------------------------------------------------------------------------
 
+    // Image reference of the currently selected table rows and chart bars
     public Image selectedTableRowImage;
     public Image selectedYearRowImage;
     public Bar selectedMonthBar;
@@ -113,7 +116,7 @@ public class SceneManager : Singleton<SceneManager> {
 
     //--------------------------------------------------------------------------
 
-    // Multithreading
+    // Multithreading information
     bool _threadRunning;
     Thread _thread;
 
@@ -222,8 +225,8 @@ public class SceneManager : Singleton<SceneManager> {
     /// <summary>
     /// Puts the provided gameObject (Category) to the filter list and updates the global threshold level.
     /// </summary>
-    /// <param name="gameObject"></param>
-    /// <param name="monthlyCategoryThreshold"></param>
+    /// <param name="gameObject">The Category Icon Object</param>
+    /// <param name="monthlyCategoryThreshold">The corresponding threshold of this object</param>
     public void addGameObjectToCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {
@@ -254,8 +257,8 @@ public class SceneManager : Singleton<SceneManager> {
     /// <summary>
     /// Removes the provided gameObject (Category) from the filter list and updates the global threshold level.
     /// </summary>
-    /// <param name="gameObject"></param>
-    /// <param name="monthlyCategoryThreshold"></param>
+    /// <param name="gameObject">The Category Icon Object</param>
+    /// <param name="monthlyCategoryThreshold">The corresponding threshold of this object</param>
     public void removeGameObjectFromCategoryFilter(GameObject gameObject, float monthlyCategoryThreshold) {
         // only proceed if no other processing is ongoing
         if (!isCategoryBeingProcessed) {

@@ -25,10 +25,12 @@ using UnityEngine.UI;
 
 public class Bar : MonoBehaviour {
 
+    // References to the Image objects of the top (red) and the bottom (green) bar
     [Header("[Image]", order = 0)]
     public Image topBar;
     public Image bottomBar;
 
+    // References to the Text objectsof the values of each bar, as well as the label of the bar
     [Header("[Text]", order = 1)]
     public Text label;
     public Text topBarValue;

@@ -25,9 +25,11 @@ using UnityEngine.UI;
 
 public class Row : MonoBehaviour {
 
+    // Reference to the Image object of the table row
     [Header("[Image]", order = 0)]
     public Image rowImage;
 
+    // References to the Text objectsof the values of each row
     [Header("[Text]", order = 1)]
     public Text dateText;
     public Text recipientText;
@@ -35,6 +37,8 @@ public class Row : MonoBehaviour {
     public Text amountText;
     public Text categoryText;
 
+    // Getter/Setter methods for the information on the financial transaction that is not shown
+    // in the table, but on the detail view
     public string accountName { get; set; }
     public string accountNo { get; set; }
     public string bookingText { get; set; }

@@ -35,13 +35,18 @@ public class CategoryIconClick : VRTK_InteractableObject {
     [Tooltip("Sets the color of the category icon when the data loaded and displayed.")]
     public float monthlyCategoryThreshold = 0f;
 
-
+    // Defines the highlight coors for the categories
     Color highlightColorInactive = new Color(1, 1, 0.8f);
     Color highlightColorActive = new Color(0.8f, 1, 0.8f);
     bool isActivated = false;
     bool isLoading = false;
 
 
+    /// <summary>
+    /// Override method from Unity. Checks whether the category is already active or not and inititias
+    /// a change to the other state, provided there is currently no other processing ongoing.
+    /// </summary>
+    /// <param name="usingObject">The GameObject to which the script is attached to</param>
     public override void StartUsing(GameObject usingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
@@ -61,6 +66,11 @@ public class CategoryIconClick : VRTK_InteractableObject {
     }
 
 
+    /// <summary>
+    /// Override method from Unity. Checks whether the category is already active or not and inititias
+    /// a color change to visualise the highlighting effect, provided there is currently no other processing ongoing.
+    /// </summary>
+    /// <param name="currentTouchingObject">The GameObject to which the script is attached to</param>
     public override void StartTouching(GameObject currentTouchingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
@@ -80,6 +90,11 @@ public class CategoryIconClick : VRTK_InteractableObject {
     }
 
 
+    /// <summary>
+    /// Override method from Unity. Checks whether the category is already active or not and resets the 
+    /// highlighting color again, provided there is currently no other processing ongoing.
+    /// </summary>
+    /// <param name="previousTouchingObject">The GameObject to which the script is attached to</param>
     public override void StopTouching(GameObject previousTouchingObject) {
         // If category processing is already going on... do NOTHING
         if (!SceneManager.Instance.isCategoryBeingProcessed) {
@@ -99,6 +114,10 @@ public class CategoryIconClick : VRTK_InteractableObject {
     }
 
 
+    /// <summary>
+    /// Indicates that the category to which the script is attached to, is either activated or not, and 
+    /// is currently loading new data.
+    /// </summary>
     public void SetToLoadingState() {
         // change activation state
         isActivated = !isActivated;
@@ -107,6 +126,11 @@ public class CategoryIconClick : VRTK_InteractableObject {
         isLoading = true;
     }
 
+
+    /// <summary>
+    /// Sets the final colour of the object,s based on its current activation state. Also sets the loading 
+    /// indicator back to false.
+    /// </summary>
     public void SetFinalColor() {
         if (isActivated) {
             gameObject.GetComponent<Renderer>().material.color = activeColor;

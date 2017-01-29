@@ -27,32 +27,40 @@ using UnityEngine.UI;
 
 public class BarChart : MonoBehaviour {
 
+    // Reference to the Prefab of the individual Bar
     [Header("[Bar]", order = 0)]
     public Bar barHolderPrefab;
 
+    // Defining the color for both bars
     [Header("[Color]", order = 1)]
     public Color bottomBarColor;
     public Color topBarColor;
 
+    // Reference to the Image that represents the threshold line
     [Header("[Image]", order = 2)]
     public Image thresholdLine;
 
+    // Reference to the Text objects that represent the threshold value and the title of the whole chart
     [Header("[Text]", order = 3)]
     public Text thresholdValueLabel;
     public Text chartTitle;
 
+    // List of all bars in the bar chart
     List<Bar> barHolders = new List<Bar>();
 
+    // the hight of the chart (in pixels)
     float chartHeight;
+    // vertical offset for the threshold line in relation to the 0-line of the barchart
     float thresholdLineOffsetY = 0f;
 
     const float AXES_GRAPH_OFFSET = 6;  // the offset of a bar compared to the axes-graph
     const float BAR_SCALE_FACTOR = 0.95f; // the scaling of the max bar height
 
+    // Required for proper formatting of Amoun values (decimal character and thousand separator)
     System.Globalization.CultureInfo modCulture = new System.Globalization.CultureInfo("de-CH");
 
     /// <summary>
-    /// Use this for initialization
+    /// Use this for initialization. The height of the chart is properly set.
     /// </summary>
     void Start() {
         // Prepare Chart-Size first
@@ -63,8 +71,14 @@ public class BarChart : MonoBehaviour {
 
 
     /// <summary>
-    /// 
+    /// Displayis the provided values in the bar chart. Labels and Values need to be provided as an array.
+    /// With the provided threshold value, the proper rendering of bottom (green) and top (red) bar is 
+    /// possible.
     /// </summary>
+    /// <param name="labels">The labels for the individual bars</param>
+    /// <param name="inputValues">The values for the individual bars</param>
+    /// <param name="title">The title of the bar chart</param>
+    /// <param name="threshold">The threshold level for the bar chart</param>
     public void DisplayGraph(string[] labels, float[] inputValues, string title, float threshold) {
 
         float maxValue = 0;
@@ -81,6 +95,7 @@ public class BarChart : MonoBehaviour {
         // set chart title
         chartTitle.text = title;
 
+        // Loop through all values
         for (int currBarIndex = 0; currBarIndex < inputValues.Length; currBarIndex++) {
 
             Bar newBarHolder;
@@ -203,16 +218,18 @@ public class BarChart : MonoBehaviour {
             Bar barToRemove = barHolders.ElementAt(barHolders.Count - 1);
             // then remove it from the barHolders-List
             barHolders.Remove(barToRemove);
-            // then detach it from its parent
-                            //barToRemove.transform.SetParent(null);
-            // Finally, destroy the GameObject
+
+            // TODO: Implement PoolManager instead of desotrying the objects!
+            // then detach it from its parent (currently disabled)
+            // barToRemove.transform.SetParent(null);
+
+            // Finally, "destroy" the GameObject
+            // Unity does not actually delete the object though from runtime
             barToRemove.name = "DELETE THIS BAR";
             barToRemove.gameObject.SetActive(false);
             barToRemove.enabled = false;
             barToRemove.transform.localScale = Vector3.zero;
             barToRemove.transform.localPosition = Vector3.zero;
-            GameObject.Destroy(barToRemove);
-            GameObject.DestroyImmediate(barToRemove, true);
             DestroyImmediate(barToRemove, true);
             Destroy(barToRemove);
             barToRemove = null;

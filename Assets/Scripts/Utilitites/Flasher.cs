@@ -27,6 +27,12 @@ using UnityEngine.UI;
 
 public static class Flasher {
 
+    /// <summary>
+    /// Stops the flashing Coroutine anmitation of the provided Bar object. For this bar object all coroutines
+    /// on its attached image objects will be stopped and in case they are currently partially faded out, brought back
+    /// to full colour.
+    /// </summary>
+    /// <param name="barHolder">The bar whose flsahing should be stopped</param>
     public static void stopFlashingBar(Bar barHolder) {
         if (barHolder != null) {
             // if there was a previous bar, stop the blinking
@@ -40,6 +46,12 @@ public static class Flasher {
     }
 
 
+    /// <summary>
+    /// Starts the flashing Coroutine animation on the provided list of images for a given duration.
+    /// </summary>
+    /// <param name="images">A list of images for which the flashing should start</param>
+    /// <param name="duration">duration in seconds for one flashing animation</param>
+    /// <returns></returns>
     public static IEnumerator Flash(List<Image> images, float duration) {
         bool fadeState = false;
         while (true) {
