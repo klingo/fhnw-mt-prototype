@@ -2,4 +2,6 @@
 
 ## Master Thesis VR Prototype in Unity 3D
 
-Thesis Paper: https://github.com/klingo/fhnw-mt-vr
+Thesis Paper: https://github.com/klingo/fhnw-mt-vr/
+
+(c) by Fabian Schär (2017)
