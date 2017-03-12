@@ -1,4 +1,5 @@
-# fhnw-mt-prototype
-Master Thesis VR Prototype in Unity 3D
+# Business Information Systems Master Thesis at FHNW
 
-Work Log: https://tree.taiga.io/project/klingo-master-thesis/kanban
+## Master Thesis VR Prototype in Unity 3D
+
+Thesis Paper: https://github.com/klingo/fhnw-mt-vr
